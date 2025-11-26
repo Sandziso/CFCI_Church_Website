@@ -1,0 +1,121 @@
+# .htaccess for CFCI Church Website
+
+# ----------------------------------------------------------------------
+# General Configuration
+# ----------------------------------------------------------------------
+
+# Ensure UTF-8 Encoding
+AddDefaultCharset UTF-8
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .php .css .js
+</IfModule>
+
+# Prevent Directory Listings
+# This prevents users from seeing the contents of your directories if no index file is present.
+Options -Indexes
+
+# ----------------------------------------------------------------------
+# Custom Error Pages
+# ----------------------------------------------------------------------
+# Specify custom error pages for common HTTP errors.
+# Make sure these files (e.g., 404.php, 500.php) exist in your root directory
+# or adjust the paths accordingly.
+
+# Example:
+# ErrorDocument 404 /404.php
+# ErrorDocument 500 /500.php
+
+
+# ----------------------------------------------------------------------
+# URL Rewriting (Clean URLs)
+# ----------------------------------------------------------------------
+# This section enables mod_rewrite, which is essential for "clean" URLs
+# (e.g., yourdomain.com/about instead of yourdomain.com/about.php).
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Set RewriteBase if the .htaccess is not in the document root.
+    # Based on your previous "Not Found" error path (localhost/CFCI_Church_Website/),
+    # it seems your application's base is '/CFCI_Church_Website/'.
+    # Adjust this path if your CFCI_Church_Website is in a different subdirectory
+    # relative to your web server's document root.
+    RewriteBase /CFCI_Church_Website/
+
+
+    # Force HTTPS (Highly Recommended for production)
+    # Uncomment the following lines after you have an SSL certificate installed.
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Redirect non-www to www (or vice-versa)
+    # Choose one of the following, or leave both commented if you prefer.
+
+    # Option 1: Force www (e.g., example.com to www.example.com)
+    # RewriteCond %{HTTP_HOST} !^www\. [NC]
+    # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Option 2: Remove www (e.g., www.example.com to example.com)
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]
+
+
+    # Rewrite rules for PHP files to remove .php extension
+    # This rule checks if a request is for a file that exists AND ends with .php
+    # and internally rewrites it to that file.
+    # E.g., /about will serve about.php, and importantly, /pastor/dashboard will serve pastor/dashboard.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+
+    # Handle direct access to includes folder or config files (basic security)
+    # Deny access to the includes/ and config/ directories
+    RewriteRule ^(includes|config)/.*$ - [F,NC] # [F]orbidden, [NC] No Case
+
+    # Prevent direct access to .sql files
+    <Files ~ "\.sql$">
+        Order allow,deny
+        Deny from all
+    </Files>
+
+    # Prevent direct access to .env files (if you use them for environment variables)
+    <Files ~ "\.env$">
+        Order allow,deny
+        Deny from all
+    </Files>
+
+    # Redirect index.php to root
+    # If a user accesses /index.php, redirect them to /
+    RewriteCond %{THE_REQUEST} /index\.php [NC]
+    RewriteRule ^(.*)index\.php$ /$1 [L,R=301,NC]
+
+    # Custom Rewrite for Specific Pages (if needed)
+    # If you later create pages like about.php, sermons.php, events.php
+    # and want custom routing beyond just removing .php extension, you'd add rules here.
+    # Example: Rewrite /sermon/123 to sermons.php?id=123 (if you don't use direct IDs like above)
+    # RewriteRule ^sermon/([0-9]+)$ sermons.php?id=$1 [L,QSA] # [QSA] Appends Query String
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Browser Caching
+# ----------------------------------------------------------------------
+# Leverage browser caching for static assets (images, CSS, JS).
+# This helps speed up subsequent page loads.
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+
+    <FilesMatch "\.(js|css|json|xml|txt|ico)$">
+        ExpiresDefault "access plus 1 week"
+    </FilesMatch>
+
+    <FilesMatch "\.(jpg|jpeg|png|gif|svg|webp)$">
+        ExpiresDefault "access plus 1 month"
+    </FilesMatch>
+
+    <FilesMatch "\.(mp4|mov|ogg|webm|mp3|wav)$">
+        ExpiresDefault "access plus 1 month"
+    </FilesMatch>
+</IfModule>
