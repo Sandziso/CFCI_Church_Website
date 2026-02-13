@@ -1,734 +1,1441 @@
 <?php
-// Start session and include config at the very top
+// auth/register.php - User Registration Page with Role Selection
 require_once '../includes/config.php';
 require_once '../includes/database.php';
-require_once '../includes/auth.php'; // Include auth.php to access Security class
+require_once '../includes/auth.php';
+require_once '../includes/main-functions.php';
 
-// Ensure the security class is initialized (assuming $conn is available from database.php)
-Security::initialize($conn); 
-$csrf_token = Security::generateCSRFToken(); // Generate the CSRF token
+// Redirect if already logged in
+if (isset($_SESSION['user_id']) && $_SESSION['logged_in'] === true) {
+    $role = $_SESSION['user_role'] ?? 'member';
+    if ($role === 'admin' || $role === 'super_admin') {
+        header('Location: ' . SITE_URL . '/admin/dashboard.php');
+    } elseif ($role === 'pastor') {
+        header('Location: ' . SITE_URL . '/pastor/dashboard.php');
+    } else {
+        header('Location: ' . SITE_URL . '/member/dashboard.php');
+    }
+    exit();
+}
 
-$page_title = "Join CFCI Church";
-require_once '../includes/header.php';
+$error = '';
+$success = '';
+
+// Handle registration form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verify CSRF token
+    try {
+        SecurityManager::verifyCSRFToken($_POST['csrf_token'] ?? '');
+    } catch (Exception $e) {
+        $error = 'Security token validation failed. Please try again.';
+    }
+    
+    if (empty($error)) {
+        $full_name = sanitize($_POST['full_name'] ?? '');
+        $email = sanitize($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
+        $phone = sanitize($_POST['phone'] ?? '');
+        $address = sanitize($_POST['address'] ?? '');
+        $date_of_birth = $_POST['date_of_birth'] ?? '';
+        $gender = $_POST['gender'] ?? '';
+        $marital_status = $_POST['marital_status'] ?? '';
+        $user_type = $_POST['user_type'] ?? 'member'; // 'member' or 'pastor'
+        $church_position = $_POST['church_position'] ?? '';
+        $ministry_interest = $_POST['ministry_interest'] ?? '';
+        
+        // Validate input
+        $errors = [];
+        
+        if (empty($full_name)) {
+            $errors[] = 'Full name is required';
+        }
+        
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Please enter a valid email address';
+        } elseif ($churchDB->emailExists($email)) {
+            $errors[] = 'Email already registered';
+        }
+        
+        if (empty($password)) {
+            $errors[] = 'Password is required';
+        } elseif (strlen($password) < 8) {
+            $errors[] = 'Password must be at least 8 characters long';
+        } elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            $errors[] = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+        }
+        
+        if ($password !== $confirm_password) {
+            $errors[] = 'Passwords do not match';
+        }
+        
+        if (!empty($phone) && !preg_match('/^[\+]?[1-9][0-9]{9,14}$/', $phone)) {
+            $errors[] = 'Please enter a valid phone number';
+        }
+        
+        if ($user_type === 'pastor' && empty($church_position)) {
+            $errors[] = 'Please specify your church position';
+        }
+        
+        if (empty($errors)) {
+            try {
+                // Register user with selected role
+                $role = $user_type === 'pastor' ? 'pastor' : 'member';
+                $result = $auth->register($full_name, $email, $password, $phone, $address, $date_of_birth, $role);
+                
+                if (isset($result['success']) && $result['success']) {
+                    $user_id = $result['user_id'];
+                    
+                    // Update profile with additional data
+                    try {
+                        $conn = Database::getInstance()->getConnection();
+                        
+                        // Check if profile exists
+                        $stmt = $conn->prepare("SELECT id FROM user_profiles WHERE user_id = ?");
+                        $stmt->execute([$user_id]);
+                        
+                        if ($stmt->rowCount() > 0) {
+                            // Update existing profile
+                            $updateSql = "UPDATE user_profiles SET gender = ?, marital_status = ?, church_position = ?, ministry_interest = ? WHERE user_id = ?";
+                            $stmt = $conn->prepare($updateSql);
+                            $stmt->execute([$gender, $marital_status, $church_position, $ministry_interest, $user_id]);
+                        } else {
+                            // Insert new profile
+                            $insertSql = "INSERT INTO user_profiles (user_id, gender, marital_status, church_position, ministry_interest) VALUES (?, ?, ?, ?, ?)";
+                            $stmt = $conn->prepare($insertSql);
+                            $stmt->execute([$user_id, $gender, $marital_status, $church_position, $ministry_interest]);
+                        }
+                        
+                    } catch (Exception $e) {
+                        error_log("Profile update error: " . $e->getMessage());
+                    }
+                    
+                    // If pastor, add to pastors table if it exists
+                    if ($user_type === 'pastor' && !empty($church_position)) {
+                        try {
+                            $stmt = $conn->prepare("INSERT INTO pastors (user_id, position, status) VALUES (?, ?, 'pending')");
+                            $stmt->execute([$user_id, $church_position]);
+                        } catch (Exception $e) {
+                            error_log("Pastor registration error: " . $e->getMessage());
+                        }
+                    }
+                    
+                    // Log the registration
+                    SecurityManager::logSecurityEvent('REGISTRATION_SUCCESS', $user_id, "Registered as " . $user_type);
+                    
+                    // Set success message and redirect to login
+                    $_SESSION['registration_success'] = true;
+                    $_SESSION['registration_email'] = $email;
+                    $_SESSION['registration_type'] = $user_type;
+                    
+                    // Send welcome email (in background)
+                    if (function_exists('sendEmailTemplate')) {
+                        try {
+                            $template = $user_type === 'pastor' ? 'welcome_pastor' : 'welcome_member';
+                            sendEmailTemplate($template, $email, [
+                                'full_name' => $full_name,
+                                'church_name' => SITE_NAME,
+                                'user_type' => ucfirst($user_type),
+                                'login_url' => SITE_URL . '/auth/login.php'
+                            ]);
+                        } catch (Exception $e) {
+                            error_log("Welcome email error: " . $e->getMessage());
+                        }
+                    }
+                    
+                    // Redirect to success page
+                    header('Location: register-success.php');
+                    exit();
+                } else {
+                    $error = $result['error'] ?? 'Registration failed. Please try again.';
+                }
+            } catch (Exception $e) {
+                $error = 'An error occurred during registration. Please try again.';
+                error_log("Registration error: " . $e->getMessage());
+            }
+        } else {
+            $error = implode('<br>', $errors);
+        }
+    }
+}
+
+// Generate CSRF token
+$csrf_token = SecurityManager::generateCSRFToken();
 ?>
-
-<!-- Custom CSS for enhanced registration -->
-<style>
-    .auth-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border-radius: 20px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        border: none;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Our Family - <?php echo SITE_NAME; ?></title>
     
-    .auth-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    .auth-header {
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-        color: white;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-    }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .auth-header::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,192C672,181,768,139,864,138.7C960,139,1056,181,1152,192C1248,203,1344,181,1392,170.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
-        background-size: cover;
-        background-position: bottom;
-        opacity: 0.2;
-    }
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     
-    .auth-body {
-        padding: 2.5rem;
-    }
-    
-    .role-selection {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 25px;
-    }
-    
-    .role-option {
-        flex: 1;
-        text-align: center;
-        padding: 20px 15px;
-        border: 2px solid #e3e6f0;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: white;
-    }
-    
-    .role-option:hover {
-        border-color: #4e73df;
-        transform: translateY(-3px);
-    }
-    
-    .role-option.selected {
-        border-color: #4e73df;
-        background: rgba(78, 115, 223, 0.05);
-        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.1);
-    }
-    
-    .role-option.quick-register {
-        border-color: #28a745;
-        background: rgba(40, 167, 69, 0.05);
-    }
-    
-    .role-option.quick-register:hover {
-        border-color: #28a745;
-        background: rgba(40, 167, 69, 0.1);
-    }
-    
-    .role-option.quick-register.selected {
-        border-color: #28a745;
-        background: rgba(40, 167, 69, 0.1);
-        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
-    }
-    
-    .quick-register-badge {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #28a745;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-        font-weight: bold;
-    }
-    
-    .role-icon {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        color: #4e73df;
-    }
-    
-    .quick-register .role-icon {
-        color: #28a745;
-    }
-    
-    .role-title {
-        font-weight: 600;
-        margin-bottom: 5px;
-        color: #4a4a4a;
-    }
-    
-    .role-description {
-        font-size: 0.85rem;
-        color: #6c757d;
-    }
-    
-    .form-control {
-        border-radius: 10px;
-        padding: 12px 15px;
-        border: 2px solid #e3e6f0;
-        transition: all 0.3s ease;
-    }
-    
-    .form-control:focus {
-        border-color: #4e73df;
-        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
-    }
-    
-    .input-group-text {
-        border-radius: 10px 0 0 10px;
-        background: #f8f9fc;
-        border: 2px solid #e3e6f0;
-        border-right: none;
-    }
-    
-    .input-group .form-control {
-        border-left: none;
-    }
-    
-    .progress {
-        height: 8px;
-        border-radius: 10px;
-    }
-    
-    .btn-primary {
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-        border: none;
-        border-radius: 10px;
-        padding: 12px 30px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 14px rgba(78, 115, 223, 0.3);
-    }
-    
-    .password-strength-meter {
-        margin-top: 10px;
-    }
-    
-    .strength-label {
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-    
-    .strength-very-weak { color: #dc3545; }
-    .strength-weak { color: #fd7e14; }
-    .strength-fair { color: #ffc107; }
-    .strength-good { color: #20c997; }
-    .strength-strong { color: #198754; }
-    
-    .password-requirements {
-        background: #f8f9fc;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 15px;
-    }
-    
-    .requirement {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-        font-size: 0.85rem;
-    }
-    
-    .requirement i {
-        margin-right: 8px;
-        width: 16px;
-        text-align: center;
-    }
-    
-    .requirement.valid {
-        color: #198754;
-    }
-    
-    .requirement.invalid {
-        color: #6c757d;
-    }
-    
-    .auth-footer {
-        text-align: center;
-        padding: 1.5rem;
-        background: #f8f9fc;
-        border-top: 1px solid #e3e6f0;
-    }
-    
-    @media (max-width: 768px) {
-        .role-selection {
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary: #1a5276;
+            --primary-dark: #154360;
+            --primary-light: #3498db;
+            --secondary: #e67e22;
+            --secondary-light: #f39c12;
+            --accent: #9b59b6;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --gray: #95a5a6;
+            --gray-light: #ecf0f1;
+            --pastor-color: #8e44ad;
+            --member-color: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .register-container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            min-height: 750px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .register-sidebar {
+            flex: 1;
+            background: linear-gradient(145deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
         }
         
-        .auth-body {
-            padding: 1.5rem;
+        .register-sidebar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.1;
         }
         
-        .auth-header {
-            padding: 2rem 1.5rem;
+        .logo-container {
+            text-align: center;
+            margin-bottom: 40px;
         }
-    }
-</style>
-
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <div class="auth-card animate__animated animate__fadeInUp">
-                <div class="auth-header">
-                    <h1 class="display-5 fw-bold"><i class="fas fa-church me-2"></i>Join CFCI Church</h1>
-                    <p class="mb-0">Create your account and become part of our spiritual family</p>
-                </div>
-                
-                <div class="auth-body">
-                    <?php if (isset($_GET['message'])): ?>
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <?php echo htmlspecialchars($_GET['message']); ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo img {
+            max-width: 60px;
+            max-height: 60px;
+        }
+        
+        .church-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .church-tagline {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .welcome-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .welcome-subtext {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .role-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .role-info h4 {
+            margin-bottom: 15px;
+            color: var(--secondary-light);
+        }
+        
+        .role-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .role-info li {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .role-info li i {
+            margin-right: 10px;
+            color: var(--secondary-light);
+            margin-top: 3px;
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .features-list li i {
+            margin-right: 12px;
+            color: var(--secondary-light);
+            font-size: 1.2rem;
+        }
+        
+        .testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: auto;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .register-content {
+            flex: 1.5;
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 750px;
+        }
+        
+        .register-header {
+            margin-bottom: 40px;
+        }
+        
+        .register-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .register-subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        .form-container {
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .form-label .required {
+            color: var(--danger);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--dark);
+        }
+        
+        .form-select {
+            padding-left: 50px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.15);
+            outline: none;
+        }
+        
+        .form-control.error, .form-select.error {
+            border-color: var(--danger);
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message i {
+            margin-right: 5px;
+        }
+        
+        /* Role Selection Styling */
+        .role-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .role-option {
+            flex: 1;
+            cursor: pointer;
+            border: 3px solid var(--gray-light);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+        }
+        
+        .role-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.1);
+        }
+        
+        .role-option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(to bottom right, rgba(26, 82, 118, 0.05), rgba(52, 152, 219, 0.05));
+        }
+        
+        .role-option.selected.member {
+            border-color: var(--member-color);
+        }
+        
+        .role-option.selected.pastor {
+            border-color: var(--pastor-color);
+        }
+        
+        .role-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .role-icon.member {
+            background: linear-gradient(135deg, var(--member-color) 0%, #2980b9 100%);
+        }
+        
+        .role-icon.pastor {
+            background: linear-gradient(135deg, var(--pastor-color) 0%, #9b59b6 100%);
+        }
+        
+        .role-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .role-description {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+        
+        .role-input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .role-specific-fields {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .role-specific-fields.active {
+            display: block;
+        }
+        
+        .password-strength {
+            margin-top: 10px;
+        }
+        
+        .strength-meter {
+            height: 6px;
+            background: var(--gray-light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .strength-weak {
+            background: var(--danger);
+            width: 25%;
+        }
+        
+        .strength-fair {
+            background: var(--warning);
+            width: 50%;
+        }
+        
+        .strength-good {
+            background: var(--secondary);
+            width: 75%;
+        }
+        
+        .strength-strong {
+            background: var(--success);
+            width: 100%;
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin: 30px 0;
+        }
+        
+        .terms-checkbox input {
+            margin-top: 5px;
+            margin-right: 12px;
+        }
+        
+        .terms-label {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .terms-label a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .terms-label a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-register {
+            background: linear-gradient(to right, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(26, 82, 118, 0.2);
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(26, 82, 118, 0.3);
+        }
+        
+        .btn-register:active {
+            transform: translateY(-1px);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .login-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .alert-danger {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+        
+        .alert-success {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .register-card {
+                flex-direction: column;
+                max-width: 600px;
+            }
+            
+            .register-sidebar {
+                padding: 40px 30px;
+            }
+            
+            .register-content {
+                padding: 40px 30px;
+            }
+            
+            .welcome-text {
+                font-size: 1.8rem;
+            }
+            
+            .role-selection {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .register-content {
+                padding: 30px 20px;
+            }
+            
+            .register-title {
+                font-size: 1.8rem;
+            }
+            
+            .form-control, .form-select {
+                padding: 14px 15px 14px 45px;
+            }
+            
+            .role-option {
+                padding: 20px;
+            }
+        }
+        
+        /* Loading animation */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating animation for logo */
+        .logo {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Custom checkbox */
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .checkmark {
+            position: relative;
+            height: 22px;
+            width: 22px;
+            background-color: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 6px;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <!-- Sidebar with Welcome Message -->
+            <div class="register-sidebar">
+                <div>
+                    <div class="logo-container">
+                        <div class="logo">
+                            <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" alt="<?php echo SITE_NAME; ?> Logo">
                         </div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?php echo htmlspecialchars($_GET['error']); ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <!-- Quick Pastor Registration Form -->
-                    <form id="quickPastorForm" action="register-process.php" method="POST" style="display: none;">
-                        <input type="hidden" name="action" value="register">
-                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-                        <input type="hidden" name="role" value="pastor">
-                        <input type="hidden" name="quick_register" value="1">
-                    </form>
-                    
-                    <form id="registerForm" action="register-process.php" method="POST">
-                        <input type="hidden" name="action" value="register">
-                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-                        <input type="hidden" name="role" id="selected_role" value="member">
-                        
-                        <!-- Role Selection -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold mb-3">I want to register as:</label>
-                            <div class="role-selection">
-                                <div class="role-option selected" data-role="member">
-                                    <div class="role-icon">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="role-title">Church Member</div>
-                                    <div class="role-description">Join our congregation and participate in church activities</div>
-                                </div>
-                                <div class="role-option quick-register" data-role="pastor" id="pastorQuickOption">
-                                    <div class="quick-register-badge">Quick Register</div>
-                                    <div class="role-icon">
-                                        <i class="fas fa-pray"></i>
-                                    </div>
-                                    <div class="role-title">Pastor/Minister</div>
-                                    <div class="role-description">Click to register instantly as a pastor</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="full_name" class="form-label">Full Name *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                        <input type="text" class="form-control" id="full_name" name="full_name" required 
-                                               placeholder="Enter your full name">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                        <input type="email" class="form-control" id="email" name="email" required 
-                                               placeholder="Enter your email">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                        <input type="tel" class="form-control" id="phone" name="phone" 
-                                               placeholder="Enter your phone number">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="date_of_birth" class="form-label">Date of Birth</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                                        <input type="date" class="form-control" id="date_of_birth" name="date_of_birth">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-home"></i></span>
-                                <textarea class="form-control" id="address" name="address" rows="2" 
-                                          placeholder="Enter your address"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                        <input type="password" class="form-control" id="password" name="password" required 
-                                               placeholder="Create a password">
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="password-strength-meter">
-                                        <div class="progress mb-2">
-                                            <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
-                                        </div>
-                                        <div class="strength-label">
-                                            Password strength: <span id="passwordStrength" class="strength-very-weak">Very Weak</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="password-requirements">
-                                        <div class="requirement invalid" id="req-length">
-                                            <i class="fas fa-times-circle"></i>
-                                            At least 8 characters
-                                        </div>
-                                        <div class="requirement invalid" id="req-uppercase">
-                                            <i class="fas fa-times-circle"></i>
-                                            Contains uppercase letter
-                                        </div>
-                                        <div class="requirement invalid" id="req-lowercase">
-                                            <i class="fas fa-times-circle"></i>
-                                            Contains lowercase letter
-                                        </div>
-                                        <div class="requirement invalid" id="req-number">
-                                            <i class="fas fa-times-circle"></i>
-                                            Contains number
-                                        </div>
-                                        <div class="requirement invalid" id="req-special">
-                                            <i class="fas fa-times-circle"></i>
-                                            Contains special character
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="confirm_password" class="form-label">Confirm Password *</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required 
-                                               placeholder="Confirm your password">
-                                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <div id="passwordMatch" class="mt-2"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                            <label class="form-check-label" for="terms">
-                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
-                            </label>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" checked>
-                            <label class="form-check-label" for="newsletter">
-                                Subscribe to our newsletter for updates and events
-                            </label>
-                        </div>
-                        
-                        <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-user-plus me-2"></i>Create Account as Member
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center">
-                        <p class="mb-0">Already have an account? 
-                            <a href="login.php" class="text-primary fw-semibold">Sign in here</a>
-                        </p>
+                        <h1 class="church-name"><?php echo SITE_NAME; ?></h1>
+                        <p class="church-tagline">Building Families, Strengthening Faith</p>
                     </div>
+                    
+                    <h2 class="welcome-text">Join Our Family</h2>
+                    <p class="welcome-subtext">Whether you're a member or pastor, we welcome you to our community of faith and love.</p>
+                    
+                    <div class="role-info">
+                        <h4><i class="fas fa-users me-2"></i>Choose Your Role</h4>
+                        <ul>
+                            <li><i class="fas fa-user-check"></i> <strong>Member:</strong> Join our congregation, participate in activities, and grow spiritually</li>
+                            <li><i class="fas fa-hands-praying"></i> <strong>Pastor:</strong> Shepherd God's flock, lead ministries, and provide spiritual guidance</li>
+                        </ul>
+                    </div>
+                    
+                    <ul class="features-list">
+                        <li><i class="fas fa-check-circle"></i> Access to spiritual resources</li>
+                        <li><i class="fas fa-check-circle"></i> Event registration and management</li>
+                        <li><i class="fas fa-check-circle"></i> Prayer request submission</li>
+                        <li><i class="fas fa-check-circle"></i> Ministry involvement opportunities</li>
+                        <li><i class="fas fa-check-circle"></i> Community support network</li>
+                    </ul>
                 </div>
                 
-                <div class="auth-footer">
-                    <p class="mb-0 text-muted">
-                        &copy; <?php echo date('Y'); ?> CFCI Church. All rights reserved.
-                    </p>
+                <div class="testimonial">
+                    <p class="testimonial-text">"Joining as a pastor here gave me the platform to serve and lead with purpose. The support system is amazing!"</p>
+                    <p class="testimonial-author">- Pastor John, Ministry Leader</p>
+                </div>
+            </div>
+            
+            <!-- Registration Form -->
+            <div class="register-content">
+                <div class="register-header">
+                    <h2 class="register-title">Create Your Account</h2>
+                    <p class="register-subtitle">Select your role and fill in your details</p>
+                </div>
+                
+                <?php if ($error): ?>
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <?php echo $error; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <div class="form-container">
+                    <form method="POST" action="" id="registerForm">
+                        <!-- Role Selection -->
+                        <div class="role-selection">
+                            <label class="role-option member <?php echo (($_POST['user_type'] ?? 'member') === 'member') ? 'selected' : ''; ?>">
+                                <input type="radio" name="user_type" value="member" class="role-input" 
+                                       <?php echo (($_POST['user_type'] ?? 'member') === 'member') ? 'checked' : ''; ?>>
+                                <div class="role-icon member">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h3 class="role-title">Church Member</h3>
+                                <p class="role-description">Join as a regular member to participate in church activities, events, and grow in faith with our community.</p>
+                            </label>
+                            
+                            <label class="role-option pastor <?php echo (($_POST['user_type'] ?? '') === 'pastor') ? 'selected' : ''; ?>">
+                                <input type="radio" name="user_type" value="pastor" class="role-input"
+                                       <?php echo (($_POST['user_type'] ?? '') === 'pastor') ? 'checked' : ''; ?>>
+                                <div class="role-icon pastor">
+                                    <i class="fas fa-hands-praying"></i>
+                                </div>
+                                <h3 class="role-title">Pastor/Ministry Leader</h3>
+                                <p class="role-description">Register as a pastor or ministry leader to access leadership tools, manage ministries, and shepherd the flock.</p>
+                            </label>
+                        </div>
+                        
+                        <!-- Pastor-specific fields -->
+                        <div class="role-specific-fields <?php echo (($_POST['user_type'] ?? '') === 'pastor') ? 'active' : ''; ?>" id="pastorFields">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Church Position <span class="required">*</span></label>
+                                        <div class="input-with-icon">
+                                            <i class="input-icon fas fa-church"></i>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   id="church_position" 
+                                                   name="church_position" 
+                                                   value="<?php echo htmlspecialchars($_POST['church_position'] ?? ''); ?>"
+                                                   placeholder="e.g., Senior Pastor, Youth Pastor, Worship Leader">
+                                        </div>
+                                        <div id="positionError" class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Personal Information -->
+                        <h4 class="mt-4 mb-3" style="color: var(--primary-dark);">Personal Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name <span class="required">*</span></label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-user"></i>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="full_name" 
+                                               name="full_name" 
+                                               value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>"
+                                               placeholder="Enter your full name"
+                                               required>
+                                    </div>
+                                    <div id="fullNameError" class="error-message"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email Address <span class="required">*</span></label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-envelope"></i>
+                                        <input type="email" 
+                                               class="form-control" 
+                                               id="email" 
+                                               name="email" 
+                                               value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
+                                               placeholder="Enter your email address"
+                                               required>
+                                    </div>
+                                    <div id="emailError" class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Password Fields -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Password <span class="required">*</span></label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-lock"></i>
+                                        <input type="password" 
+                                               class="form-control" 
+                                               id="password" 
+                                               name="password" 
+                                               placeholder="Create a strong password"
+                                               required>
+                                    </div>
+                                    <div class="password-strength">
+                                        <div class="strength-meter">
+                                            <div class="strength-fill" id="strengthFill"></div>
+                                        </div>
+                                        <div class="strength-text" id="strengthText">Password strength</div>
+                                    </div>
+                                    <div id="passwordError" class="error-message"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Confirm Password <span class="required">*</span></label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-lock"></i>
+                                        <input type="password" 
+                                               class="form-control" 
+                                               id="confirm_password" 
+                                               name="confirm_password" 
+                                               placeholder="Confirm your password"
+                                               required>
+                                    </div>
+                                    <div id="confirmPasswordError" class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Information -->
+                        <h4 class="mt-4 mb-3" style="color: var(--primary-dark);">Contact Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-phone"></i>
+                                        <input type="tel" 
+                                               class="form-control" 
+                                               id="phone" 
+                                               name="phone" 
+                                               value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
+                                               placeholder="+268 7600 0000">
+                                    </div>
+                                    <div id="phoneError" class="error-message"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Date of Birth</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-birthday-cake"></i>
+                                        <input type="date" 
+                                               class="form-control" 
+                                               id="date_of_birth" 
+                                               name="date_of_birth" 
+                                               value="<?php echo htmlspecialchars($_POST['date_of_birth'] ?? ''); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-venus-mars"></i>
+                                        <select class="form-select" id="gender" name="gender">
+                                            <option value="">Select Gender</option>
+                                            <option value="male" <?php echo ($_POST['gender'] ?? '') == 'male' ? 'selected' : ''; ?>>Male</option>
+                                            <option value="female" <?php echo ($_POST['gender'] ?? '') == 'female' ? 'selected' : ''; ?>>Female</option>
+                                            <option value="other" <?php echo ($_POST['gender'] ?? '') == 'other' ? 'selected' : ''; ?>>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Marital Status</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-heart"></i>
+                                        <select class="form-select" id="marital_status" name="marital_status">
+                                            <option value="">Select Status</option>
+                                            <option value="single" <?php echo ($_POST['marital_status'] ?? '') == 'single' ? 'selected' : ''; ?>>Single</option>
+                                            <option value="married" <?php echo ($_POST['marital_status'] ?? '') == 'married' ? 'selected' : ''; ?>>Married</option>
+                                            <option value="divorced" <?php echo ($_POST['marital_status'] ?? '') == 'divorced' ? 'selected' : ''; ?>>Divorced</option>
+                                            <option value="widowed" <?php echo ($_POST['marital_status'] ?? '') == 'widowed' ? 'selected' : ''; ?>>Widowed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Address & Ministry Interest -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Address</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-home"></i>
+                                        <textarea class="form-control" 
+                                                  id="address" 
+                                                  name="address" 
+                                                  rows="2"
+                                                  placeholder="Enter your full address"><?php echo htmlspecialchars($_POST['address'] ?? ''); ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Ministry Interest</label>
+                                    <div class="input-with-icon">
+                                        <i class="input-icon fas fa-hands-helping"></i>
+                                        <select class="form-select" id="ministry_interest" name="ministry_interest">
+                                            <option value="">Select Ministry Interest</option>
+                                            <option value="worship" <?php echo ($_POST['ministry_interest'] ?? '') == 'worship' ? 'selected' : ''; ?>>Worship & Music</option>
+                                            <option value="youth" <?php echo ($_POST['ministry_interest'] ?? '') == 'youth' ? 'selected' : ''; ?>>Youth Ministry</option>
+                                            <option value="children" <?php echo ($_POST['ministry_interest'] ?? '') == 'children' ? 'selected' : ''; ?>>Children's Ministry</option>
+                                            <option value="outreach" <?php echo ($_POST['ministry_interest'] ?? '') == 'outreach' ? 'selected' : ''; ?>>Outreach & Evangelism</option>
+                                            <option value="prayer" <?php echo ($_POST['ministry_interest'] ?? '') == 'prayer' ? 'selected' : ''; ?>>Prayer Ministry</option>
+                                            <option value="media" <?php echo ($_POST['ministry_interest'] ?? '') == 'media' ? 'selected' : ''; ?>>Media & Technology</option>
+                                            <option value="hospitality" <?php echo ($_POST['ministry_interest'] ?? '') == 'hospitality' ? 'selected' : ''; ?>>Hospitality</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="terms-checkbox">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <span class="checkmark"></span>
+                                <span class="terms-label">
+                                    I agree to the <a href="<?php echo SITE_URL; ?>/terms.php" target="_blank">Terms of Service</a> 
+                                    and <a href="<?php echo SITE_URL; ?>/privacy.php" target="_blank">Privacy Policy</a> 
+                                    of <?php echo SITE_NAME; ?>
+                                </span>
+                            </label>
+                        </div>
+                        <div id="termsError" class="error-message"></div>
+                        
+                        <!-- CSRF Token -->
+                        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                        
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-register" id="submitBtn">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Create Account</span>
+                        </button>
+                    </form>
+                    
+                    <div class="login-link">
+                        Already have an account? 
+                        <a href="login.php">Sign in here</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function() {
-        // Role selection
-        $('.role-option').click(function() {
-            $('.role-option').removeClass('selected');
-            $(this).addClass('selected');
-            const selectedRole = $(this).data('role');
-            $('#selected_role').val(selectedRole);
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = submitBtn.querySelector('span');
+            const submitBtnIcon = submitBtn.querySelector('i');
             
-            // Update button text
-            if (selectedRole === 'pastor') {
-                $('button[type="submit"]').html('<i class="fas fa-user-plus me-2"></i>Create Account as Pastor');
-            } else {
-                $('button[type="submit"]').html('<i class="fas fa-user-plus me-2"></i>Create Account as Member');
-            }
-        });
-        
-        // Quick pastor registration
-        $('#pastorQuickOption').click(function() {
-            if (confirm('Would you like to register instantly as a pastor? You can fill in additional details later in your profile.')) {
-                // Show loading state
-                $(this).html('<div class="role-icon"><i class="fas fa-spinner fa-spin"></i></div><div class="role-title">Registering...</div>');
+            // Role selection
+            const roleOptions = document.querySelectorAll('.role-option');
+            const pastorFields = document.getElementById('pastorFields');
+            const churchPositionInput = document.getElementById('church_position');
+            
+            roleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const input = this.querySelector('.role-input');
+                    input.checked = true;
+                    
+                    // Update UI
+                    roleOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    // Show/hide pastor fields
+                    if (input.value === 'pastor') {
+                        pastorFields.classList.add('active');
+                        churchPositionInput.required = true;
+                    } else {
+                        pastorFields.classList.remove('active');
+                        churchPositionInput.required = false;
+                    }
+                });
+            });
+            
+            // Password strength checker
+            const passwordInput = document.getElementById('password');
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+            
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
                 
-                // Submit the quick pastor form
-                $('#quickPastorForm').submit();
-            }
-        });
-        
-        // Password strength calculation function
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            let requirements = {
-                length: false,
-                uppercase: false,
-                lowercase: false,
-                number: false,
-                special: false
-            };
-            
-            // Length requirement
-            if (password.length >= 8) {
-                strength++;
-                requirements.length = true;
-            }
-            
-            // Uppercase requirement
-            if (password.match(/[A-Z]/)) {
-                strength++;
-                requirements.uppercase = true;
-            }
-            
-            // Lowercase requirement
-            if (password.match(/[a-z]/)) {
-                strength++;
-                requirements.lowercase = true;
-            }
-            
-            // Number requirement
-            if (password.match(/\d/)) {
-                strength++;
-                requirements.number = true;
-            }
-            
-            // Special character requirement
-            if (password.match(/[^a-zA-Z\d]/)) {
-                strength++;
-                requirements.special = true;
-            }
-            
-            return { strength, requirements };
-        }
-        
-        // Update password strength indicator
-        function updatePasswordStrength(password) {
-            const { strength, requirements } = checkPasswordStrength(password);
-            const strengthBar = $('#passwordStrengthBar');
-            const strengthText = $('#passwordStrength');
-            
-            let width = 0;
-            let color = '';
-            let text = '';
-            let textClass = '';
-            
-            switch(strength) {
-                case 0:
-                case 1:
-                    width = 20;
-                    color = 'bg-danger';
-                    text = 'Very Weak';
-                    textClass = 'strength-very-weak';
-                    break;
-                case 2:
-                    width = 40;
-                    color = 'bg-warning';
-                    text = 'Weak';
-                    textClass = 'strength-weak';
-                    break;
-                case 3:
-                    width = 60;
-                    color = 'bg-info';
-                    text = 'Fair';
-                    textClass = 'strength-fair';
-                    break;
-                case 4:
-                    width = 80;
-                    color = 'bg-primary';
-                    text = 'Good';
-                    textClass = 'strength-good';
-                    break;
-                case 5:
-                    width = 100;
-                    color = 'bg-success';
-                    text = 'Strong';
-                    textClass = 'strength-strong';
-                    break;
-            }
-            
-            // Remove all color classes and add the current one
-            strengthBar.removeClass('bg-danger bg-warning bg-info bg-primary bg-success').addClass(color);
-            strengthBar.css('width', width + '%');
-            strengthText.text(text).removeClass('strength-very-weak strength-weak strength-fair strength-good strength-strong').addClass(textClass);
-            
-            // Update requirement indicators
-            Object.keys(requirements).forEach(key => {
-                const requirementElement = $(`#req-${key}`);
-                if (requirements[key]) {
-                    requirementElement.removeClass('invalid').addClass('valid');
-                    requirementElement.find('i').removeClass('fa-times-circle').addClass('fa-check-circle');
+                // Length check
+                if (password.length >= 8) strength++;
+                if (password.length >= 12) strength++;
+                
+                // Character type checks
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/\d/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+                
+                // Update strength meter
+                let strengthClass = '';
+                let text = '';
+                
+                if (password.length === 0) {
+                    text = 'Password strength';
+                    strengthFill.style.width = '0%';
+                } else if (strength <= 2) {
+                    text = 'Weak password';
+                    strengthFill.className = 'strength-fill strength-weak';
+                    strengthFill.style.width = '25%';
+                } else if (strength <= 4) {
+                    text = 'Fair password';
+                    strengthFill.className = 'strength-fill strength-fair';
+                    strengthFill.style.width = '50%';
+                } else if (strength <= 5) {
+                    text = 'Good password';
+                    strengthFill.className = 'strength-fill strength-good';
+                    strengthFill.style.width = '75%';
                 } else {
-                    requirementElement.removeClass('valid').addClass('invalid');
-                    requirementElement.find('i').removeClass('fa-check-circle').addClass('fa-times-circle');
+                    text = 'Strong password';
+                    strengthFill.className = 'strength-fill strength-strong';
+                    strengthFill.style.width = '100%';
+                }
+                
+                strengthText.textContent = text;
+            });
+            
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    clearError(this);
+                });
+            });
+            
+            // Password match validation
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            confirmPasswordInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showError(this, 'Passwords do not match');
+                } else {
+                    clearError(this);
                 }
             });
-        }
-        
-        // Email validation function
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-        
-        // Password validation function
-        function validatePassword(password) {
-            return password.length >= 6;
-        }
-        
-        // Show alert function
-        function showAlert(message, type = 'info') {
-            // Remove any existing alerts
-            $('.alert-dismissible').remove();
             
-            // Create new alert
-            const alertHtml = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `;
-            $('.auth-body').prepend(alertHtml);
-        }
-        
-        // Show loading function
-        function showLoading(show) {
-            if (show) {
-                $('button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Processing...');
-            } else {
-                const role = $('#selected_role').val();
-                const buttonText = role === 'pastor' ? 'Create Account as Pastor' : 'Create Account as Member';
-                $('button[type="submit"]').prop('disabled', false).html(`<i class="fas fa-user-plus me-2"></i>${buttonText}`);
-            }
-        }
-        
-        // Toggle password visibility
-        $('#togglePassword, #toggleConfirmPassword').click(function() {
-            const targetId = $(this).attr('id') === 'togglePassword' ? '#password' : '#confirm_password';
-            const passwordField = $(targetId);
-            const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
-            passwordField.attr('type', type);
-            $(this).find('i').toggleClass('fa-eye fa-eye-slash');
-        });
-        
-        // Password strength indicator
-        $('#password').on('input', function() {
-            updatePasswordStrength($(this).val());
-            checkPasswordMatch();
-        });
-        
-        // Confirm password match
-        $('#confirm_password').on('input', checkPasswordMatch);
-        
-        function checkPasswordMatch() {
-            const password = $('#password').val();
-            const confirmPassword = $('#confirm_password').val();
-            const matchElement = $('#passwordMatch');
+            // Email validation
+            const emailInput = document.getElementById('email');
+            emailInput.addEventListener('blur', function() {
+                const email = this.value;
+                if (email && !validateEmail(email)) {
+                    showError(this, 'Please enter a valid email address');
+                }
+            });
             
-            if (confirmPassword === '') {
-                matchElement.html('');
-                return;
-            }
+            // Phone validation
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('blur', function() {
+                const phone = this.value;
+                if (phone && !validatePhone(phone)) {
+                    showError(this, 'Please enter a valid phone number (e.g., +268 7600 0000)');
+                }
+            });
             
-            if (password === confirmPassword) {
-                matchElement.html('<small class="text-success"><i class="fas fa-check-circle me-1"></i>Passwords match</small>');
-            } else {
-                matchElement.html('<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Passwords do not match</small>');
-            }
-        }
-        
-        // Form validation
-        $('#registerForm').on('submit', function(e) {
-            const fullName = $('#full_name').val().trim();
-            const email = $('#email').val();
-            const password = $('#password').val();
-            const confirmPassword = $('#confirm_password').val();
-            const terms = $('#terms').is(':checked');
-            const role = $('#selected_role').val();
+            // Church position validation for pastors
+            churchPositionInput.addEventListener('blur', function() {
+                const userType = document.querySelector('input[name="user_type"]:checked').value;
+                if (userType === 'pastor' && !this.value.trim()) {
+                    showError(this, 'Church position is required for pastors');
+                }
+            });
             
-            if (fullName === '') {
-                showAlert('Please enter your full name.', 'warning');
+            // Form submission
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                return;
+                
+                if (validateForm()) {
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtnText.textContent = 'Creating Account...';
+                    submitBtnIcon.className = 'fas fa-spinner fa-spin';
+                    
+                    // Submit the form
+                    this.submit();
+                }
+            });
+            
+            // Validation functions
+            function validateField(field) {
+                const value = field.value.trim();
+                const fieldId = field.id;
+                const fieldName = field.name;
+                
+                switch(fieldId) {
+                    case 'full_name':
+                        if (!value) {
+                            showError(field, 'Full name is required');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'email':
+                        if (!value) {
+                            showError(field, 'Email address is required');
+                            return false;
+                        }
+                        if (!validateEmail(value)) {
+                            showError(field, 'Please enter a valid email address');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'password':
+                        if (!value) {
+                            showError(field, 'Password is required');
+                            return false;
+                        }
+                        if (value.length < 8) {
+                            showError(field, 'Password must be at least 8 characters');
+                            return false;
+                        }
+                        if (!/[A-Z]/.test(value) || !/[a-z]/.test(value) || !/\d/.test(value)) {
+                            showError(field, 'Password must include uppercase, lowercase, and number');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'confirm_password':
+                        const password = passwordInput.value;
+                        if (!value) {
+                            showError(field, 'Please confirm your password');
+                            return false;
+                        }
+                        if (value !== password) {
+                            showError(field, 'Passwords do not match');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'church_position':
+                        const userType = document.querySelector('input[name="user_type"]:checked').value;
+                        if (userType === 'pastor' && !value) {
+                            showError(field, 'Church position is required for pastors');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'phone':
+                        if (value && !validatePhone(value)) {
+                            showError(field, 'Please enter a valid phone number');
+                            return false;
+                        }
+                        break;
+                        
+                    case 'terms':
+                        if (!field.checked) {
+                            showError(field, 'You must agree to the terms and conditions');
+                            return false;
+                        }
+                        break;
+                }
+                
+                return true;
             }
             
-            if (!validateEmail(email)) {
-                showAlert('Please enter a valid email address.', 'warning');
-                e.preventDefault();
-                return;
+            function validateForm() {
+                let isValid = true;
+                
+                // Check required fields
+                const requiredFields = [
+                    'full_name',
+                    'email',
+                    'password',
+                    'confirm_password',
+                    'terms'
+                ];
+                
+                requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (!validateField(field)) {
+                        isValid = false;
+                    }
+                });
+                
+                // Check user type
+                const userType = document.querySelector('input[name="user_type"]:checked');
+                if (!userType) {
+                    showError(document.querySelector('.role-selection'), 'Please select a role (Member or Pastor)');
+                    isValid = false;
+                } else if (userType.value === 'pastor') {
+                    const positionField = document.getElementById('church_position');
+                    if (!validateField(positionField)) {
+                        isValid = false;
+                    }
+                }
+                
+                // Check optional fields if they have values
+                const phoneField = document.getElementById('phone');
+                if (phoneField.value && !validatePhone(phoneField.value)) {
+                    isValid = false;
+                }
+                
+                return isValid;
             }
             
-            if (!validatePassword(password)) {
-                showAlert('Password must be at least 6 characters long.', 'warning');
-                e.preventDefault();
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showAlert('Passwords do not match.', 'warning');
-                e.preventDefault();
-                return;
-            }
-            
-            if (!terms) {
-                showAlert('You must agree to the Terms of Service and Privacy Policy.', 'warning');
-                e.preventDefault();
-                return;
-            }
-            
-            const { strength } = checkPasswordStrength(password);
-            if (strength < 2) {
-                if (!confirm('Your password is weak. Are you sure you want to continue?')) {
-                    e.preventDefault();
-                    return;
+            function showError(field, message) {
+                field.classList.add('error');
+                const errorDiv = document.getElementById(field.id + 'Error') || 
+                                document.getElementById(field.name + 'Error');
+                if (errorDiv) {
+                    errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
                 }
             }
             
-            if (role === 'pastor') {
-                if (!confirm('Pastor accounts require verification. You will be contacted by church administration. Continue?')) {
-                    e.preventDefault();
-                    return;
+            function clearError(field) {
+                field.classList.remove('error');
+                const errorDiv = document.getElementById(field.id + 'Error') || 
+                                document.getElementById(field.name + 'Error');
+                if (errorDiv) {
+                    errorDiv.textContent = '';
                 }
             }
             
-            showLoading(true);
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            function validatePhone(phone) {
+                // Accepts formats: +268 7600 0000, 76000000, 076000000
+                const re = /^[\+]?[1-9][\d\s\-\.]{8,14}$/;
+                return re.test(phone);
+            }
+            
+            // Auto-hide error messages after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
         });
-        
-        // Add animation to form elements
-        $('.form-control').on('focus', function() {
-            $(this).parent().addClass('animate__pulse');
-        });
-        
-        $('.form-control').on('blur', function() {
-            $(this).parent().removeClass('animate__pulse');
-        });
-        
-        // Set maximum date for date of birth (18 years ago)
-        const today = new Date();
-        const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-        $('#date_of_birth').attr('max', maxDate.toISOString().split('T')[0]);
-    });
-</script>
-
-<?php require_once '../includes/footer.php'; ?>
+    </script>
+</body>
+</html>

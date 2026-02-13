@@ -1,0 +1,129 @@
+[20-Jan-2026 00:01:56 Africa/Mbabane] Database initialization failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:01:56 Africa/Mbabane] Database Connection Error: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:24:15 Africa/Mbabane] Database initialization failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:24:15 Africa/Mbabane] PHP Fatal error:  Cannot redeclare validateCSRFToken() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\config.php:182) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 338
+[20-Jan-2026 00:26:43 Africa/Mbabane] Database initialization failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:26:43 Africa/Mbabane] Database initialization error: Database connection test failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:28:41 Africa/Mbabane] Database initialization error: Database connection test failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:30:57 Africa/Mbabane] Database initialization error: Database connection test failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:37:49 Africa/Mbabane] Database initialization error: Database connection test failed: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[20-Jan-2026 00:43:29 Africa/Mbabane] Database connection successful
+[20-Jan-2026 00:43:29 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 00:45:19 Africa/Mbabane] Database connection successful
+[20-Jan-2026 00:45:19 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method DBConnect::getConnection() in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:286
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\header.php(42): require_once()
+#1 C:\xampp\htdocs\CFCI_Church_Website\index.php(304): require_once('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 286
+[20-Jan-2026 00:45:31 Africa/Mbabane] Database connection successful
+[20-Jan-2026 00:45:31 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 00:47:38 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 8
+[20-Jan-2026 00:47:38 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 00:47:48 Africa/Mbabane] Database connection successful
+[20-Jan-2026 00:47:48 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 17:21:14 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\auth\login.php(23): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 17:28:40 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\auth\login.php(33): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 17:40:25 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 17:48:08 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 17:48:35 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 17:50:24 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 8
+[20-Jan-2026 18:08:15 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:10:52 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:12:24 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:12:35 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:13:30 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:13:31 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[20-Jan-2026 18:18:50 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:21:27 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(6): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 18:43:43 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:43:43 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:43:44 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(6): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 18:46:07 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:46:07 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(6): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 18:46:28 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 18:46:28 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Database" not found in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(17): DBConnect->initialize()
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(23): DBConnect->__construct()
+#2 C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php(291): DBConnect::getInstance()
+#3 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(6): require_once('C:\\xampp\\htdocs...')
+#4 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\db_connect.php on line 43
+[20-Jan-2026 20:10:34 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:11:54 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:11:54 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function checkUserLoggedIn() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:7
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 7
+[20-Jan-2026 20:12:18 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:12:18 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function createCSRFToken() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:339
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 339
+[20-Jan-2026 20:16:08 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:16:08 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function isValidEmail() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 20
+[20-Jan-2026 20:19:29 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:19:29 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function isValidEmail() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 20
+[20-Jan-2026 20:20:42 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:20:42 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function isValidEmail() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 20
+[20-Jan-2026 20:32:47 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:32:47 Africa/Mbabane] PHP Fatal error:  Cannot redeclare sendEmailTemplate() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:969) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 3221
+[20-Jan-2026 20:33:55 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:33:55 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function isValidEmail() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:20
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 20
+[20-Jan-2026 20:34:17 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:34:17 Africa/Mbabane] PHP Fatal error:  Cannot redeclare sendEmailTemplate() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:969) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 3221
+[20-Jan-2026 20:34:49 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[20-Jan-2026 20:34:49 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[20-Jan-2026 21:07:02 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 21
+[20-Jan-2026 21:07:02 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getPastorDashboardData() in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:22
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 22

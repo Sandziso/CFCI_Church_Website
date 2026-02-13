@@ -1,72 +1,258 @@
 <?php
-// member/dashboard.php
+// ===================================================
+// MEMBER DASHBOARD - Christian Family Centre International
+// ===================================================
 
-// Start with minimal includes first
+// Start session and check login
 require_once '../includes/config.php';
-require_once '../includes/database.php';
-require_once '../includes/session.php';
-require_once '../includes/functions.php';
+require_once '../includes/main-functions.php';
 
-// Check if user is logged in and is a member
-$session->requireLogin();
-if ($session->getUserRole() !== 'member') {
-    header('Location: ../auth/login.php');
-    exit;
+// Check if user is logged in
+if (!is_logged_in()) {
+    header('Location: ../auth/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit();
 }
 
-$user_id = $session->getUserId();
+// Get user ID and role
+$user_id = $_SESSION['user_id'] ?? null;
+$user_role = $_SESSION['user_role'] ?? null;
+$user_name = $_SESSION['full_name'] ?? null;
 
-// Initialize database and get dashboard data
+// If user is admin or pastor, redirect to appropriate dashboard
+if (is_admin()) {
+    header('Location: ../admin/dashboard.php');
+    exit();
+} elseif (is_pastor()) {
+    header('Location: ../pastor/dashboard.php');
+    exit();
+}
+
+// Get database connection from auth system
+global $auth;
+$db = null;
+
+// Try to get database connection
 try {
-    $db = new ChurchDB($conn);
-    $dashboard_data = $db->getMemberDashboardData($user_id);
+    // Use the Database class directly
+    require_once '../includes/database.php';
+    $database = Database::getInstance();
+    $db = $database->getConnection();
 } catch (Exception $e) {
-    error_log("Dashboard error: " . $e->getMessage());
-    $dashboard_data = [];
-    $session->setFlash('error', 'Unable to load dashboard data. Please try again.');
+    error_log("Database connection error in member dashboard: " . $e->getMessage());
+    die("System temporarily unavailable. Please try again later.");
 }
 
-// Handle quick actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
-    
-    switch ($action) {
-        case 'submit_prayer':
-            $prayer_text = $_POST['prayer_text'] ?? '';
-            if (!empty($prayer_text)) {
-                $result = $db->submitQuickPrayer($user_id, $prayer_text);
-                if ($result) {
-                    $session->setFlash('success', 'Prayer request submitted successfully');
-                } else {
-                    $session->setFlash('error', 'Failed to submit prayer request');
-                }
-            }
-            break;
-            
-        case 'register_event':
-            $event_id = $_POST['event_id'] ?? '';
-            if (!empty($event_id)) {
-                $result = $db->quickEventRegistration($event_id, $user_id);
-                $session->setFlash($result['success'] ? 'success' : 'error', $result['message']);
-            }
-            break;
-            
-        case 'mark_notification_read':
-            $notification_id = $_POST['notification_id'] ?? '';
-            if (!empty($notification_id)) {
-                $db->markNotificationAsRead($notification_id, $user_id);
-            }
-            break;
-            
-        case 'mark_all_notifications_read':
-            $db->markAllNotificationsAsRead($user_id);
-            $session->setFlash('success', 'All notifications marked as read');
-            break;
-    }
-    
-    header('Location: dashboard.php');
-    exit;
+// Check if we got a valid database connection
+if (!$db) {
+    die("Database connection failed. Please check your configuration.");
 }
+
+// Load dashboard functions
+require_once '../includes/dashboard.php';
+
+// Initialize DashboardStats with the database connection
+$dashboardStats = new DashboardStats($db);
+$dashboardWidgets = new DashboardWidgets($db);
+
+// Get dashboard data
+$member_stats = $dashboardStats->getMemberStats($user_id);
+$calendar_events = $dashboardWidgets->getCalendarEvents();
+$prayer_wall = $dashboardWidgets->getPrayerWallWidget(5);
+$announcements = $dashboardWidgets->getAnnouncementsWidget(5);
+$birthdays = $dashboardWidgets->getBirthdaysWidget();
+
+// Handle Quick Prayer Request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_prayer'])) {
+    $prayer_text = $_POST['prayer_text'] ?? '';
+    $category = $_POST['category'] ?? 'other';
+    $is_anonymous = isset($_POST['is_anonymous']) ? 1 : 0;
+    
+    if (!empty($prayer_text)) {
+        try {
+            $stmt = $db->prepare("
+                INSERT INTO prayer_requests (user_id, prayer_text, category, is_anonymous, status, created_at) 
+                VALUES (?, ?, ?, ?, 'active', NOW())
+            ");
+            $result = $stmt->execute([$user_id, $prayer_text, $category, $is_anonymous]);
+            
+            if ($result) {
+                setFlashMessage('Your prayer request has been submitted successfully.', 'success');
+                header('Location: ' . $_SERVER['PHP_SELF']);
+                exit();
+            } else {
+                $error = 'Failed to submit prayer request. Please try again.';
+            }
+        } catch (Exception $e) {
+            error_log("Prayer request error: " . $e->getMessage());
+            $error = 'Failed to submit prayer request. Please try again.';
+        }
+    } else {
+        $error = 'Please enter your prayer request.';
+    }
+}
+
+// Handle Quick Event Registration
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_event'])) {
+    $event_id = (int)($_POST['event_id'] ?? 0);
+    
+    if ($event_id > 0) {
+        try {
+            // Check if already registered
+            $stmt = $db->prepare("SELECT id FROM event_registrations WHERE user_id = ? AND event_id = ?");
+            $stmt->execute([$user_id, $event_id]);
+            
+            if ($stmt->rowCount() == 0) {
+                $stmt = $db->prepare("INSERT INTO event_registrations (user_id, event_id, status, registered_at) VALUES (?, ?, 'registered', NOW())");
+                $result = $stmt->execute([$user_id, $event_id]);
+                
+                if ($result) {
+                    setFlashMessage('Successfully registered for the event!', 'success');
+                } else {
+                    setFlashMessage('Failed to register for the event.', 'danger');
+                }
+            } else {
+                setFlashMessage('You are already registered for this event.', 'warning');
+            }
+            
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
+            
+        } catch (Exception $e) {
+            error_log("Event registration error: " . $e->getMessage());
+            setFlashMessage('Failed to register for the event.', 'danger');
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
+        }
+    }
+}
+
+// Handle Mark Notification as Read
+if (isset($_GET['mark_read'])) {
+    $notification_id = (int)$_GET['mark_read'];
+    try {
+        $stmt = $db->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+        $stmt->execute([$notification_id, $user_id]);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
+    } catch (Exception $e) {
+        error_log("Mark notification read error: " . $e->getMessage());
+    }
+}
+
+// Handle Mark All Notifications as Read
+if (isset($_GET['mark_all_read'])) {
+    try {
+        $stmt = $db->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
+    } catch (Exception $e) {
+        error_log("Mark all notifications read error: " . $e->getMessage());
+    }
+}
+
+// Get user profile
+$user_profile = [];
+try {
+    $stmt = $db->prepare("
+        SELECT u.*, up.phone, up.address, up.birth_date, up.profile_image, up.bio 
+        FROM users u 
+        LEFT JOIN user_profiles up ON u.id = up.user_id 
+        WHERE u.id = ?
+    ");
+    $stmt->execute([$user_id]);
+    $user_profile = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+} catch (Exception $e) {
+    error_log("Get user profile error: " . $e->getMessage());
+}
+
+// Get recent donations
+$recent_donations = [];
+try {
+    $stmt = $db->prepare("
+        SELECT * FROM donations 
+        WHERE user_id = ? AND status = 'completed'
+        ORDER BY created_at DESC 
+        LIMIT 5
+    ");
+    $stmt->execute([$user_id]);
+    $recent_donations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    error_log("Get donations error: " . $e->getMessage());
+}
+
+// Calculate profile completion percentage
+function calculateProfileCompletion($user_id, $db) {
+    try {
+        $completion = 0;
+        
+        // Check basic info
+        $stmt = $db->prepare("SELECT full_name, email FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!empty($user['full_name'])) $completion += 25;
+        if (!empty($user['email'])) $completion += 25;
+        
+        // Check profile info
+        $stmt = $db->prepare("SELECT phone, address, birth_date FROM user_profiles WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!empty($profile['phone'])) $completion += 10;
+        if (!empty($profile['address'])) $completion += 20;
+        if (!empty($profile['birth_date'])) $completion += 20;
+        
+        return $completion;
+    } catch (Exception $e) {
+        error_log("Profile completion calculation error: " . $e->getMessage());
+        return 0;
+    }
+}
+
+$profile_completion = calculateProfileCompletion($user_id, $db);
+
+// Get quick stats from member_stats
+$quick_stats = [
+    'upcoming_events' => $member_stats['upcoming_events'] ?? 0,
+    'sermons_available' => 0, // You'll need to implement this
+    'prayer_requests' => $member_stats['my_prayer_requests'] ?? 0,
+    'ministries_involved' => $member_stats['ministries'] ?? 0,
+];
+
+// Get upcoming events for display
+$upcoming_events_display = [];
+try {
+    $stmt = $db->prepare("
+        SELECT * FROM events 
+        WHERE event_date >= CURDATE() 
+        AND status = 'active'
+        ORDER BY event_date ASC 
+        LIMIT 5
+    ");
+    $stmt->execute();
+    $upcoming_events_display = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    error_log("Get upcoming events error: " . $e->getMessage());
+}
+
+// Get recent sermons
+$recent_sermons = [];
+try {
+    $stmt = $db->prepare("
+        SELECT * FROM sermons 
+        WHERE status = 'published'
+        ORDER BY sermon_date DESC 
+        LIMIT 3
+    ");
+    $stmt->execute();
+    $recent_sermons = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    // Table might not exist yet, that's OK
+}
+
+// Include topbar and sidebar
+require_once 'includes/member_topbar.php';
 ?>
 
 <!DOCTYPE html>
@@ -75,1108 +261,622 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Dashboard - <?php echo SITE_NAME; ?></title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         :root {
-            --primary-blue: #2c7be5;
-            --accent-blue: #1c65c9;
-            --light-blue: #e6f0ff;
-            --accent-green: #00d97e;
-            --light-green: #e6fff2;
-            --accent-orange: #f6c343;
-            --light-orange: #fff9e6;
-            --accent-purple: #9b59b6;
-            --light-purple: #f5eef8;
-            --dark-text: #2d3748;
-            --light-text: #718096;
-            --light-gray: #f8f9fa;
-            --border-color: #e2e8f0;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --primary-color: #1a5276;
+            --secondary-color: #e67e22;
+            --accent-color: #2ecc71;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: var(--dark-text);
-            min-height: 100vh;
-            display: flex;
-            overflow-x: hidden;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 56px; /* Height of top navbar */
         }
-
-        /* Flash Messages */
-        .flash-messages {
+        
+        .sidebar {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            max-width: 400px;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            overflow-y: auto;
         }
-
-        .flash-message {
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            animation: slideInRight 0.3s ease-out;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .flash-success {
-            background: var(--light-green);
-            color: #2d5016;
-            border-left: 4px solid var(--accent-green);
-        }
-
-        .flash-error {
-            background: #ffe6e6;
-            color: #cc0000;
-            border-left: 4px solid #ff4444;
-        }
-
-        .flash-info {
-            background: var(--light-blue);
-            color: var(--primary-blue);
-            border-left: 4px solid var(--primary-blue);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
+        
+        @media (max-width: 767.98px) {
+            .sidebar {
+                top: 56px;
             }
         }
-
-        /* Main Content Layout */
+        
         .main-content {
-            flex: 1;
-            padding: 30px;
-            margin-left: 250px;
-            transition: margin-left 0.3s ease;
+            margin-left: 240px; /* Width of sidebar */
+            padding: 20px;
         }
-
-        @media (max-width: 1024px) {
+        
+        @media (max-width: 767.98px) {
             .main-content {
                 margin-left: 0;
-                padding: 20px;
             }
         }
-
-        /* Dashboard Header */
+        
         .dashboard-header {
-            display: flex;
-            justify-content: between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .welcome-section h1 {
-            font-size: 2rem;
-            color: var(--dark-text);
-            margin-bottom: 5px;
-        }
-
-        .welcome-section p {
-            color: var(--light-text);
-            font-size: 1.1rem;
-        }
-
-        .date-display {
-            background: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-        .date-display .day {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-        }
-
-        .date-display .date {
-            font-size: 1rem;
-            color: var(--light-text);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-left: 5px solid var(--primary-blue);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
-        .stat-icon.events { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .stat-icon.sermons { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .stat-icon.prayers { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .stat-icon.ministries { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-
-        .stat-info h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            line-height: 1;
-        }
-
-        .stat-info p {
-            color: var(--light-text);
-            font-size: 0.9rem;
-        }
-
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Cards */
-        .card {
+        
+        .welcome-card {
             background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 30px;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
         }
-
-        .card-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: between;
-            align-items: center;
-        }
-
-        .card-header h2 {
-            font-size: 1.4rem;
-            color: var(--dark-text);
-            font-weight: 600;
-        }
-
-        .card-header .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .card-body {
-            padding: 25px;
-        }
-
-        /* Quick Actions */
+        
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-
-        .quick-action-btn {
+        
+        .quick-action-card {
             background: white;
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quick-action-btn:hover {
-            border-color: var(--primary-blue);
-            background: var(--light-blue);
-            transform: translateY(-2px);
-        }
-
-        .quick-action-btn i {
-            font-size: 1.8rem;
-            color: var(--primary-blue);
-        }
-
-        .quick-action-btn span {
-            font-weight: 500;
-            color: var(--dark-text);
-        }
-
-        /* Events List */
-        .events-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .event-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .event-item:hover {
-            border-color: var(--primary-blue);
-            box-shadow: var(--shadow);
-        }
-
-        .event-date {
-            text-align: center;
-            min-width: 60px;
-        }
-
-        .event-day {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-blue);
-            line-height: 1;
-        }
-
-        .event-month {
-            font-size: 0.8rem;
-            color: var(--light-text);
-            text-transform: uppercase;
-        }
-
-        .event-info {
-            flex: 1;
-        }
-
-        .event-info h4 {
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            color: var(--dark-text);
-        }
-
-        .event-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 0.85rem;
-            color: var(--light-text);
-        }
-
-        .event-meta i {
-            margin-right: 5px;
-        }
-
-        .event-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .status-registered { background: var(--light-green); color: #2d5016; }
-        .status-available { background: var(--light-blue); color: var(--primary-blue); }
-        .status-full { background: #ffe6e6; color: #cc0000; }
-
-        /* Notifications */
-        .notifications-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .notification-item {
-            display: flex;
-            align-items: start;
-            gap: 12px;
-            padding: 15px;
-            border-radius: 12px;
-            background: var(--light-gray);
-            transition: all 0.3s ease;
-        }
-
-        .notification-item.unread {
-            background: var(--light-blue);
-            border-left: 3px solid var(--primary-blue);
-        }
-
-        .notification-item:hover {
-            background: white;
-            box-shadow: var(--shadow);
-        }
-
-        .notification-icon {
-            width: 40px;
-            height: 40px;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .notification-icon.system { background: var(--primary-blue); }
-        .notification-icon.event { background: var(--accent-green); }
-        .notification-icon.prayer { background: var(--accent-purple); }
-        .notification-icon.sermon { background: var(--accent-orange); }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-content h4 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-            color: var(--dark-text);
-        }
-
-        .notification-content p {
-            font-size: 0.9rem;
-            color: var(--light-text);
-            line-height: 1.4;
-        }
-
-        .notification-time {
-            font-size: 0.8rem;
-            color: var(--light-text);
-            margin-top: 5px;
-        }
-
-        .notification-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .mark-read-btn {
-            background: none;
-            border: none;
-            color: var(--light-text);
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 5px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: var(--primary-color);
             transition: all 0.3s ease;
-        }
-
-        .mark-read-btn:hover {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        /* Sermons Grid */
-        .sermons-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .sermon-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .sermon-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sermon-image {
-            height: 160px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-
-        .sermon-content {
-            padding: 20px;
-        }
-
-        .sermon-content h4 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: var(--dark-text);
-            line-height: 1.3;
-        }
-
-        .sermon-meta {
-            display: flex;
-            justify-content: between;
-            font-size: 0.85rem;
-            color: var(--light-text);
-            margin-bottom: 15px;
-        }
-
-        .sermon-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .sermon-btn {
-            flex: 1;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .sermon-btn.primary {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .sermon-btn.secondary {
-            background: var(--light-gray);
-            color: var(--dark-text);
-        }
-
-        .sermon-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        /* Prayer Requests */
-        .prayer-requests {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-
-        .prayer-item {
-            padding: 15px;
-            border-radius: 12px;
-            background: var(--light-gray);
-            border-left: 4px solid var(--accent-purple);
-        }
-
-        .prayer-text {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .prayer-meta {
-            display: flex;
-            justify-content: between;
-            font-size: 0.85rem;
-            color: var(--light-text);
-        }
-
-        .prayer-status {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-addressed { background: var(--light-green); color: #2d5016; }
-        .status-closed { background: #e2e3e5; color: #383d41; }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
         }
-
-        .modal.active {
-            display: flex;
+        
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            color: var(--secondary-color);
+            text-decoration: none;
         }
-
-        .modal-content {
+        
+        .quick-action-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card {
             background: white;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: var(--shadow-lg);
-            animation: modalFadeIn 0.3s ease;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
         }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
         }
-
-        .modal-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--border-color);
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
         }
-
-        .modal-header h3 {
-            font-size: 1.3rem;
-            color: var(--dark-text);
+        
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
         }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--light-text);
+        
+        .notification-item:hover {
+            background-color: #f8f9fa;
         }
-
-        .modal-body {
-            padding: 25px;
+        
+        .notification-item.unread {
+            background-color: #f0f8ff;
+            border-left: 3px solid var(--primary-color);
         }
-
-        .form-group {
-            margin-bottom: 20px;
+        
+        .event-card {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark-text);
+        
+        .event-card:hover {
+            background-color: #f8f9fa;
         }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.1);
-        }
-
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--primary-blue);
+        
+        .event-date {
+            background: var(--primary-color);
             color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-right: 1rem;
+            min-width: 80px;
         }
-
-        .btn-primary:hover {
-            background: var(--accent-blue);
-            transform: translateY(-2px);
+        
+        .prayer-form {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 1.5rem;
         }
-
-        .btn-secondary {
-            background: var(--light-gray);
-            color: var(--dark-text);
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
         }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
+        
+        .sermon-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
         }
-
-        .btn-block {
-            display: block;
-            width: 100%;
+        
+        .sermon-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sermon-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
         }
-
-        /* Responsive */
+        
         @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
+                padding: 1.5rem 0;
             }
             
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .welcome-card {
+                padding: 1rem;
             }
             
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
             .quick-actions {
                 grid-template-columns: 1fr;
             }
-            
-            .event-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .event-date {
-                align-self: flex-start;
-            }
-            
-            .sermons-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation for new content */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-in {
-            animation: fadeInUp 0.5s ease forwards;
         }
     </style>
 </head>
 <body>
-    <!-- Include Sidebar -->
-    <?php 
-    $sidebar_file = '../includes/member_sidebar.php';
-    if (file_exists($sidebar_file)) {
-        include $sidebar_file;
-    } else {
-        echo "<!-- Sidebar file not found -->";
-    }
-    ?>
+    <!-- Include Topbar -->
+    <?php require_once 'includes/member_topbar.php'; ?>
     
-    <!-- Flash Messages -->
-    <div class="flash-messages">
-        <?php 
-        // Get flash messages from session
-        $flash_messages = isset($_SESSION['flash_messages']) ? $_SESSION['flash_messages'] : [];
-        foreach ($flash_messages as $key => $flash): 
-        ?>
-            <div class="flash-message flash-<?php echo $flash['type']; ?>">
-                <i class="fas fa-<?php echo $flash['type'] === 'success' ? 'check-circle' : ($flash['type'] === 'error' ? 'exclamation-circle' : 'info-circle'); ?>"></i>
-                <?php echo htmlspecialchars($flash['message']); ?>
-            </div>
-        <?php 
-        endforeach; 
-        // Clear flash messages after displaying
-        unset($_SESSION['flash_messages']);
-        ?>
-    </div>
+    <!-- Container with Sidebar -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <?php require_once 'includes/member_sidebar.php'; ?>
+            
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Flash Messages -->
+                <?php 
+                if (function_exists('getFlashMessage')) {
+                    echo getFlashMessage();
+                }
+                ?>
+                
+                <!-- Error Messages -->
+                <?php if (isset($error)): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?php echo htmlspecialchars($error); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php endif; ?>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <div class="welcome-section">
-                <h1>Welcome back, <?php echo htmlspecialchars($dashboard_data['user']['full_name'] ?? 'Member'); ?>!</h1>
-                <p>Here's what's happening at CFCI today</p>
-            </div>
-            <div class="date-display">
-                <div class="day"><?php echo date('l'); ?></div>
-                <div class="date"><?php echo date('F j, Y'); ?></div>
-            </div>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon events">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div class="stat-info">
-                    <h3><?php echo $dashboard_data['stats']['upcoming_events'] ?? 0; ?></h3>
-                    <p>Upcoming Events</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon sermons">
-                    <i class="fas fa-video"></i>
-                </div>
-                <div class="stat-info">
-                    <h3><?php echo $dashboard_data['stats']['sermons_available'] ?? 0; ?></h3>
-                    <p>Sermons Available</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon prayers">
-                    <i class="fas fa-pray"></i>
-                </div>
-                <div class="stat-info">
-                    <h3><?php echo $dashboard_data['stats']['prayer_requests'] ?? 0; ?></h3>
-                    <p>Prayer Requests</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon ministries">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-info">
-                    <h3><?php echo $dashboard_data['stats']['ministries_involved'] ?? 0; ?></h3>
-                    <p>Ministries Involved</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <div class="quick-action-btn" onclick="openPrayerModal()">
-                <i class="fas fa-praying-hands"></i>
-                <span>Submit Prayer</span>
-            </div>
-            <div class="quick-action-btn" onclick="window.location.href='events.php'">
-                <i class="fas fa-calendar-plus"></i>
-                <span>Register Event</span>
-            </div>
-            <div class="quick-action-btn" onclick="window.location.href='donations.php'">
-                <i class="fas fa-donate"></i>
-                <span>Make Donation</span>
-            </div>
-            <div class="quick-action-btn" onclick="window.location.href='ministries.php'">
-                <i class="fas fa-hands-helping"></i>
-                <span>Join Ministry</span>
-            </div>
-        </div>
-
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Left Column -->
-            <div class="left-column">
-                <!-- Upcoming Events -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-calendar-week"></i> Upcoming Events</h2>
-                        <div class="actions">
-                            <a href="events.php" class="btn btn-secondary">View All</a>
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 text-center">
+                            <div class="avatar-circle">
+                                <?php 
+                                if (!empty($user_profile['profile_image'])) {
+                                    echo '<img src="' . htmlspecialchars($user_profile['profile_image']) . '" alt="' . htmlspecialchars($user_name) . '" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">';
+                                } else {
+                                    // Generate initials
+                                    $initials = '';
+                                    $words = explode(' ', $user_name);
+                                    foreach ($words as $word) {
+                                        if (!empty($word)) {
+                                            $initials .= strtoupper(substr($word, 0, 1));
+                                        }
+                                    }
+                                    echo substr($initials, 0, 2);
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <h1 class="mb-2">Welcome back, <?php echo htmlspecialchars($user_name); ?>!</h1>
+                            <p class="lead mb-3">Here's what's happening in your church community</p>
+                            
+                            <!-- Profile Completion -->
+                            <?php if ($profile_completion < 100): ?>
+                            <div class="profile-completion">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small>Profile Completion</small>
+                                    <small><?php echo $profile_completion; ?>%</small>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: <?php echo $profile_completion; ?>%" 
+                                         aria-valuenow="<?php echo $profile_completion; ?>" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small class="d-block mt-1">Complete your profile to unlock more features</small>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="events-list">
-                            <?php if (!empty($dashboard_data['upcoming_events'])): ?>
-                                <?php foreach ($dashboard_data['upcoming_events'] as $event): ?>
-                                    <div class="event-item animate-in">
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <a href="../profile/edit.php" class="quick-action-card">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Update Profile</span>
+                    </a>
+                    <a href="../events/" class="quick-action-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>View Events</span>
+                    </a>
+                    <a href="../prayer/" class="quick-action-card">
+                        <i class="fas fa-praying-hands"></i>
+                        <span>Prayer Requests</span>
+                    </a>
+                    <a href="../finances/donate.php" class="quick-action-card">
+                        <i class="fas fa-donate"></i>
+                        <span>Make Donation</span>
+                    </a>
+                    <a href="../ministries/" class="quick-action-card">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Ministries</span>
+                    </a>
+                    <a href="../profile/settings.php" class="quick-action-card">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-alt fa-2x text-primary mb-2"></i>
+                            <div class="stat-number"><?php echo $quick_stats['upcoming_events']; ?></div>
+                            <div class="stat-label">Upcoming Events</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <i class="fas fa-podcast fa-2x text-primary mb-2"></i>
+                            <div class="stat-number"><?php echo $quick_stats['sermons_available']; ?></div>
+                            <div class="stat-label">Sermons Available</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <i class="fas fa-pray fa-2x text-primary mb-2"></i>
+                            <div class="stat-number"><?php echo $quick_stats['prayer_requests']; ?></div>
+                            <div class="stat-label">Prayer Requests</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <div class="stat-number"><?php echo $quick_stats['ministries_involved']; ?></div>
+                            <div class="stat-label">Ministries Involved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-lg-8">
+                        <!-- Upcoming Events -->
+                        <div class="dashboard-card">
+                            <div class="card-title">
+                                <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i> Upcoming Events</h5>
+                                <a href="../events/" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            
+                            <?php if (!empty($upcoming_events_display)): ?>
+                                <?php foreach ($upcoming_events_display as $event): ?>
+                                <div class="event-card">
+                                    <div class="d-flex align-items-center">
                                         <div class="event-date">
-                                            <div class="event-day"><?php echo date('d', strtotime($event['event_date'])); ?></div>
-                                            <div class="event-month"><?php echo date('M', strtotime($event['event_date'])); ?></div>
+                                            <div class="fw-bold"><?php echo date('d', strtotime($event['event_date'])); ?></div>
+                                            <div class="small"><?php echo date('M', strtotime($event['event_date'])); ?></div>
                                         </div>
-                                        <div class="event-info">
-                                            <h4><?php echo htmlspecialchars($event['title']); ?></h4>
-                                            <div class="event-meta">
-                                                <span><i class="fas fa-clock"></i> <?php echo date('g:i A', strtotime($event['start_time'])); ?></span>
-                                                <span><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($event['location']); ?></span>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1"><?php echo htmlspecialchars($event['title'] ?? 'Untitled Event'); ?></h6>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <?php 
+                                                    if (!empty($event['start_time'])) {
+                                                        echo date('g:i A', strtotime($event['start_time']));
+                                                    }
+                                                    if (!empty($event['end_time'])) {
+                                                        echo ' - ' . date('g:i A', strtotime($event['end_time']));
+                                                    }
+                                                    ?>
+                                                </small>
+                                                <?php if (!empty($event['location'])): ?>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                                    <?php echo htmlspecialchars($event['location']); ?>
+                                                </small>
+                                                <?php endif; ?>
                                             </div>
-                                        </div>
-                                        <div class="event-actions">
-                                            <?php if ($event['attendance_status'] === 'registered'): ?>
-                                                <span class="event-status status-registered">Registered</span>
-                                            <?php elseif ($event['registration_status'] === 'available'): ?>
+                                            <?php if (!empty($event['description'])): ?>
+                                            <p class="small text-muted mb-2">
+                                                <?php 
+                                                $description = htmlspecialchars($event['description']);
+                                                echo strlen($description) > 100 ? substr($description, 0, 100) . '...' : $description;
+                                                ?>
+                                            </p>
+                                            <?php endif; ?>
+                                            
+                                            <?php if ($event['registration_status'] == 'available'): ?>
                                                 <form method="POST" style="display: inline;">
-                                                    <input type="hidden" name="action" value="register_event">
                                                     <input type="hidden" name="event_id" value="<?php echo $event['id']; ?>">
-                                                    <button type="submit" class="btn btn-primary">Register</button>
+                                                    <button type="submit" name="register_event" class="btn btn-sm btn-primary">
+                                                        <i class="fas fa-user-plus me-1"></i> Register
+                                                    </button>
                                                 </form>
-                                            <?php else: ?>
-                                                <span class="event-status status-full">Full</span>
+                                            <?php elseif ($event['registration_status'] == 'full'): ?>
+                                                <span class="badge bg-danger">Full</span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
+                                </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <p class="text-muted">No upcoming events</p>
+                                <div class="text-center py-4">
+                                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No upcoming events</p>
+                                    <a href="../events/" class="btn btn-primary">Browse Events</a>
+                                </div>
                             <?php endif; ?>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Recent Sermons -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-video"></i> Recent Sermons</h2>
-                        <div class="actions">
-                            <a href="sermons.php" class="btn btn-secondary">View All</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="sermons-grid">
-                            <?php if (!empty($dashboard_data['recent_sermons'])): ?>
-                                <?php foreach ($dashboard_data['recent_sermons'] as $sermon): ?>
-                                    <div class="sermon-card animate-in">
-                                        <div class="sermon-image">
-                                            <i class="fas fa-play-circle"></i>
-                                        </div>
-                                        <div class="sermon-content">
-                                            <h4><?php echo htmlspecialchars($sermon['title']); ?></h4>
-                                            <div class="sermon-meta">
-                                                <span><?php echo date('M j, Y', strtotime($sermon['sermon_date'])); ?></span>
-                                                <span><?php echo htmlspecialchars($sermon['preacher_name'] ?? 'Pastor'); ?></span>
-                                            </div>
-                                            <div class="sermon-actions">
-                                                <?php if ($sermon['audio_url']): ?>
-                                                    <button class="sermon-btn primary" onclick="playSermon('<?php echo $sermon['audio_url']; ?>', 'audio')">
-                                                        <i class="fas fa-play"></i> Listen
-                                                    </button>
-                                                <?php endif; ?>
-                                                <?php if ($sermon['video_url']): ?>
-                                                    <button class="sermon-btn secondary" onclick="playSermon('<?php echo $sermon['video_url']; ?>', 'video')">
-                                                        <i class="fas fa-play-circle"></i> Watch
-                                                    </button>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
+                        <!-- Recent Sermons -->
+                        <div class="dashboard-card">
+                            <div class="card-title">
+                                <h5 class="mb-0"><i class="fas fa-podcast me-2"></i> Recent Sermons</h5>
+                                <a href="../sermons/" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                            
+                            <?php if (!empty($recent_sermons)): ?>
+                                <?php foreach ($recent_sermons as $sermon): ?>
+                                <div class="sermon-item">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0"><?php echo htmlspecialchars($sermon['title'] ?? 'Untitled Sermon'); ?></h6>
+                                        <small class="sermon-date"><?php echo date('M d, Y', strtotime($sermon['sermon_date'] ?? date('Y-m-d'))); ?></small>
                                     </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="text-muted">No recent sermons available</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column -->
-            <div class="right-column">
-                <!-- Notifications -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-bell"></i> Notifications</h2>
-                        <div class="actions">
-                            <?php if (!empty($dashboard_data['notifications'])): ?>
-                                <form method="POST" style="display: inline;">
-                                    <input type="hidden" name="action" value="mark_all_notifications_read">
-                                    <button type="submit" class="btn btn-secondary">Mark All Read</button>
-                                </form>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="notifications-list">
-                            <?php if (!empty($dashboard_data['notifications'])): ?>
-                                <?php foreach ($dashboard_data['notifications'] as $notification): ?>
-                                    <div class="notification-item <?php echo $notification['is_read'] ? '' : 'unread'; ?> animate-in">
-                                        <div class="notification-icon <?php echo $notification['type']; ?>">
-                                            <i class="fas fa-<?php 
-                                                switch($notification['type']) {
-                                                    case 'event': echo 'calendar-alt'; break;
-                                                    case 'prayer': echo 'praying-hands'; break;
-                                                    case 'sermon': echo 'video'; break;
-                                                    default: echo 'info-circle';
-                                                }
-                                            ?>"></i>
-                                        </div>
-                                        <div class="notification-content">
-                                            <h4><?php echo htmlspecialchars($notification['title']); ?></h4>
-                                            <p><?php echo htmlspecialchars($notification['message']); ?></p>
-                                            <div class="notification-time">
-                                                <?php echo date('M j, g:i A', strtotime($notification['created_at'])); ?>
-                                            </div>
-                                        </div>
-                                        <?php if (!$notification['is_read']): ?>
-                                            <div class="notification-actions">
-                                                <form method="POST">
-                                                    <input type="hidden" name="action" value="mark_notification_read">
-                                                    <input type="hidden" name="notification_id" value="<?php echo $notification['id']; ?>">
-                                                    <button type="submit" class="mark-read-btn" title="Mark as read">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <?php if (!empty($sermon['preacher_name'])): ?>
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>
+                                            <?php echo htmlspecialchars($sermon['preacher_name']); ?>
+                                        </small>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!empty($sermon['bible_passage'])): ?>
+                                        <small class="text-muted">
+                                            <i class="fas fa-bible me-1"></i>
+                                            <?php echo htmlspecialchars($sermon['bible_passage']); ?>
+                                        </small>
                                         <?php endif; ?>
                                     </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <p class="text-muted">No notifications</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Prayer Requests -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-praying-hands"></i> My Prayer Requests</h2>
-                        <div class="actions">
-                            <a href="prayer-requests.php" class="btn btn-secondary">View All</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="prayer-requests">
-                            <?php if (!empty($dashboard_data['recent_prayers'])): ?>
-                                <?php foreach ($dashboard_data['recent_prayers'] as $prayer): ?>
-                                    <div class="prayer-item animate-in">
-                                        <div class="prayer-text">
-                                            <?php echo htmlspecialchars($prayer['request_text']); ?>
-                                        </div>
-                                        <div class="prayer-meta">
-                                            <span><?php echo date('M j, Y', strtotime($prayer['submitted_at'])); ?></span>
-                                            <span class="prayer-status status-<?php echo $prayer['status']; ?>">
-                                                <?php echo ucfirst($prayer['status']); ?>
-                                            </span>
-                                        </div>
+                                    
+                                    <div class="d-flex gap-2">
+                                        <?php if (!empty($sermon['audio_url'])): ?>
+                                        <a href="<?php echo htmlspecialchars($sermon['audio_url']); ?>" 
+                                           class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="fas fa-headphones me-1"></i> Listen
+                                        </a>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!empty($sermon['video_url'])): ?>
+                                        <a href="<?php echo htmlspecialchars($sermon['video_url']); ?>" 
+                                           class="btn btn-sm btn-outline-danger" target="_blank">
+                                            <i class="fas fa-video me-1"></i> Watch
+                                        </a>
+                                        <?php endif; ?>
                                     </div>
+                                </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <p class="text-muted">No recent prayer requests</p>
+                                <div class="text-center py-4">
+                                    <i class="fas fa-podcast fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No recent sermons available</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-lg-4">
+                        <!-- Quick Prayer Request -->
+                        <div class="dashboard-card">
+                            <div class="card-title">
+                                <h5 class="mb-0"><i class="fas fa-pray me-2"></i> Quick Prayer Request</h5>
+                            </div>
+                            
+                            <form method="POST" class="prayer-form">
+                                <div class="mb-3">
+                                    <label for="prayer_text" class="form-label">Your Prayer Request</label>
+                                    <textarea class="form-control" id="prayer_text" name="prayer_text" 
+                                              rows="4" placeholder="Share your prayer request..." 
+                                              required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select" id="category" name="category">
+                                        <option value="health">Health</option>
+                                        <option value="financial">Financial</option>
+                                        <option value="family">Family</option>
+                                        <option value="spiritual">Spiritual</option>
+                                        <option value="work">Work</option>
+                                        <option value="other" selected>Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="is_anonymous" name="is_anonymous" value="1">
+                                    <label class="form-check-label" for="is_anonymous">Submit anonymously</label>
+                                </div>
+                                
+                                <button type="submit" name="submit_prayer" class="btn btn-primary w-100">
+                                    <i class="fas fa-paper-plane me-1"></i> Submit Prayer Request
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Recent Announcements -->
+                        <div class="dashboard-card">
+                            <div class="card-title">
+                                <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Announcements</h5>
+                            </div>
+                            
+                            <?php if (!empty($announcements)): ?>
+                                <?php foreach ($announcements as $announcement): ?>
+                                <div class="notification-item">
+                                    <h6 class="mb-1"><?php echo htmlspecialchars($announcement['title'] ?? 'Announcement'); ?></h6>
+                                    <p class="small text-muted mb-1">
+                                        <?php 
+                                        $content = htmlspecialchars($announcement['content'] ?? '');
+                                        echo strlen($content) > 80 ? substr($content, 0, 80) . '...' : $content;
+                                        ?>
+                                    </p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        <?php echo date('M d, Y', strtotime($announcement['publish_date'] ?? date('Y-m-d'))); ?>
+                                    </small>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center py-3">
+                                    <p class="text-muted">No announcements</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Upcoming Birthdays -->
+                        <div class="dashboard-card">
+                            <div class="card-title">
+                                <h5 class="mb-0"><i class="fas fa-birthday-cake me-2"></i> Upcoming Birthdays</h5>
+                            </div>
+                            
+                            <?php if (!empty($birthdays)): ?>
+                                <?php foreach ($birthdays as $birthday): ?>
+                                <div class="notification-item">
+                                    <h6 class="mb-1"><?php echo htmlspecialchars($birthday['full_name'] ?? 'Member'); ?></h6>
+                                    <p class="small text-muted mb-1">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        <?php echo date('F d', strtotime($birthday['birth_date'] ?? date('Y-m-d'))); ?>
+                                    </p>
+                                    <?php if (isset($birthday['days_until']) && $birthday['days_until'] > 0): ?>
+                                    <small class="text-muted">
+                                        In <?php echo $birthday['days_until']; ?> day<?php echo $birthday['days_until'] == 1 ? '' : 's'; ?>
+                                    </small>
+                                    <?php endif; ?>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center py-3">
+                                    <p class="text-muted">No upcoming birthdays</p>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
-    <!-- Prayer Request Modal -->
-    <div class="modal" id="prayerModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Submit Prayer Request</h3>
-                <button class="close-modal" onclick="closePrayerModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" id="prayerForm">
-                    <input type="hidden" name="action" value="submit_prayer">
-                    <div class="form-group">
-                        <label for="prayer_text">Your Prayer Request</label>
-                        <textarea 
-                            name="prayer_text" 
-                            id="prayer_text" 
-                            class="form-control" 
-                            placeholder="Share your prayer request here..." 
-                            required
-                        ></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fas fa-paper-plane"></i> Submit Prayer
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
-        // Modal Functions
-        function openPrayerModal() {
-            document.getElementById('prayerModal').classList.add('active');
-        }
-
-        function closePrayerModal() {
-            document.getElementById('prayerModal').classList.remove('active');
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('prayerModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePrayerModal();
-            }
-        });
-
-        // Sermon playback function
-        function playSermon(url, type) {
-            if (type === 'audio') {
-                // Create audio element and play
-                const audio = new Audio(url);
-                audio.play().catch(e => {
-                    alert('Unable to play audio. Please try again.');
-                });
-            } else if (type === 'video') {
-                // Open video in new tab or embed player
-                window.open(url, '_blank');
-            }
-        }
-
-        // Auto-hide flash messages after 5 seconds
-        setTimeout(() => {
-            const flashMessages = document.querySelectorAll('.flash-message');
-            flashMessages.forEach(msg => {
-                msg.style.animation = 'slideInRight 0.3s ease reverse forwards';
-                setTimeout(() => msg.remove(), 300);
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
             });
         }, 5000);
-
-        // Add animation to elements when they come into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-                }
-            });
-        });
-
-        // Observe all cards for animation
-        document.querySelectorAll('.stat-card, .event-item, .sermon-card, .notification-item, .prayer-item').forEach(el => {
-            observer.observe(el);
-        });
     </script>
 </body>
 </html>

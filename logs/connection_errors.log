@@ -1,0 +1,5 @@
+[2026-01-19 22:22:14] Database Connection Error: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[2026-01-20 00:01:56] Database Connection Error: Database connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+[2026-01-24 01:07:31] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[2026-01-24 01:08:40] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[2026-01-24 01:09:41] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'

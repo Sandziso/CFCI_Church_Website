@@ -1,7 +1,5 @@
 <?php
-// includes/database.php
-
-require_once 'config.php';
+// includes/database.php - Enhanced Database Class with Auto-Creation
 
 class Database {
     private $host;
@@ -9,7 +7,9 @@ class Database {
     private $username;
     private $password;
     private $charset;
+    private $port;
     public $conn;
+    private static $instance = null;
     
     public function __construct() {
         $this->host = DB_HOST;
@@ -17,53 +17,125 @@ class Database {
         $this->username = DB_USER;
         $this->password = DB_PASS;
         $this->charset = 'utf8mb4';
+        $this->port = defined('DB_PORT') ? DB_PORT : '3306';
+    }
+    
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    public function ping() {
+        if ($this->conn === null) return false;
+        try {
+            $this->conn->query('SELECT 1');
+            return true;
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+                $this->conn = null;
+                return false;
+            }
+            throw $e;
+        }
+    }
+    
+    public function createDatabaseIfNotExists() {
+        try {
+            // Connect without database name
+            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";charset=" . $this->charset;
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ];
+            
+            $temp_conn = new PDO($dsn, $this->username, $this->password, $options);
+            
+            // Create database if it doesn't exist
+            $sql = "CREATE DATABASE IF NOT EXISTS `" . $this->db_name . "` 
+                    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+            $temp_conn->exec($sql);
+            
+            return true;
+        } catch (PDOException $e) {
+            $this->logError("Database creation error: " . $e->getMessage());
+            return false;
+        }
     }
     
     public function getConnection() {
-        $this->conn = null;
-        try {
-            $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=" . $this->charset;
-            $this->conn = new PDO($dsn, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            
-            $this->conn->exec("SET time_zone = '+03:00'");
-            
-        } catch(PDOException $e) {
-            error_log("Database connection error: " . $e->getMessage());
-            if (DEV_MODE) {
-                throw new Exception("Database connection failed: " . $e->getMessage());
-            } else {
-                throw new Exception("Unable to connect to database. Please try again later.");
+        if ($this->conn === null || !$this->ping()) {
+            try {
+                // First, ensure database exists
+                if (!$this->checkDatabaseExists()) {
+                    if (!$this->createDatabaseIfNotExists()) {
+                        throw new Exception("Failed to create database: " . $this->db_name);
+                    }
+                }
+                
+                $dsn = "mysql:host=" . $this->host . 
+                       ";dbname=" . $this->db_name . 
+                       ";charset=" . $this->charset . 
+                       ";port=" . $this->port;
+                
+                $options = [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_PERSISTENT => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
+                    PDO::ATTR_TIMEOUT => 30
+                ];
+                
+                $this->conn = new PDO($dsn, $this->username, $this->password, $options);
+                $this->conn->exec("SET time_zone = '+02:00'");
+                
+            } catch(PDOException $e) {
+                $this->logError("Database connection error: " . $e->getMessage());
+                
+                // If database doesn't exist, try to create it and reconnect
+                if ($e->errorInfo[1] == 1049) { // Database doesn't exist
+                    if ($this->createDatabaseIfNotExists()) {
+                        return $this->getConnection(); // Retry connection
+                    }
+                }
+                
+                if (defined('DEV_MODE') && DEV_MODE) {
+                    throw new Exception("Database connection failed: " . $e->getMessage());
+                } else {
+                    throw new Exception("Service temporarily unavailable.");
+                }
             }
         }
         return $this->conn;
     }
     
-    public function beginTransaction() {
-        return $this->conn->beginTransaction();
-    }
-    
-    public function commit() {
-        return $this->conn->commit();
-    }
-    
-    public function rollBack() {
-        return $this->conn->rollBack();
-    }
-    
-    public function lastInsertId() {
-        return $this->conn->lastInsertId();
+    private function checkDatabaseExists() {
+        try {
+            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port;
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ];
+            
+            $temp_conn = new PDO($dsn, $this->username, $this->password, $options);
+            $stmt = $temp_conn->query("SHOW DATABASES LIKE '" . $this->db_name . "'");
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
     }
     
     public function testConnection() {
         try {
             $this->getConnection();
+            $stmt = $this->conn->query("SELECT DATABASE() as db, USER() as user");
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return [
                 'success' => true,
-                'message' => 'Database connection successful',
-                'database' => $this->db_name,
+                'database' => $result['db'],
+                'user' => $result['user'],
                 'host' => $this->host
             ];
         } catch (Exception $e) {
@@ -74,344 +146,167 @@ class Database {
         }
     }
     
-    public function initializeDatabase() {
+    public function initializeDatabase($force = false) {
         try {
             $this->getConnection();
             
-            $this->createUsersTable();
-            $this->createAnnouncementsTable();
-            $this->createEventsTable();
-            $this->createEventAttendanceTable();
-            $this->createDonationsTable();
-            $this->createMinistriesTable();
-            $this->createMinistryMembersTable();
-            $this->createPrayerRequestsTable();
-            $this->createSermonsTable();
-            $this->createQuotesTable();
-            $this->createAdminsTable();
-            $this->createSessionsTable();
-            $this->createPasswordResetTokensTable();
+            if (!$force) {
+                $stmt = $this->conn->query("SHOW TABLES LIKE 'users'");
+                if ($stmt->rowCount() > 0) {
+                    return [
+                        'success' => true,
+                        'message' => 'Database already initialized',
+                        'tables_exist' => true
+                    ];
+                }
+            }
+            
+            // Create tables if Migration.php doesn't exist
+            $this->createTables();
             
             return [
                 'success' => true,
-                'message' => 'Database initialized successfully'
+                'message' => 'Database initialized successfully',
+                'timestamp' => date('Y-m-d H:i:s')
             ];
             
         } catch (Exception $e) {
-            error_log("Database initialization error: " . $e->getMessage());
+            $this->logError("Database initialization error: " . $e->getMessage());
             return [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ];
         }
     }
     
-    private function createUsersTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            full_name VARCHAR(255) NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
-            password_hash VARCHAR(255) NOT NULL,
-            role ENUM('member', 'pastor', 'admin') DEFAULT 'member',
-            phone VARCHAR(20),
-            address TEXT,
-            date_of_birth DATE,
-            marital_status ENUM('single', 'married', 'divorced', 'widowed'),
-            join_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            last_login DATETIME,
-            profile_picture VARCHAR(255),
-            is_active BOOLEAN DEFAULT TRUE,
-            email_verified BOOLEAN DEFAULT FALSE,
-            verification_token VARCHAR(100),
-            reset_token VARCHAR(100),
-            reset_expires DATETIME,
-            failed_login_attempts INT DEFAULT 0,
-            lock_until DATETIME NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )";
+    private function createTables() {
+        // Use heredoc to avoid variable interpolation issues
+        $sql = <<<SQL
+        -- Users table
+        CREATE TABLE IF NOT EXISTS `users` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `full_name` VARCHAR(100) NOT NULL,
+            `email` VARCHAR(100) NOT NULL UNIQUE,
+            `password_hash` VARCHAR(255) NOT NULL,
+            `role` ENUM('admin', 'pastor', 'member', 'staff', 'elder') DEFAULT 'member',
+            `is_active` BOOLEAN DEFAULT TRUE,
+            `failed_login_attempts` INT DEFAULT 0,
+            `lock_until` DATETIME NULL,
+            `last_login` DATETIME NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         
-        $this->conn->exec($sql);
+        -- User profiles
+        CREATE TABLE IF NOT EXISTS `user_profiles` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED NOT NULL,
+            `phone` VARCHAR(20),
+            `address` TEXT,
+            `birth_date` DATE NULL,
+            `profile_image` VARCHAR(255),
+            `bio` TEXT,
+            FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        
+        -- Admins table (for admin-specific roles)
+        CREATE TABLE IF NOT EXISTS `admins` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED NOT NULL,
+            `role` ENUM('super_admin', 'admin', 'moderator') DEFAULT 'admin',
+            `permissions` TEXT,
+            FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        
+        -- Failed logins table
+        CREATE TABLE IF NOT EXISTS `failed_logins` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `email` VARCHAR(100) NOT NULL,
+            `ip_address` VARCHAR(45) NOT NULL,
+            `user_agent` TEXT,
+            `attempt_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        
+        -- Remember tokens table
+        CREATE TABLE IF NOT EXISTS `remember_tokens` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED NOT NULL,
+            `token` VARCHAR(64) NOT NULL UNIQUE,
+            `expires_at` DATETIME NOT NULL,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        
+        -- Password reset tokens
+        CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+            `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            `user_id` INT UNSIGNED NOT NULL,
+            `token` VARCHAR(64) NOT NULL UNIQUE,
+            `expires_at` DATETIME NOT NULL,
+            `used` BOOLEAN DEFAULT FALSE,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+SQL;
+        
+        // Split SQL by semicolons and execute each statement
+        $statements = array_filter(array_map('trim', explode(';', $sql)));
+        
+        foreach ($statements as $statement) {
+            if (!empty($statement)) {
+                $this->conn->exec($statement);
+            }
+        }
+        
+        // Now create the admin user with a properly escaped password hash
+        $this->createAdminUser();
     }
     
-    private function createAnnouncementsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS announcements (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            content TEXT NOT NULL,
-            author_id INT NOT NULL,
-            is_published BOOLEAN DEFAULT TRUE,
-            expires_at DATETIME,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createEventsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS events (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            event_date DATE NOT NULL,
-            start_time TIME NOT NULL,
-            end_time TIME,
-            location VARCHAR(255),
-            venue_details TEXT,
-            event_type ENUM('service', 'meeting', 'conference', 'outreach', 'other') DEFAULT 'service',
-            max_attendees INT,
-            image_path VARCHAR(255),
-            is_active BOOLEAN DEFAULT TRUE,
-            created_by INT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createEventAttendanceTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS event_attendance (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            event_id INT NOT NULL,
-            user_id INT NOT NULL,
-            status ENUM('registered', 'attended', 'cancelled') DEFAULT 'registered',
-            registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            attended_at DATETIME,
-            notes TEXT,
-            FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_event_user (event_id, user_id)
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createDonationsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS donations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT,
-            amount DECIMAL(10,2) NOT NULL,
-            purpose VARCHAR(255),
-            payment_method ENUM('cash', 'mpesa', 'card', 'bank_transfer') DEFAULT 'mpesa',
-            transaction_id VARCHAR(255),
-            status ENUM('pending', 'completed', 'failed') DEFAULT 'completed',
-            donation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createMinistriesTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS ministries (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL,
-            description TEXT,
-            leader_id INT,
-            meeting_schedule TEXT,
-            contact_email VARCHAR(255),
-            contact_phone VARCHAR(20),
-            is_active BOOLEAN DEFAULT TRUE,
-            image_path VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (leader_id) REFERENCES users(id) ON DELETE SET NULL
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createMinistryMembersTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS ministry_members (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            ministry_id INT NOT NULL,
-            user_id INT NOT NULL,
-            role ENUM('leader', 'assistant_leader', 'member', 'volunteer') DEFAULT 'member',
-            joined_date DATE,
-            is_active BOOLEAN DEFAULT TRUE,
-            notes TEXT,
-            FOREIGN KEY (ministry_id) REFERENCES ministries(id) ON DELETE CASCADE,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_ministry_user (ministry_id, user_id)
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createPrayerRequestsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS prayer_requests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT,
-            request_text TEXT NOT NULL,
-            status ENUM('pending', 'addressed', 'closed') DEFAULT 'pending',
-            is_anonymous BOOLEAN DEFAULT FALSE,
-            addressed_by_pastor_id INT,
-            addressed_at DATETIME,
-            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-            FOREIGN KEY (addressed_by_pastor_id) REFERENCES users(id) ON DELETE SET NULL
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createSermonsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS sermons (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            preacher_id INT,
-            sermon_date DATE NOT NULL,
-            bible_passage VARCHAR(100),
-            audio_url VARCHAR(255),
-            video_url VARCHAR(255),
-            notes_text TEXT,
-            sermon_series VARCHAR(255),
-            is_published BOOLEAN DEFAULT TRUE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (preacher_id) REFERENCES users(id) ON DELETE SET NULL
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createQuotesTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS quotes (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            author_id INT NOT NULL,
-            quote_text TEXT NOT NULL,
-            visibility ENUM('public', 'private', 'members_only') DEFAULT 'public',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createAdminsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS admins (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            role ENUM('super_admin', 'content_admin', 'finance_admin') DEFAULT 'content_admin',
-            permissions TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_admin_user (user_id)
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createSessionsTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS sessions (
-            id VARCHAR(128) PRIMARY KEY,
-            user_id INT,
-            data TEXT,
-            last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    private function createPasswordResetTokensTable() {
-        $sql = "CREATE TABLE IF NOT EXISTS password_reset_tokens (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            token VARCHAR(255) NOT NULL,
-            expires_at DATETIME NOT NULL,
-            used BOOLEAN DEFAULT FALSE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            UNIQUE KEY unique_token (token)
-        )";
-        
-        $this->conn->exec($sql);
-    }
-    
-    public function backupDatabase($backup_path = null) {
+    private function createAdminUser() {
         try {
-            if ($backup_path === null) {
-                $backup_path = dirname(__DIR__) . '/backups/';
-            }
+            // Check if admin user already exists
+            $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = :email");
+            $stmt->execute([':email' => 'admin@cfci.org.sz']);
             
-            if (!is_dir($backup_path)) {
-                mkdir($backup_path, 0755, true);
-            }
-            
-            $backup_file = $backup_path . 'backup_' . date('Y-m-d_H-i-s') . '.sql';
-            $command = "mysqldump --user=" . $this->username . " --password=" . $this->password . 
-                      " --host=" . $this->host . " " . $this->db_name . " > " . $backup_file;
-            
-            system($command, $output);
-            
-            if ($output === 0) {
-                return [
-                    'success' => true,
-                    'file' => $backup_file,
-                    'message' => 'Backup created successfully'
-                ];
-            } else {
-                throw new Exception("Backup failed with output: " . $output);
+            if ($stmt->rowCount() == 0) {
+                // Create a valid bcrypt hash for 'admin123'
+                // This hash is for password: admin123
+                $password_hash = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+                
+                $stmt = $this->conn->prepare("
+                    INSERT INTO users (full_name, email, password_hash, role, is_active) 
+                    VALUES (:full_name, :email, :password_hash, 'admin', 1)
+                ");
+                
+                $stmt->execute([
+                    ':full_name' => 'Administrator',
+                    ':email' => 'admin@cfci.org.sz',
+                    ':password_hash' => $password_hash
+                ]);
+                
+                $user_id = $this->conn->lastInsertId();
+                
+                // Add to admins table
+                $stmt = $this->conn->prepare("
+                    INSERT INTO admins (user_id, role) 
+                    VALUES (:user_id, 'super_admin')
+                ");
+                $stmt->execute([':user_id' => $user_id]);
+                
+                error_log("Admin user created successfully with ID: $user_id");
             }
         } catch (Exception $e) {
-            error_log("Backup error: " . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            error_log("Error creating admin user: " . $e->getMessage());
         }
     }
     
-    public function getDatabaseInfo() {
-        try {
-            $stmt = $this->conn->query("SELECT version() as version");
-            $version = $stmt->fetchColumn();
-            
-            $stmt = $this->conn->query("SELECT COUNT(*) as table_count FROM information_schema.tables WHERE table_schema = '" . $this->db_name . "'");
-            $table_count = $stmt->fetchColumn();
-            
-            return [
-                'version' => $version,
-                'database' => $this->db_name,
-                'tables' => $table_count,
-                'host' => $this->host
-            ];
-        } catch (Exception $e) {
-            return [
-                'error' => $e->getMessage()
-            ];
+    private function logError($message) {
+        if (defined('LOG_PATH')) {
+            $log_file = LOG_PATH . 'database_errors.log';
+            $log_entry = sprintf("[%s] %s\n", date('Y-m-d H:i:s'), $message);
+            file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
         }
     }
 }
-
-// Initialize database connection
-try {
-    $database = new Database();
-    $conn = $database->getConnection();
-    
-    if (defined('INIT_DB') && INIT_DB === true) {
-        $init_result = $database->initializeDatabase();
-        if ($init_result['success']) {
-            error_log("Database initialized: " . $init_result['message']);
-        } else {
-            error_log("Database initialization failed: " . $init_result['message']);
-        }
-    }
-    
-} catch (Exception $e) {
-    error_log("Database initialization failed: " . $e->getMessage());
-    
-    if (defined('DEV_MODE') && DEV_MODE === true) {
-        die("Database error: " . $e->getMessage());
-    } else {
-        die("System temporarily unavailable. Please try again later.");
-    }
-}
+?>

@@ -1,0 +1,23 @@
+[22-Jan-2026 01:39:30 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:41:29 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:41:42 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:41:42 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function checkUserLoggedIn() in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php:7
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 7
+[22-Jan-2026 02:42:40 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:42:46 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:42:49 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 02:42:56 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:03:29 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:03:36 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:04:08 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:04:12 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:05:14 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:05:48 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:07:22 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:07:22 Africa/Mbabane] Email template not found: welcome
+[22-Jan-2026 03:07:55 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:12:23 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 03:12:38 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[22-Jan-2026 23:24:36 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1

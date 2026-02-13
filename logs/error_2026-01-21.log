@@ -1,0 +1,136 @@
+[21-Jan-2026 09:53:43 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:494
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php(181): logUserActivity(1, 'LOGOUT', 'User logged out...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\auth\logout.php(6): logoutUser()
+#2 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 494
+[21-Jan-2026 09:59:24 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 09:59:24 Africa/Mbabane] PHP Parse error:  Unmatched '}' in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 247
+[21-Jan-2026 10:03:14 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:03:14 Africa/Mbabane] PHP Fatal error:  Cannot redeclare logUserActivity() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:206) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 522
+[21-Jan-2026 10:03:54 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:05:18 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:05:29 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:05:29 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 10:29:13 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:29:13 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 10:40:36 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:40:45 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:41:56 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:42:09 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 10:42:09 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:42:10 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 10:42:10 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 21
+[21-Jan-2026 10:42:10 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:1940
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(22): ChurchDB->getMemberDashboardData(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1940
+[21-Jan-2026 10:45:10 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 21
+[21-Jan-2026 10:45:10 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:1940
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(22): ChurchDB->getMemberDashboardData(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1940
+[21-Jan-2026 10:45:15 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:49:05 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:49:19 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 10:49:19 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 10:49:19 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 21
+[21-Jan-2026 10:49:19 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:1940
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(22): ChurchDB->getMemberDashboardData(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1940
+[21-Jan-2026 11:13:40 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 21
+[21-Jan-2026 11:13:40 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:1940
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(24): ChurchDB->getMemberDashboardData(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1940
+[21-Jan-2026 11:21:29 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 21
+[21-Jan-2026 11:21:29 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:1940
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(24): ChurchDB->getMemberDashboardData(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1940
+[21-Jan-2026 11:34:13 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUserStatistics() in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:47
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 47
+[21-Jan-2026 12:07:03 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to private method ChurchDB::getUserNotifications() from global scope in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:66
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 66
+[21-Jan-2026 12:07:21 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to private method ChurchDB::getUserNotifications() from global scope in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:66
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 66
+[21-Jan-2026 12:07:22 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to private method ChurchDB::getUserNotifications() from global scope in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:66
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 66
+[21-Jan-2026 12:09:24 Africa/Mbabane] PHP Parse error:  syntax error, unexpected token "public", expecting end of file in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 729
+[21-Jan-2026 15:20:20 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 15:31:25 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 15:31:25 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 15:32:06 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 15:34:04 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 15:34:04 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 15:34:04 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 15:34:04 Africa/Mbabane] Update last login error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[21-Jan-2026 15:34:04 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 18
+[21-Jan-2026 15:34:04 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:3057
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(21): ChurchDB->getUserProfile(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 3057
+[21-Jan-2026 17:24:46 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 18
+[21-Jan-2026 17:24:46 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:3057
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(21): ChurchDB->getUserProfile(3)
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 3057
+[21-Jan-2026 17:34:57 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 17:34:58 Africa/Mbabane] PHP Warning:  include(header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 83
+[21-Jan-2026 17:34:58 Africa/Mbabane] PHP Warning:  include(): Failed opening 'header.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 83
+[21-Jan-2026 17:34:58 Africa/Mbabane] PHP Warning:  include(footer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 395
+[21-Jan-2026 17:34:58 Africa/Mbabane] PHP Warning:  include(): Failed opening 'footer.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 395
+[21-Jan-2026 17:38:50 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 17:38:50 Africa/Mbabane] PHP Warning:  include(header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 85
+[21-Jan-2026 17:38:50 Africa/Mbabane] PHP Warning:  include(): Failed opening 'header.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 85
+[21-Jan-2026 17:38:50 Africa/Mbabane] PHP Warning:  include(footer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 397
+[21-Jan-2026 17:38:50 Africa/Mbabane] PHP Warning:  include(): Failed opening 'footer.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 397
+[21-Jan-2026 17:40:21 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[21-Jan-2026 17:53:19 Africa/Mbabane] PHP Fatal error:  Cannot redeclare getUpcomingBirthdays() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:139) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1145
+[21-Jan-2026 17:54:28 Africa/Mbabane] PHP Fatal error:  Cannot redeclare getUserMinistries() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:142) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 1520
+[21-Jan-2026 17:55:27 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUserMinistries() in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:110
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 110
+[21-Jan-2026 21:00:46 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUserMinistries() in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:125
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 125
+[21-Jan-2026 21:01:26 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function getUnreadNotificationCount() in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php:10
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(138): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 10
+[21-Jan-2026 21:02:14 Africa/Mbabane] PHP Warning:  Undefined variable $unread_count in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 30
+[21-Jan-2026 21:02:14 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function getRecentNotifications() in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php:40
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(138): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 40
+[21-Jan-2026 21:02:44 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function getUnreadNotificationCount() in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php:10
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(138): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 10
+[21-Jan-2026 21:07:59 Africa/Mbabane] PHP Fatal error:  Cannot redeclare getSetting() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:920) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 3308
+[21-Jan-2026 21:51:41 Africa/Mbabane] PHP Warning:  Undefined variable $conn in C:\xampp\htdocs\CFCI_Church_Website\ministries.php on line 8
+[21-Jan-2026 21:51:41 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\ministries.php:8
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\ministries.php on line 8

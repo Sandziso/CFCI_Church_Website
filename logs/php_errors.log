@@ -1,0 +1,235 @@
+[24-Jan-2026 01:05:44 Africa/Mbabane] PHP Warning:  require_once(includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\sermons.php on line 4
+[24-Jan-2026 01:05:44 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required 'includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\sermons.php:4
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermons.php on line 4
+[24-Jan-2026 01:06:04 Africa/Mbabane] Auth initialization error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:06:38 Africa/Mbabane] Auth initialization error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:07:11 Africa/Mbabane] Auth initialization error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:07:31 Africa/Mbabane] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:08:40 Africa/Mbabane] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:09:41 Africa/Mbabane] Database Connection Error: Database connection failed: SQLSTATE[HY000] [1049] Unknown database 'cfci_db'
+[24-Jan-2026 01:37:26 Africa/Mbabane] PHP Warning:  Undefined variable $hashfordemo1234567890abcdef in C:\xampp\htdocs\CFCI_Church_Website\includes\database.php on line 253
+[24-Jan-2026 02:29:28 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 02:29:40 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 02:30:43 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:43:46 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:43:55 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:46:10 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:46:17 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:47:17 Africa/Mbabane] Security log error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_db.security_logs' doesn't exist
+[24-Jan-2026 08:48:53 Africa/Mbabane] Database connected: cfci_db @ localhost
+[24-Jan-2026 08:48:53 Africa/Mbabane] PHP Warning:  require_once(../includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 5
+[24-Jan-2026 08:48:53 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 5
+[24-Jan-2026 08:50:54 Africa/Mbabane] PHP Fatal error:  Cannot declare class SecurityManager, because the name is already in use in C:\xampp\htdocs\CFCI_Church_Website\includes\security.php on line 4
+[24-Jan-2026 09:37:15 Africa/Mbabane] PHP Warning:  Undefined variable $email in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 47
+[24-Jan-2026 09:37:16 Africa/Mbabane] Login attempt for email: 
+[24-Jan-2026 09:37:16 Africa/Mbabane] PHP Warning:  Undefined variable $password in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 09:37:16 Africa/Mbabane] PHP Deprecated:  strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 09:37:16 Africa/Mbabane] Password length: 0
+[24-Jan-2026 09:37:16 Africa/Mbabane] PHP Warning:  Undefined variable $result in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 51
+[24-Jan-2026 09:37:16 Africa/Mbabane] Login result: 
+[24-Jan-2026 09:37:16 Africa/Mbabane] Session after login: Array
+(
+)
+
+[24-Jan-2026 09:37:16 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 09:37:16 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[24-Jan-2026 09:37:16 Africa/Mbabane] PHP Warning:  require_once(../includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 8
+[24-Jan-2026 09:37:16 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:8
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 8
+[24-Jan-2026 09:45:48 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function checkUserLoggedIn() in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 11
+[24-Jan-2026 09:46:46 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function checkUserLoggedIn() in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 13
+[24-Jan-2026 10:27:07 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "ChurchDB" not found in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php:50
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php on line 50
+[24-Jan-2026 13:14:55 Africa/Mbabane] PHP Warning:  Undefined variable $email in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 47
+[24-Jan-2026 13:14:56 Africa/Mbabane] Login attempt for email: 
+[24-Jan-2026 13:14:56 Africa/Mbabane] PHP Warning:  Undefined variable $password in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 13:14:56 Africa/Mbabane] PHP Deprecated:  strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 13:14:56 Africa/Mbabane] Password length: 0
+[24-Jan-2026 13:14:56 Africa/Mbabane] PHP Warning:  Undefined variable $result in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 51
+[24-Jan-2026 13:14:56 Africa/Mbabane] Login result: 
+[24-Jan-2026 13:14:56 Africa/Mbabane] Session after login: Array
+(
+)
+
+[24-Jan-2026 13:14:56 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 13:14:56 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[24-Jan-2026 13:14:56 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\CFCI_Church_Website\includes\dashboard.php:127
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\includes\dashboard.php(347): DashboardStats->getMemberStats(3)
+#1 C:\xampp\htdocs\CFCI_Church_Website\includes\dashboard.php(490): DashboardWidgets->getQuickStats(3, 'financial')
+#2 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(35): get_dashboard_stats(3, 'financial')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\includes\dashboard.php on line 127
+[24-Jan-2026 13:23:14 Africa/Mbabane] Member stats error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.event_registrations' doesn't exist
+[24-Jan-2026 13:23:14 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[24-Jan-2026 13:23:14 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[24-Jan-2026 13:23:14 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 13:23:14 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[24-Jan-2026 13:23:14 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[24-Jan-2026 13:23:14 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 13:23:14 Africa/Mbabane] PHP Warning:  require_once(../../includes/config.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 4
+[24-Jan-2026 13:23:14 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../../includes/config.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php:4
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\dashboard.php(255): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\includes\member_topbar.php on line 4
+[24-Jan-2026 13:31:53 Africa/Mbabane] Member stats error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.event_registrations' doesn't exist
+[24-Jan-2026 13:31:53 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[24-Jan-2026 13:31:53 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[24-Jan-2026 13:31:53 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 13:31:53 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[24-Jan-2026 13:31:53 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[24-Jan-2026 13:31:53 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 13:32:46 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function getUserEmail() in C:\xampp\htdocs\CFCI_Church_Website\auth\logout.php:317
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\logout.php on line 317
+[24-Jan-2026 13:40:20 Africa/Mbabane] PHP Warning:  Undefined variable $email in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 47
+[24-Jan-2026 13:40:20 Africa/Mbabane] Login attempt for email: 
+[24-Jan-2026 13:40:20 Africa/Mbabane] PHP Warning:  Undefined variable $password in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 13:40:20 Africa/Mbabane] PHP Deprecated:  strlen(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 48
+[24-Jan-2026 13:40:20 Africa/Mbabane] Password length: 0
+[24-Jan-2026 13:40:20 Africa/Mbabane] PHP Warning:  Undefined variable $result in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 51
+[24-Jan-2026 13:40:20 Africa/Mbabane] Login result: 
+[24-Jan-2026 13:40:20 Africa/Mbabane] Session after login: Array
+(
+)
+
+[24-Jan-2026 14:21:41 Africa/Mbabane] Login attempt for email: admin@cfci.org.sz
+[24-Jan-2026 14:21:41 Africa/Mbabane] Password length: 8
+[24-Jan-2026 14:21:41 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 14:21:41 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[24-Jan-2026 14:21:41 Africa/Mbabane] Login result: Array
+(
+    [error] => Invalid email or password.
+)
+
+[24-Jan-2026 14:21:41 Africa/Mbabane] Session after login: Array
+(
+)
+
+[24-Jan-2026 14:56:25 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function createCSRFToken() in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php:556
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\register.php on line 556
+[24-Jan-2026 20:38:57 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 20:38:57 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[24-Jan-2026 20:38:57 Africa/Mbabane] Remember me token error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.remember_tokens' doesn't exist
+[24-Jan-2026 20:39:57 Africa/Mbabane] Member stats error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.event_registrations' doesn't exist
+[24-Jan-2026 20:39:57 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[24-Jan-2026 20:39:57 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[24-Jan-2026 20:39:57 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 20:39:57 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[24-Jan-2026 20:39:57 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[24-Jan-2026 20:39:57 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Member stats error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.event_registrations' doesn't exist
+[24-Jan-2026 21:17:05 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[24-Jan-2026 21:17:05 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[24-Jan-2026 21:21:14 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 21:21:14 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[24-Jan-2026 21:21:14 Africa/Mbabane] Remember me token error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.remember_tokens' doesn't exist
+[24-Jan-2026 21:21:51 Africa/Mbabane] PHP Warning:  require_once(../includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 6
+[24-Jan-2026 21:21:51 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:6
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 6
+[24-Jan-2026 21:22:44 Africa/Mbabane] PHP Warning:  Undefined variable $db in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[24-Jan-2026 21:22:44 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function getUserProfile() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:13
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(706): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[24-Jan-2026 23:43:04 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[24-Jan-2026 23:43:04 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[24-Jan-2026 23:43:22 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Session" not found in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 13
+[24-Jan-2026 23:43:46 Africa/Mbabane] PHP Warning:  Undefined variable $session in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 16
+[24-Jan-2026 23:43:46 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function requireLogin() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 16
+[25-Jan-2026 00:02:15 Africa/Mbabane] PHP Warning:  Undefined variable $session in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 16
+[25-Jan-2026 00:02:15 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function requireLogin() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 16
+[25-Jan-2026 00:04:15 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Session" not found in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 13
+[25-Jan-2026 00:04:18 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Session" not found in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 13
+[25-Jan-2026 00:04:19 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "Session" not found in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 13
+[25-Jan-2026 00:04:28 Africa/Mbabane] PHP Warning:  Undefined variable $session in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 711
+[25-Jan-2026 00:04:28 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function getFlashMessages() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:711
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 711
+[25-Jan-2026 12:08:13 Africa/Mbabane] PHP Warning:  require_once(includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 4
+[25-Jan-2026 12:08:13 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required 'includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php:4
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 4
+[25-Jan-2026 12:08:47 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method SessionManager::startSession() in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php:8
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 8
+[25-Jan-2026 12:09:06 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "SermonManager" not found in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php:10
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 10
+[25-Jan-2026 12:09:16 Africa/Mbabane] PHP Warning:  Undefined variable $security in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 11
+[25-Jan-2026 12:09:16 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function sanitizeInput() on null in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php:11
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 11
+[25-Jan-2026 12:09:34 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method SessionManager::startSession() in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php:8
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 8
+[25-Jan-2026 12:21:34 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
+[25-Jan-2026 12:21:58 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
+[25-Jan-2026 13:02:19 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 13:02:35 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 13:02:35 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 13:02:43 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 13:03:03 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 17:09:34 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'mm.status' in 'on clause'
+[25-Jan-2026 17:12:43 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.status' in 'where clause'
+[25-Jan-2026 17:12:48 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.status' in 'where clause'
+[25-Jan-2026 17:13:02 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.status' in 'where clause'
+[25-Jan-2026 17:13:45 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.status' in 'where clause'
+[25-Jan-2026 21:24:08 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 21:31:59 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 21:32:07 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 21:32:13 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 21:37:24 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 21:37:36 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[25-Jan-2026 23:02:53 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
+[25-Jan-2026 23:03:08 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378

@@ -1,0 +1,516 @@
+/* ===== ENHANCED HEADER STYLES ===== */
+header {
+    background: var(--gradient);
+    color: var(--white);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    background: rgba(26, 82, 118, 0.95);
+}
+
+body {
+    padding-top: 140px; /* Account for fixed header height */
+}
+
+@media (max-width: 992px) {
+    body {
+        padding-top: 100px;
+    }
+}
+
+.header-top {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.header-top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.church-info {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.church-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.church-info i {
+    color: var(--secondary);
+    font-size: 0.9rem;
+}
+
+.header-top .social-links {
+    display: flex;
+    gap: 12px;
+}
+
+.header-top .social-links a {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.header-top .social-links a:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.header-main {
+    padding: 12px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    height: 65px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: var(--transition);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.church-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.church-name h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    background: linear-gradient(45deg, var(--white), #e8f6f3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.church-name p {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 400;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 5px;
+    margin: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    padding: 12px 16px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-radius: 6px;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+}
+
+.nav-link span {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    color: var(--white);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.nav-link.active:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 3px;
+    background: var(--secondary);
+    border-radius: 2px 2px 0 0;
+}
+
+/* ===== DROPDOWN ENHANCEMENTS ===== */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--white);
+    min-width: 220px;
+    box-shadow: var(--shadow-lg);
+    border-radius: 8px;
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--transition);
+    border: none;
+    z-index: 1002;
+    display: block !important;
+}
+
+/* Create hover bridge */
+.nav-dropdown::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+}
+
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown .dropdown-menu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+}
+
+.dropdown-item:hover {
+    background: rgba(26, 82, 118, 0.05);
+    color: var(--primary);
+    border-left-color: var(--secondary);
+}
+
+.dropdown-item i {
+    width: 16px;
+    text-align: center;
+    color: var(--primary);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.auth-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.login-btn {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: var(--white);
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    color: var(--white);
+}
+
+.give-btn {
+    background: var(--secondary);
+    color: var(--white);
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+}
+
+.give-btn:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(230, 126, 34, 0.4);
+    color: var(--white);
+}
+
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: var(--transition);
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+@media (max-width: 1200px) {
+    .nav-menu { gap: 2px; }
+    .nav-link { padding: 10px 12px; }
+    .church-name h1 { font-size: 1.6rem; }
+}
+
+@media (max-width: 992px) {
+    .header-top { 
+        display: none; 
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 320px;
+        height: 100vh;
+        background: var(--gradient);
+        flex-direction: column;
+        padding: 80px 25px 30px;
+        transition: var(--transition);
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+        z-index: 999;
+        overflow-y: auto;
+        gap: 5px;
+    }
+    
+    .nav-menu.active { 
+        right: 0;
+        animation: slideInRight 0.3s ease-out;
+    }
+    
+    .nav-link {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    
+    .nav-link i {
+        font-size: 1.2rem;
+        width: 24px;
+    }
+    
+    .nav-link span {
+        font-size: 0.9rem;
+    }
+    
+    .nav-dropdown::after {
+        display: none;
+    }
+    
+    .nav-dropdown .dropdown-menu {
+        position: static;
+        background: rgba(255,255,255,0.1);
+        box-shadow: none;
+        margin: 10px 0;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        padding: 0;
+    }
+    
+    .nav-dropdown.active .dropdown-menu {
+        max-height: 500px;
+        padding: 10px 0;
+    }
+    
+    .dropdown-item {
+        color: rgba(255,255,255,0.9);
+        padding: 12px 20px 12px 40px;
+    }
+    
+    .dropdown-item:hover {
+        background: rgba(255,255,255,0.2);
+        color: var(--white);
+    }
+    
+    .mobile-toggle { 
+        display: flex;
+        z-index: 1001;
+    }
+    
+    .auth-buttons { 
+        display: none; 
+    }
+    
+    .church-name h1 { 
+        font-size: 1.5rem; 
+    }
+    
+    .logo { 
+        height: 55px; 
+    }
+}
+
+@media (max-width: 768px) {
+    .church-info {
+        gap: 15px;
+    }
+    
+    .header-top-content {
+        justify-content: center;
+    }
+    
+    .header-top .social-links {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo-section { 
+        gap: 10px; 
+    }
+    
+    .logo { 
+        height: 50px; 
+        padding: 6px 10px; 
+    }
+    
+    .church-name h1 { 
+        font-size: 1.3rem; 
+    }
+    
+    .church-name p { 
+        font-size: 0.75rem; 
+    }
+    
+    .nav-menu { 
+        width: 280px; 
+    }
+}
+
+/* Mobile Menu Animation */
+@keyframes slideInRight {
+    from { 
+        right: -100%;
+        opacity: 0;
+    }
+    to { 
+        right: 0;
+        opacity: 1;
+    }
+}
+
+/* Mobile Menu Overlay */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    backdrop-filter: blur(3px);
+}
+
+.mobile-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Sticky Header Animation */
+header {
+    transition: all 0.3s ease;
+}
+
+header.sticky {
+    padding: 0;
+    background: rgba(26, 82, 118, 0.98);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+header.sticky .header-main {
+    padding: 8px 0;
+}
+
+header.sticky .logo {
+    height: 55px;
+}
+
+/* Dropdown Arrow Animation */
+.nav-dropdown .nav-link .fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.nav-dropdown:hover .nav-link .fa-chevron-down {
+    transform: rotate(180deg);
+}

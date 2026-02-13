@@ -90,16 +90,16 @@
                     </form>
 
                     <div class="social-links mt-4">
-                        <a href="#" class="social-link" target="_blank" title="Facebook">
+                        <a href="https://facebook.com/cfci-eswatini" class="social-link" target="_blank" rel="noopener" title="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="social-link" target="_blank" title="Twitter">
+                        <a href="https://twitter.com/cfci-eswatini" class="social-link" target="_blank" rel="noopener" title="Twitter">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="social-link" target="_blank" title="YouTube">
+                        <a href="https://youtube.com/c/cfci-eswatini" class="social-link" target="_blank" rel="noopener" title="YouTube">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="#" class="social-link" target="_blank" title="Instagram">
+                        <a href="https://instagram.com/cfci-eswatini" class="social-link" target="_blank" rel="noopener" title="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -124,195 +124,21 @@
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
+<!-- Bootstrap JS Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Footer JavaScript -->
+<script src="assets/js/footer.js"></script>
 
-<style>
-    /* Footer Styles */
-    footer {
-        position: relative;
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-    }
-
-    .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: var(--secondary);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        box-shadow: var(--shadow-lg);
-        transition: var(--transition);
-        opacity: 0;
-        visibility: hidden;
-        z-index: 99;
-    }
-
-    .back-to-top.show {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .back-to-top:hover {
-        background: var(--secondary-dark);
-        transform: translateY(-3px);
-        color: white;
-    }
-
-    .footer-logo {
-        display: flex;
-        align-items: center;
-    }
-
-    .hover-secondary:hover {
-        color: var(--secondary) !important;
-        transform: translateX(5px);
-    }
-
-    .footer-links a {
-        transition: var(--transition);
-    }
-
-    .social-links {
-        display: flex;
-        gap: 12px;
-    }
-
-    .social-link {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: var(--transition);
-        color: var(--light);
-        text-decoration: none;
-    }
-
-    .social-link:hover {
-        background: var(--secondary);
-        transform: translateY(-3px);
-        color: white;
-    }
-
-    .newsletter-form .form-control {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        color: white;
-    }
-
-    .newsletter-form .form-control::placeholder {
-        color: rgba(255,255,255,0.7);
-    }
-
-    .newsletter-form .form-control:focus {
-        background: rgba(255,255,255,0.15);
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 0.2rem rgba(230, 126, 34, 0.25);
-        color: white;
-    }
-
-    .footer-bottom {
-        border-color: rgba(255,255,255,0.1) !important;
-    }
-
-    @media (max-width: 768px) {
-        .back-to-top {
-            bottom: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-        }
-        
-        .footer-bottom-links {
-            margin-top: 15px;
-        }
-        
-        .footer-bottom-links a {
-            display: block;
-            margin-bottom: 8px;
-        }
-    }
-</style>
-
-<script>
-    // Back to top functionality
-    const backToTop = document.getElementById('backToTop');
-    
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTop.classList.add('show');
-        } else {
-            backToTop.classList.remove('show');
-        }
-    });
-    
-    backToTop.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    // Mobile menu functionality
-    const mobileToggle = document.getElementById('mobileToggle');
-    const navMenu = document.getElementById('navMenu');
-    const mobileOverlay = document.getElementById('mobileOverlay');
-    
-    mobileToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        mobileOverlay.classList.toggle('active');
-        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
-    });
-    
-    mobileOverlay.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        mobileOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-    
-    // Close mobile menu when clicking on links
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navMenu.classList.remove('active');
-            mobileOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-    });
-    
-    // Newsletter form submission
-    const newsletterForm = document.getElementById('newsletterForm');
-    
-    newsletterForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = newsletterForm.querySelector('input[type="email"]').value;
-        
-        // Simulate form submission
-        const submitBtn = newsletterForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        submitBtn.disabled = true;
-        
-        setTimeout(() => {
-            alert(`Thank you for subscribing with: ${email}`);
-            newsletterForm.reset();
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 1500);
-    });
-    
-    // Add current year to copyright (fallback)
-    document.querySelector('.footer-bottom p').innerHTML = `&copy; ${new Date().getFullYear()} Christian Family Centre International. All Rights Reserved.`;
-</script>
+<!-- Page-specific JavaScript -->
+<?php 
+$page = basename($_SERVER['PHP_SELF']);
+if ($page == 'index.php') {
+    echo '<script src="assets/js/home.js"></script>';
+} elseif ($page == 'about.php') {
+    echo '<script src="assets/js/about.js"></script>';
+} elseif ($page == 'contact.php') {
+    echo '<script src="assets/js/contact.js"></script>';
+}
+?>
 </body>
 </html>

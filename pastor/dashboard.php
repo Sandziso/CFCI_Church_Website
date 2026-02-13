@@ -1,30 +1,151 @@
+<?php
+// pastor/dashboard.php
+require_once '../includes/config.php';
+require_once '../includes/database.php';
+require_once '../includes/session.php';
+require_once '../includes/main-functions.php';
+
+
+// Add these at the top of dashboard.php after includes
+
+/**
+ * Format relative date (e.g., "2 hours ago")
+ */
+
+
+/**
+ * Truncate text with ellipsis
+ */
+function truncateText($text, $length = 100) {
+    if (strlen($text) > $length) {
+        return substr($text, 0, $length) . '...';
+    }
+    return $text;
+}
+
+/**
+ * Sanitize input
+ */
+function sanitize($input) {
+    return htmlspecialchars(strip_tags(trim($input)));
+}
+?>
+
+// Check if user is logged in and is a pastor
+$session->requireLogin();
+if ($session->getUserRole() !== 'pastor') {
+    header('Location: ../auth/login.php');
+    exit;
+}
+
+$user_id = $session->getUserId();
+$db = new ChurchDB($database);
+
+// Get dashboard data
+$dashboard_data = [
+    'user' => $db->getUserProfile($user_id),
+
+    'upcoming_events' => $db->getUpcomingEvents(5)
+];
+
+// Handle pastor quick actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    
+    switch ($action) {
+        case 'add_announcement':
+            $title = sanitize($_POST['title'] ?? '');
+            $content = sanitize($_POST['content'] ?? '');
+            $expires_at = $_POST['expires_at'] ?? null;
+            
+            if (!empty($title) && !empty($content)) {
+                $result = $db->createAnnouncement($title, $content, $user_id, $expires_at);
+                if ($result) {
+                    $session->setFlash('success', 'Announcement added successfully');
+                } else {
+                    $session->setFlash('error', 'Failed to add announcement');
+                }
+            }
+            break;
+            
+        case 'add_event':
+            $event_title = sanitize($_POST['event_title'] ?? '');
+            $event_date = $_POST['event_date'] ?? '';
+            $start_time = $_POST['start_time'] ?? '';
+            $end_time = $_POST['end_time'] ?? '';
+            $location = sanitize($_POST['location'] ?? '');
+            $description = sanitize($_POST['description'] ?? '');
+            
+            if (!empty($event_title) && !empty($event_date)) {
+                $result = $db->createEvent($event_title, $event_date, $start_time, $end_time, $location, $description);
+                if ($result) {
+                    $session->setFlash('success', 'Event added successfully');
+                } else {
+                    $session->setFlash('error', 'Failed to add event');
+                }
+            }
+            break;
+            
+        case 'add_sermon':
+            $sermon_title = sanitize($_POST['sermon_title'] ?? '');
+            $sermon_date = $_POST['sermon_date'] ?? '';
+            $audio_url = filter_var($_POST['audio_url'] ?? '', FILTER_VALIDATE_URL);
+            $video_url = filter_var($_POST['video_url'] ?? '', FILTER_VALIDATE_URL);
+            $notes_text = sanitize($_POST['notes_text'] ?? '');
+            
+            if (!empty($sermon_title) && !empty($sermon_date)) {
+                $result = $db->addSermon($sermon_title, $user_id, $sermon_date, $audio_url, $video_url, $notes_text);
+                if ($result) {
+                    $session->setFlash('success', 'Sermon added successfully');
+                } else {
+                    $session->setFlash('error', 'Failed to add sermon');
+                }
+            }
+            break;
+            
+        case 'update_prayer_status':
+            $prayer_id = (int)$_POST['prayer_id'] ?? 0;
+            $status = sanitize($_POST['status'] ?? '');
+            
+            if ($prayer_id > 0 && !empty($status)) {
+                $result = $db->updatePrayerRequestStatus($prayer_id, $status, $user_id);
+                if ($result) {
+                    $session->setFlash('success', 'Prayer request status updated');
+                } else {
+                    $session->setFlash('error', 'Failed to update prayer request');
+                }
+            }
+            break;
+            
+        case 'mark_all_notifications_read':
+            $db->markAllNotificationsAsRead($user_id);
+            $session->setFlash('success', 'All notifications marked as read');
+            break;
+    }
+    
+    header('Location: dashboard.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pastor Dashboard - Christian Family Centre International</title>
+    <title>Pastor Dashboard - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-blue: #1a6b9e;
-            --dark-blue: #135a87;
-            --light-blue: #e1f0ff;
-            --accent-green: #4caf50;
-            --dark-green: #3e8c42;
-            --light-green: #e6f9f1;
-            --white: #ffffff;
-            --light-gray: #f8f9fa;
-            --medium-gray: #e9ecef;
-            --dark-gray: #495057;
-            --text-dark: #212529;
-            --sidebar-bg: #1a6b9e;
-            --sidebar-text: #ffffff;
-            --sidebar-hover: #135a87;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
+            --primary: #1a5276;
+            --secondary: #e67e22;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --text: #333;
+            --text-light: #777;
+            --border-color: #e2e8f0;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-lg: 0 15px 30px rgba(0,0,0,0.15);
         }
 
         * {
@@ -35,1027 +156,860 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            color: var(--text-dark);
-            background-color: #f5f7f9;
-            display: flex;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: var(--dark);
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 250px;
-            background: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            height: 100vh;
-            position: fixed;
-            padding: 20px 0;
-            transition: var(--transition);
-            z-index: 100;
-            overflow-y: auto;
-            box-shadow: var(--shadow);
-        }
-
-        .sidebar-header {
             display: flex;
-            align-items: center;
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .church-logo {
-            display: flex;
-            align-items: center;
-            margin-right: 10px;
-        }
-
-        .church-logo i {
-            font-size: 2rem;
-            color: var(--accent-green);
-        }
-
-        .church-logo-text {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-left: 10px;
-        }
-
-        .church-logo span {
-            color: var(--accent-green);
-        }
-
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-left: 3px solid transparent;
-            transition: var(--transition);
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: var(--sidebar-hover);
-            border-left: 3px solid var(--accent-green);
-            color: white;
-        }
-
-        .menu-item i {
-            width: 30px;
-            font-size: 1.1rem;
-        }
-
-        .menu-item span {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        /* Main Content Styles */
+        /* Main Content Layout */
         .main-content {
             flex: 1;
+            padding: 20px;
             margin-left: 250px;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
-        /* Header Styles */
-        .header {
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            background: var(--white);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-
-        .header-left h1 {
-            font-size: 1.5rem;
-            color: var(--dark-blue);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 20px;
         }
 
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding: 10px 15px 10px 40px;
-            border-radius: 30px;
-            border: 1px solid var(--medium-gray);
-            font-size: 0.9rem;
-            width: 250px;
-            transition: var(--transition);
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(26, 107, 158, 0.2);
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--dark-gray);
-        }
-
-        .notifications, .user-profile {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .notification-icon, .user-profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-blue);
-            color: var(--primary-blue);
-            font-size: 1.2rem;
-        }
-
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--accent-green);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .user-profile-img img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /* Dashboard Content */
-        .dashboard-content {
-            padding: 30px;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-banner::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .welcome-banner h2 {
+        .welcome-section h1 {
             font-size: 1.8rem;
-            margin-bottom: 10px;
+            color: var(--primary);
+            margin-bottom: 5px;
         }
 
-        .welcome-banner p {
-            max-width: 600px;
+        .welcome-section p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .date-display {
+            background: var(--primary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .date-display .day {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .date-display .date {
+            font-size: 0.9rem;
             opacity: 0.9;
-            margin-bottom: 20px;
         }
 
-        .stats-container {
+        /* Stats Grid - Matching index.php theme */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: var(--white);
-            border-radius: 15px;
+            background: white;
+            border-radius: 12px;
             padding: 20px;
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            transition: var(--transition);
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--primary);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 15px;
+            font-size: 1.3rem;
+            color: white;
+            background: var(--primary);
         }
 
         .stat-info h3 {
             font-size: 1.8rem;
-            margin-bottom: 5px;
-            color: var(--dark-blue);
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
         }
 
         .stat-info p {
-            color: var(--dark-gray);
-            font-size: 0.9rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
         }
 
-        .dashboard-grid {
+        /* Quick Actions - Matching index.php buttons */
+        .quick-actions {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             margin-bottom: 30px;
         }
 
-        .dashboard-card {
-            background: var(--white);
-            border-radius: 15px;
+        .quick-action-btn {
+            background: white;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
             padding: 20px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-        }
-
-        .dashboard-card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--medium-gray);
-        }
-
-        .card-header h3 {
-            font-size: 1.3rem;
-            color: var(--dark-blue);
-        }
-
-        .card-header a {
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .recent-members {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .member-list {
-            list-style: none;
-        }
-
-        .member-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--medium-gray);
-            transition: var(--transition);
-        }
-
-        .member-item:hover {
-            background-color: rgba(26, 107, 158, 0.05);
-        }
-
-        .member-item:last-child {
-            border-bottom: none;
-        }
-
-        .member-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            margin-right: 15px;
-            background: var(--light-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--primary-blue);
-            font-size: 1.2rem;
-        }
-
-        .member-info h4 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .member-info p {
-            font-size: 0.8rem;
-            color: var(--dark-gray);
-        }
-
-        .member-actions {
-            margin-left: auto;
-            display: flex;
             gap: 10px;
         }
 
-        .action-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-            color: var(--dark-gray);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .action-btn:hover {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .upcoming-events {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .event-item {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--medium-gray);
-            transition: var(--transition);
-        }
-
-        .event-item:hover {
-            background-color: rgba(26, 107, 158, 0.05);
-        }
-
-        .event-item:last-child {
-            border-bottom: none;
-        }
-
-        .event-date {
-            display: inline-block;
-            background: var(--light-blue);
-            color: var(--primary-blue);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .event-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .event-details {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-            gap: 15px;
-        }
-
-        .event-details span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .event-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn {
-            padding: 8px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            transition: var(--transition);
-        }
-
-        .btn:hover {
-            opacity: 0.9;
+        .quick-action-btn:hover {
+            border-color: var(--primary);
+            background: #f0f7ff;
             transform: translateY(-2px);
         }
 
-        .btn-primary {
-            background: var(--primary-blue);
-            color: white;
+        .quick-action-btn i {
+            font-size: 1.5rem;
+            color: var(--primary);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--primary-blue);
-            color: var(--primary-blue);
+        .quick-action-btn span {
+            font-weight: 500;
+            color: var(--dark);
         }
 
-        .btn-success {
-            background: var(--accent-green);
-            color: white;
-        }
-
-        .quick-actions {
+        /* Dashboard Grid */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
         }
 
-        .action-card {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 25px 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .action-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 1.8rem;
-            color: white;
-        }
-
-        .action-card h4 {
-            margin-bottom: 10px;
-            color: var(--dark-blue);
-        }
-
-        .action-card p {
-            font-size: 0.9rem;
-            color: var(--dark-gray);
-        }
-
-        .chart-container {
-            background: var(--white);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .chart-header h3 {
-            font-size: 1.3rem;
-            color: var(--dark-blue);
-        }
-
-        .chart-wrapper {
-            height: 300px;
-            position: relative;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 992px) {
+        @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                overflow: visible;
-            }
-            
-            .sidebar .church-logo-text,
-            .sidebar .menu-item span {
-                display: none;
-            }
-            
-            .sidebar .menu-item {
-                justify-content: center;
-                padding: 15px;
-            }
-            
-            .sidebar .menu-item i {
-                margin-right: 0;
-                font-size: 1.3rem;
-            }
-            
-            .main-content {
-                margin-left: 70px;
-            }
-            
-            .header {
-                padding: 15px;
-            }
-            
-            .search-box input {
-                width: 180px;
-            }
-            
-            .stats-container {
-                grid-template-columns: 1fr 1fr;
-            }
+        /* Cards - Matching index.php cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
         }
 
-        @media (max-width: 576px) {
-            .stats-container {
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Buttons - Matching index.php buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #154360;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Prayer Requests */
+        .prayer-requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .prayer-request-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .prayer-request-item:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .prayer-text {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .prayer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .prayer-requester {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        /* Recent Members */
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .member-item:hover {
+            background: #f8f9fa;
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .member-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+            color: var(--dark);
+        }
+
+        .member-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Notifications */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .notification-item.unread {
+            background: #e6f0ff;
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification-item:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            background: var(--primary);
+        }
+
+        .notification-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .notification-content p {
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+            }
+            
+            .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
             
             .quick-actions {
                 grid-template-columns: 1fr;
             }
             
-            .search-box {
-                display: none;
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
             }
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            max-width: 400px;
+        }
+
+        .flash-message {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            animation: slideInRight 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .flash-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="church-logo">
-                <i class="fas fa-church"></i>
-                <div class="church-logo-text">CFCI <span>Church</span></div>
-            </div>
-        </div>
-        
-        <div class="sidebar-menu">
-            <div class="menu-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-users"></i>
-                <span>Members</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Events</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-praying-hands"></i>
-                <span>Prayer Requests</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-file-alt"></i>
-                <span>Sermons</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-donate"></i>
-                <span>Donations</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Reports</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </div>
-            <div class="menu-item">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </div>
-        </div>
-    </div>
+    <!-- Include Sidebar -->
+    <?php include 'includes/pastor_sidebar.php'; ?>
     
+    <!-- Include Topbar -->
+    <?php include 'includes/pastor_topbar.php'; ?>
+    
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        <?php 
+        $flash_messages = $session->getFlashMessages();
+        foreach ($flash_messages as $flash): 
+        ?>
+            <div class="flash-message flash-<?php echo $flash['type']; ?>">
+                <i class="fas fa-<?php echo $flash['type'] === 'success' ? 'check-circle' : 'exclamation-circle'; ?>"></i>
+                <?php echo htmlspecialchars($flash['message']); ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-left">
-                <h1>Pastor Dashboard</h1>
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <h1>Welcome, Pastor <?php echo htmlspecialchars($dashboard_data['user']['full_name'] ?? 'Pastor'); ?>!</h1>
+                <p>Church Management Dashboard</p>
             </div>
-            
-            <div class="header-right">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
+            <div class="date-display">
+                <div class="day"><?php echo date('l'); ?></div>
+                <div class="date"><?php echo date('F j, Y'); ?></div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="window.location.href='members/'">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
                 </div>
-                
-                <div class="notifications">
-                    <div class="notification-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="notification-count">3</div>
+                <div class="stat-info">
+                    <h3><?php echo $dashboard_data['stats']['total_members'] ?? 0; ?></h3>
+                    <p>Total Members</p>
                 </div>
-                
-                <div class="user-profile">
-                    <div class="user-profile-img">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Pastor">
-                    </div>
+            </div>
+            <div class="stat-card" onclick="window.location.href='prayer-management/'">
+                <div class="stat-icon">
+                    <i class="fas fa-pray"></i>
+                </div>
+                <div class="stat-info">
+                    <h3><?php echo $dashboard_data['stats']['pending_prayers'] ?? 0; ?></h3>
+                    <p>Pending Prayers</p>
+                </div>
+            </div>
+            <div class="stat-card" onclick="window.location.href='finances/'">
+                <div class="stat-icon">
+                    <i class="fas fa-donate"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>SZL <?php echo number_format($dashboard_data['stats']['monthly_donations'] ?? 0, 2); ?></h3>
+                    <p>Monthly Donations</p>
+                </div>
+            </div>
+            <div class="stat-card" onclick="window.location.href='event-management/'">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3><?php echo $dashboard_data['stats']['upcoming_events'] ?? 0; ?></h3>
+                    <p>Upcoming Events</p>
                 </div>
             </div>
         </div>
-        
-        <!-- Dashboard Content -->
-        <div class="dashboard-content">
-            <!-- Welcome Banner -->
-            <div class="welcome-banner">
-                <h2>Welcome, Bishop Zakes Nxumalo</h2>
-                <p>You have 5 new prayer requests, 3 upcoming events, and 8 new member registrations this week.</p>
-                <button class="btn btn-success">View Recent Activity</button>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action-btn" onclick="openModal('announcementModal')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Add Announcement</span>
             </div>
-            
-            <!-- Stats Cards -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e1f0ff; color: #1a6b9e;">
-                        <i class="fas fa-users"></i>
+            <div class="quick-action-btn" onclick="openModal('eventModal')">
+                <i class="fas fa-calendar-plus"></i>
+                <span>Add Event</span>
+            </div>
+            <div class="quick-action-btn" onclick="openModal('sermonModal')">
+                <i class="fas fa-video"></i>
+                <span>Add Sermon</span>
+            </div>
+            <div class="quick-action-btn" onclick="window.location.href='reports/'">
+                <i class="fas fa-chart-bar"></i>
+                <span>View Reports</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Recent Prayer Requests -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-praying-hands"></i> Recent Prayer Requests</h2>
+                        <a href="prayer-management/" class="btn btn-primary btn-sm">View All</a>
                     </div>
-                    <div class="stat-info">
-                        <h3>1,250</h3>
-                        <p>Total Members</p>
+                    <div class="card-body">
+                        <?php if (!empty($dashboard_data['recent_prayers'])): ?>
+                            <div class="prayer-requests-list">
+                                <?php foreach ($dashboard_data['recent_prayers'] as $prayer): ?>
+                                    <div class="prayer-request-item">
+                                        <div class="prayer-text">
+                                            <?php echo htmlspecialchars(truncateText($prayer['request_text'], 100)); ?>
+                                        </div>
+                                        <div class="prayer-meta">
+                                            <div>
+                                                <span class="prayer-requester"><?php echo htmlspecialchars($prayer['member_name']); ?></span>
+                                                <span> • <?php echo formatRelativeDate($prayer['submitted_at']); ?></span>
+                                            </div>
+                                            <form method="POST" style="display: inline;">
+                                                <input type="hidden" name="action" value="update_prayer_status">
+                                                <input type="hidden" name="prayer_id" value="<?php echo $prayer['id']; ?>">
+                                                <select name="status" class="form-control btn-sm" onchange="this.form.submit()" style="width: auto; padding: 4px 8px; font-size: 0.8rem;">
+                                                    <option value="pending" <?php echo $prayer['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                                    <option value="addressed" <?php echo $prayer['status'] == 'addressed' ? 'selected' : ''; ?>>Addressed</option>
+                                                    <option value="closed" <?php echo $prayer['status'] == 'closed' ? 'selected' : ''; ?>>Closed</option>
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-pray"></i>
+                                <p>No prayer requests</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #e6f9f1; color: #4caf50;">
-                        <i class="fas fa-user-plus"></i>
+
+                <!-- Recent Donations -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-donate"></i> Recent Donations</h2>
+                        <a href="finances/" class="btn btn-primary btn-sm">View All</a>
                     </div>
-                    <div class="stat-info">
-                        <h3>28</h3>
-                        <p>New This Month</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fef6e6; color: #f39c12;">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>7</h3>
-                        <p>Upcoming Events</p>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon" style="background: #fce8e6; color: #e74c3c;">
-                        <i class="fas fa-praying-hands"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>15</h3>
-                        <p>Prayer Requests</p>
+                    <div class="card-body">
+                        <?php if (!empty($dashboard_data['recent_donations'])): ?>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <th style="padding: 10px; text-align: left;">Member</th>
+                                            <th style="padding: 10px; text-align: left;">Amount</th>
+                                            <th style="padding: 10px; text-align: left;">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($dashboard_data['recent_donations'] as $donation): ?>
+                                            <tr style="border-bottom: 1px solid #eee;">
+                                                <td style="padding: 10px;"><?php echo htmlspecialchars($donation['donor_name']); ?></td>
+                                                <td style="padding: 10px; font-weight: 600; color: #28a745;">SZL <?php echo number_format($donation['amount'], 2); ?></td>
+                                                <td style="padding: 10px;"><?php echo date('M j, Y', strtotime($donation['donation_date'])); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-donate"></i>
+                                <p>No recent donations</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
-            
-            <!-- Dashboard Grid -->
-            <div class="dashboard-grid">
+
+            <!-- Right Column -->
+            <div class="right-column">
                 <!-- Recent Members -->
-                <div class="dashboard-card">
+                <div class="card">
                     <div class="card-header">
-                        <h3>Recent Members</h3>
-                        <a href="#">View All</a>
+                        <h2><i class="fas fa-user-plus"></i> Recent Members</h2>
+                        <a href="members/" class="btn btn-primary btn-sm">View All</a>
                     </div>
-                    
-                    <div class="recent-members">
-                        <ul class="member-list">
-                            <li class="member-item">
-                                <div class="member-avatar">JD</div>
-                                <div class="member-info">
-                                    <h4>John Dlamini</h4>
-                                    <p>Joined: 2 days ago</p>
-                                </div>
-                                <div class="member-actions">
-                                    <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                                    <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                                </div>
-                            </li>
-                            <li class="member-item">
-                                <div class="member-avatar">SN</div>
-                                <div class="member-info">
-                                    <h4>Sarah Nkosi</h4>
-                                    <p>Joined: 3 days ago</p>
-                                </div>
-                                <div class="member-actions">
-                                    <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                                    <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                                </div>
-                            </li>
-                            <li class="member-item">
-                                <div class="member-avatar">TM</div>
-                                <div class="member-info">
-                                    <h4>Thomas Mbeki</h4>
-                                    <p>Joined: 4 days ago</p>
-                                </div>
-                                <div class="member-actions">
-                                    <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                                    <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                                </div>
-                            </li>
-                            <li class="member-item">
-                                <div class="member-avatar">PN</div>
-                                <div class="member-info">
-                                    <h4>Phumzile Ndlovu</h4>
-                                    <p>Joined: 5 days ago</p>
-                                </div>
-                                <div class="member-actions">
-                                    <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                                    <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                                </div>
-                            </li>
-                            <li class="member-item">
-                                <div class="member-avatar">RM</div>
-                                <div class="member-info">
-                                    <h4>Robert Mthethwa</h4>
-                                    <p>Joined: 6 days ago</p>
-                                </div>
-                                <div class="member-actions">
-                                    <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                                    <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                                </div>
-                            </li>
-                        </ul>
+                    <div class="card-body">
+                        <?php if (!empty($dashboard_data['recent_members'])): ?>
+                            <div class="members-list">
+                                <?php foreach ($dashboard_data['recent_members'] as $member): ?>
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            <?php echo substr($member['full_name'], 0, 1); ?>
+                                        </div>
+                                        <div class="member-info">
+                                            <h4><?php echo htmlspecialchars($member['full_name']); ?></h4>
+                                            <p>Joined <?php echo date('M j, Y', strtotime($member['join_date'])); ?></p>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <p>No recent members</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                
-                <!-- Upcoming Events -->
-                <div class="dashboard-card">
+
+                <!-- Notifications -->
+                <div class="card">
                     <div class="card-header">
-                        <h3>Upcoming Events</h3>
-                        <a href="#">View All</a>
+                        <h2><i class="fas fa-bell"></i> Notifications</h2>
+                        <?php if (!empty($dashboard_data['notifications'])): ?>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="action" value="mark_all_notifications_read">
+                                <button type="submit" class="btn btn-secondary btn-sm">Mark All Read</button>
+                            </form>
+                        <?php endif; ?>
                     </div>
-                    
-                    <div class="upcoming-events">
-                        <div class="event-item">
-                            <span class="event-date">July 6, 2025</span>
-                            <h4 class="event-title">Sunday Worship Service</h4>
-                            <div class="event-details">
-                                <span><i class="fas fa-clock"></i> 9:00 AM - 12:00 PM</span>
-                                <span><i class="fas fa-map-marker-alt"></i> Main Sanctuary</span>
-                            </div>
-                            <div class="event-actions">
-                                <button class="btn btn-primary">Details</button>
-                                <button class="btn btn-outline">Remind</button>
-                            </div>
+                    <div class="card-body">
+                        <div class="notifications-list">
+                            <?php if (!empty($dashboard_data['notifications'])): ?>
+                                <?php foreach ($dashboard_data['notifications'] as $notification): ?>
+                                    <div class="notification-item <?php echo $notification['is_read'] ? '' : 'unread'; ?>">
+                                        <div class="notification-icon">
+                                            <i class="fas fa-<?php 
+                                                switch($notification['type']) {
+                                                    case 'event': echo 'calendar-alt'; break;
+                                                    case 'prayer': echo 'praying-hands'; break;
+                                                    case 'sermon': echo 'video'; break;
+                                                    default: echo 'info-circle';
+                                                }
+                                            ?>"></i>
+                                        </div>
+                                        <div class="notification-content">
+                                            <h4><?php echo htmlspecialchars($notification['title']); ?></h4>
+                                            <p><?php echo htmlspecialchars(truncateText($notification['message'], 50)); ?></p>
+                                            <div class="notification-time">
+                                                <?php echo formatRelativeDate($notification['created_at']); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="empty-state">
+                                    <i class="fas fa-bell-slash"></i>
+                                    <p>No notifications</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        
-                        <div class="event-item">
-                            <span class="event-date">July 8, 2025</span>
-                            <h4 class="event-title">Youth Fellowship</h4>
-                            <div class="event-details">
-                                <span><i class="fas fa-clock"></i> 4:00 PM - 6:00 PM</span>
-                                <span><i class="fas fa-map-marker-alt"></i> Youth Hall</span>
-                            </div>
-                            <div class="event-actions">
-                                <button class="btn btn-primary">Details</button>
-                                <button class="btn btn-outline">Remind</button>
-                            </div>
-                        </div>
-                        
-                        <div class="event-item">
-                            <span class="event-date">July 12, 2025</span>
-                            <h4 class="event-title">Men's Prayer Breakfast</h4>
-                            <div class="event-details">
-                                <span><i class="fas fa-clock"></i> 7:00 AM - 9:00 AM</span>
-                                <span><i class="fas fa-map-marker-alt"></i> Fellowship Hall</span>
-                            </div>
-                            <div class="event-actions">
-                                <button class="btn btn-primary">Details</button>
-                                <button class="btn btn-outline">Remind</button>
-                            </div>
-                        </div>
-                        
-                        <div class="event-item">
-                            <span class="event-date">July 19, 2025</span>
-                            <h4 class="event-title">Community Outreach Day</h4>
-                            <div class="event-details">
-                                <span><i class="fas fa-clock"></i> 10:00 AM - 2:00 PM</span>
-                                <span><i class="fas fa-map-marker-alt"></i> Local Park</span>
-                            </div>
-                            <div class="event-actions">
-                                <button class="btn btn-primary">Details</button>
-                                <button class="btn btn-outline">Remind</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Charts Section -->
-            <div class="chart-container">
-                <div class="chart-header">
-                    <h3>Attendance & Engagement</h3>
-                    <div>
-                        <select class="form-control" style="padding: 5px 10px; border-radius: 20px; border: 1px solid #ddd;">
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                            <option>Last 90 Days</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="chart-wrapper">
-                    <canvas id="attendanceChart"></canvas>
-                </div>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <h3>Quick Actions</h3>
-                </div>
-                
-                <div class="quick-actions">
-                    <div class="action-card">
-                        <div class="action-icon" style="background: #1a6b9e;">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <h4>Add New Member</h4>
-                        <p>Register a new church member</p>
-                    </div>
-                    
-                    <div class="action-card">
-                        <div class="action-icon" style="background: #4caf50;">
-                            <i class="fas fa-calendar-plus"></i>
-                        </div>
-                        <h4>Create Event</h4>
-                        <p>Schedule a new church event</p>
-                    </div>
-                    
-                    <div class="action-card">
-                        <div class="action-icon" style="background: #f39c12;">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <h4>Upload Sermon</h4>
-                        <p>Share your latest message</p>
-                    </div>
-                    
-                    <div class="action-card">
-                        <div class="action-icon" style="background: #e74c3c;">
-                            <i class="fas fa-pray"></i>
-                        </div>
-                        <h4>Prayer Requests</h4>
-                        <p>View and respond to requests</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- Modals -->
+    <?php include 'includes/modals.php'; ?>
+
     <script>
-        // Simulate real-time data updates
-        document.addEventListener('DOMContentLoaded', function() {
-            // Attendance Chart
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
-            const attendanceChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                    datasets: [
-                        {
-                            label: 'Sunday Service',
-                            data: [850, 0, 0, 0, 0, 0, 0],
-                            borderColor: '#1a6b9e',
-                            backgroundColor: 'rgba(26, 107, 158, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Bible Study',
-                            data: [0, 0, 0, 120, 0, 0, 0],
-                            borderColor: '#4caf50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Youth Fellowship',
-                            data: [0, 0, 0, 0, 0, 65, 0],
-                            borderColor: '#f39c12',
-                            backgroundColor: 'rgba(243, 156, 18, 0.1)',
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Weekly Attendance'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
                 }
             });
-            
-            // Simulate real-time updates
-            setInterval(() => {
-                // Update stats with random fluctuations
-                document.querySelectorAll('.stat-info h3').forEach((stat, index) => {
-                    const currentValue = parseInt(stat.textContent);
-                    const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-                    if (currentValue + change >= 0) {
-                        stat.textContent = currentValue + change;
-                    }
-                });
-                
-                // Update notification count
-                const notificationCount = document.querySelector('.notification-count');
-                const currentCount = parseInt(notificationCount.textContent);
-                notificationCount.textContent = Math.max(0, currentCount + Math.floor(Math.random() * 3) - 1);
-                
-                // Update chart data
-                attendanceChart.data.datasets.forEach(dataset => {
-                    dataset.data = dataset.data.map(value => {
-                        if (value > 0) {
-                            const change = Math.floor(Math.random() * 10) - 5;
-                            return Math.max(0, value + change);
-                        }
-                        return value;
-                    });
-                });
-                attendanceChart.update();
-                
-            }, 5000); // Update every 5 seconds
-            
-            // Simulate member registration notification
-            setTimeout(() => {
-                const notificationCount = document.querySelector('.notification-count');
-                notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
-                
-                // Add new member to the list
-                const memberList = document.querySelector('.member-list');
-                const newMember = document.createElement('li');
-                newMember.className = 'member-item';
-                newMember.innerHTML = `
-                    <div class="member-avatar">NS</div>
-                    <div class="member-info">
-                        <h4>Nokulunga Sibiya</h4>
-                        <p>Joined: Just now</p>
-                    </div>
-                    <div class="member-actions">
-                        <div class="action-btn"><i class="fas fa-envelope"></i></div>
-                        <div class="action-btn"><i class="fas fa-user-plus"></i></div>
-                    </div>
-                `;
-                memberList.prepend(newMember);
-            }, 8000);
         });
+
+        // Set default dates for forms
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 7);
+            const nextWeek = tomorrow.toISOString().split('T')[0];
+            
+            // Set default dates
+            document.getElementById('event_date')?.value = nextWeek;
+            document.getElementById('sermon_date')?.value = today;
+            
+            // Set default time
+            document.getElementById('start_time')?.value = '09:00';
+            document.getElementById('end_time')?.value = '12:00';
+        });
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(msg => {
+                msg.style.animation = 'slideInRight 0.3s ease reverse forwards';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.pastor-sidebar');
+            const mainContent = document.querySelector('.main-content');
+            
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('sidebar-active');
+        }
     </script>
 </body>
 </html>

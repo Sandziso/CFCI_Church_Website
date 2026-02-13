@@ -1,0 +1,82 @@
+[23-Jan-2026 08:35:11 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 08:35:20 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 10:26:41 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 13:36:00 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:06:43 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:06:54 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:19:56 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:20:05 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:20:16 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:20:21 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:20:31 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:20:31 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined function redirectToDashboard() in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php:14
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\auth\login.php on line 14
+[23-Jan-2026 14:36:34 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:36:46 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:37:07 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:37:26 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:37:32 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:38:34 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:42:21 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:42:28 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:42:36 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:42:40 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 14:43:34 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 15:08:07 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getDashboardStatistics() in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:21
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 21
+[23-Jan-2026 15:08:54 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUnreadNotificationCount() in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:31
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(680): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 31
+[23-Jan-2026 15:08:57 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUnreadNotificationCount() in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:31
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(680): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 31
+[23-Jan-2026 15:11:48 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getUnreadNotificationCount() in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:31
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(680): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 31
+[23-Jan-2026 18:00:44 Africa/Mbabane] PHP Parse error:  syntax error, unexpected token "public", expecting end of file in C:\xampp\htdocs\CFCI_Church_Website\includes\database.php on line 1044
+[23-Jan-2026 18:00:56 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Cannot access private property ChurchDB::$conn in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:24
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(680): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 24
+[23-Jan-2026 18:02:15 Africa/Mbabane] PHP Fatal error:  Cannot redeclare formatRelativeDate() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:14) in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php on line 302
+[23-Jan-2026 18:02:30 Africa/Mbabane] PHP Warning:  Undefined variable $db in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[23-Jan-2026 18:02:30 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function getUserProfile() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:13
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(706): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[23-Jan-2026 18:21:56 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method ChurchDB::getTotalMembersCount() in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php:22
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php on line 22
+[23-Jan-2026 18:22:08 Africa/Mbabane] PHP Warning:  Undefined variable $db in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[23-Jan-2026 18:22:08 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to a member function getUserProfile() on null in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php:13
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\pastor\dashboard.php(706): include()
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\pastor\includes\pastor_topbar.php on line 13
+[23-Jan-2026 18:22:12 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:22:19 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:24:54 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:34:14 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:34:14 Africa/Mbabane] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\CFCI_Church_Website\auth\logout.php on line 8
+[23-Jan-2026 18:34:14 Africa/Mbabane] PHP Fatal error:  Cannot redeclare getUserInitials() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\functions.php:233) in C:\xampp\htdocs\CFCI_Church_Website\auth\logout.php on line 142
+[23-Jan-2026 18:38:48 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:38:55 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:39:26 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:39:50 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:52:15 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:52:17 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 18:52:20 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
+[23-Jan-2026 23:31:01 Africa/Mbabane] Database connected: cfci_church_db @ 127.0.0.1
