@@ -6,7 +6,7 @@ require_once 'includes/header.php';
 if (!isset($conn) || $conn === null) {
     try {
         $host = 'localhost';
-        $dbname = 'cfci_church';
+        $dbname = 'cfci_church_db';
         $username = 'root';
         $password = '';
         
@@ -16,6 +16,74 @@ if (!isset($conn) || $conn === null) {
     } catch(PDOException $e) {
         error_log("Database connection failed: " . $e->getMessage());
         $conn = null;
+    }
+}
+
+// Handle image upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadImage'])) {
+    if (isset($_SESSION['user_id']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'pastor')) {
+        $title = $_POST['title'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $category = $_POST['category'] ?? 'general';
+        
+        if (!empty($title) && isset($_FILES['imageFile'])) {
+            $uploadDir = 'uploads/gallery/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $fileName = time() . '_' . basename($_FILES['imageFile']['name']);
+            $targetFile = $uploadDir . $fileName;
+            $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+            
+            // Check if image file is actual image
+            $check = getimagesize($_FILES['imageFile']['tmp_name']);
+            if ($check !== false) {
+                // Check file size (5MB max)
+                if ($_FILES['imageFile']['size'] <= 5000000) {
+                    // Allow certain file formats
+                    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                    if (in_array($imageFileType, $allowedTypes)) {
+                        if (move_uploaded_file($_FILES['imageFile']['tmp_name'], $targetFile)) {
+                            try {
+                                $stmt = $conn->prepare("
+                                    INSERT INTO gallery (title, description, image_url, category, uploaded_by, is_published)
+                                    VALUES (:title, :description, :image_url, :category, :uploaded_by, :is_published)
+                                ");
+                                
+                                $is_published = ($_SESSION['role'] === 'admin') ? 1 : 0;
+                                
+                                $stmt->execute([
+                                    ':title' => $title,
+                                    ':description' => $description,
+                                    ':image_url' => $targetFile,
+                                    ':category' => $category,
+                                    ':uploaded_by' => $_SESSION['user_id'],
+                                    ':is_published' => $is_published
+                                ]);
+                                
+                                $_SESSION['success_message'] = "Image uploaded successfully! " . 
+                                    (($is_published == 0) ? "It will be reviewed by admin before publication." : "");
+                                header("Location: gallery.php");
+                                exit();
+                            } catch (PDOException $e) {
+                                $_SESSION['error_message'] = "Database error: " . $e->getMessage();
+                            }
+                        } else {
+                            $_SESSION['error_message'] = "Sorry, there was an error uploading your file.";
+                        }
+                    } else {
+                        $_SESSION['error_message'] = "Sorry, only JPG, JPEG, PNG, GIF & WEBP files are allowed.";
+                    }
+                } else {
+                    $_SESSION['error_message'] = "Sorry, your file is too large. Maximum size is 5MB.";
+                }
+            } else {
+                $_SESSION['error_message'] = "File is not an image.";
+            }
+        } else {
+            $_SESSION['error_message'] = "Please fill in all required fields.";
+        }
     }
 }
 
@@ -55,11 +123,11 @@ if ($conn) {
         $gallery_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Get unique categories
-        $cat_stmt = $conn->query("SELECT DISTINCT category FROM gallery WHERE category IS NOT NULL ORDER BY category");
+        $cat_stmt = $conn->query("SELECT DISTINCT category FROM gallery WHERE category IS NOT NULL AND is_published = 1 ORDER BY category");
         $categories = $cat_stmt->fetchAll(PDO::FETCH_COLUMN);
         
         // Get unique years
-        $year_stmt = $conn->query("SELECT DISTINCT YEAR(created_at) as year FROM gallery ORDER BY year DESC");
+        $year_stmt = $conn->query("SELECT DISTINCT YEAR(created_at) as year FROM gallery WHERE is_published = 1 ORDER BY year DESC");
         $years = $year_stmt->fetchAll(PDO::FETCH_COLUMN);
         
     } catch (PDOException $e) {
@@ -99,6 +167,24 @@ if (empty($years)) {
 
 <section class="section-padding">
     <div class="container">
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <?php echo $_SESSION['success_message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <?php echo $_SESSION['error_message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+        
         <div class="row mb-5">
             <div class="col-lg-8 mx-auto text-center">
                 <h2 class="mb-3">Church Life in Pictures</h2>
@@ -146,94 +232,30 @@ if (empty($years)) {
         <!-- Gallery Grid -->
         <div class="row" id="gallery-container">
             <?php if (empty($gallery_items)): ?>
-                <!-- Default gallery items if database is empty -->
-                <div class="col-lg-4 col-md-6 mb-4 gallery-item events">
-                    <div class="gallery-card">
-                        <div class="gallery-image">
-                            <img src="assets/images/gallery/worship-service.jpg" 
-                                 alt="Sunday Worship Service" 
-                                 class="img-fluid"
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#imageModal"
-                                 data-title="Sunday Worship Service"
-                                 data-description="Our vibrant Sunday worship service with heartfelt praise and worship."
-                                 data-date="Jun 15, 2025"
-                                 data-category="Events"
-                                 data-image="assets/images/gallery/worship-service.jpg">
-                            <div class="gallery-overlay">
-                                <div class="overlay-content">
-                                    <h5>Sunday Worship Service</h5>
-                                    <div class="image-meta">
-                                        <span class="badge bg-primary">Events</span>
-                                        <span class="text-light">Jun 15, 2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 mb-4 gallery-item ministries">
-                    <div class="gallery-card">
-                        <div class="gallery-image">
-                            <img src="assets/images/gallery/youth-camp.jpg" 
-                                 alt="Youth Ministry Camp" 
-                                 class="img-fluid"
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#imageModal"
-                                 data-title="Youth Ministry Camp"
-                                 data-description="Annual youth camping trip with worship, games, and spiritual growth activities."
-                                 data-date="Jun 8, 2025"
-                                 data-category="Ministries"
-                                 data-image="assets/images/gallery/youth-camp.jpg">
-                            <div class="gallery-overlay">
-                                <div class="overlay-content">
-                                    <h5>Youth Ministry Camp</h5>
-                                    <div class="image-meta">
-                                        <span class="badge bg-primary">Ministries</span>
-                                        <span class="text-light">Jun 8, 2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 mb-4 gallery-item sermons">
-                    <div class="gallery-card">
-                        <div class="gallery-image">
-                            <img src="assets/images/gallery/bishop-teaching.jpg" 
-                                 alt="Bishop Teaching" 
-                                 class="img-fluid"
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#imageModal"
-                                 data-title="Bishop Teaching"
-                                 data-description="Bishop Zakes Nxumalo delivering a powerful message during Sunday service."
-                                 data-date="Jun 1, 2025"
-                                 data-category="Sermons"
-                                 data-image="assets/images/gallery/bishop-teaching.jpg">
-                            <div class="gallery-overlay">
-                                <div class="overlay-content">
-                                    <h5>Bishop Teaching</h5>
-                                    <div class="image-meta">
-                                        <span class="badge bg-primary">Sermons</span>
-                                        <span class="text-light">Jun 1, 2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-images display-1 text-muted mb-4"></i>
+                    <h3 class="mb-3">No Photos Yet</h3>
+                    <p class="text-muted mb-4">Check back soon for gallery updates or upload some photos if you're an admin.</p>
+                    <?php if (isset($_SESSION['user_id']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'pastor')): ?>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                            <i class="fas fa-cloud-upload-alt me-2"></i> Upload First Photo
+                        </button>
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <?php foreach ($gallery_items as $item): ?>
                     <?php
                     $item_date = new DateTime($item['created_at']);
                     $category_class = strtolower($item['category'] ?? 'general');
+                    $image_url = $item['image_url'];
+                    if (!empty($image_url) && !file_exists($image_url)) {
+                        $image_url = 'assets/images/gallery/default.jpg';
+                    }
                     ?>
                     <div class="col-lg-4 col-md-6 mb-4 gallery-item <?php echo htmlspecialchars($category_class); ?>">
                         <div class="gallery-card">
                             <div class="gallery-image">
-                                <img src="<?php echo htmlspecialchars($item['image_url'] ?: 'assets/images/gallery/default.jpg'); ?>" 
+                                <img src="<?php echo htmlspecialchars($image_url); ?>" 
                                      alt="<?php echo htmlspecialchars($item['title']); ?>" 
                                      class="img-fluid"
                                      data-bs-toggle="modal" 
@@ -242,7 +264,8 @@ if (empty($years)) {
                                      data-description="<?php echo htmlspecialchars($item['description'] ?? ''); ?>"
                                      data-date="<?php echo $item_date->format('M d, Y'); ?>"
                                      data-category="<?php echo ucfirst($item['category'] ?? 'General'); ?>"
-                                     data-image="<?php echo htmlspecialchars($item['image_url'] ?: 'assets/images/gallery/default.jpg'); ?>">
+                                     data-image="<?php echo htmlspecialchars($image_url); ?>"
+                                     data-uploader="<?php echo htmlspecialchars($item['uploaded_by_name'] ?? 'Anonymous'); ?>">
                                 <div class="gallery-overlay">
                                     <div class="overlay-content">
                                         <h5><?php echo htmlspecialchars($item['title']); ?></h5>
@@ -260,7 +283,11 @@ if (empty($years)) {
         </div>
 
         <!-- No Results Message -->
-        <?php if (empty($gallery_items)): ?>
+        <?php if (!empty($gallery_items) && empty(array_filter($gallery_items, function($item) use ($category, $year) {
+            if ($category !== 'all' && $item['category'] !== $category) return false;
+            if ($year !== 'all' && date('Y', strtotime($item['created_at'])) != $year) return false;
+            return true;
+        }))): ?>
             <div class="text-center py-5">
                 <i class="fas fa-images display-1 text-muted mb-4"></i>
                 <h3 class="mb-3">No Photos Found</h3>
@@ -312,6 +339,10 @@ if (empty($years)) {
                                 <span id="modalCategory" class="badge bg-primary"></span>
                             </div>
                             <div class="info-item mb-3">
+                                <h6>Uploaded By</h6>
+                                <p id="modalUploader" class="small mb-0"></p>
+                            </div>
+                            <div class="info-item mb-3">
                                 <h6>Date</h6>
                                 <p id="modalDate" class="small mb-0"></p>
                             </div>
@@ -343,19 +374,20 @@ if (empty($years)) {
                 <h5 class="modal-title" id="uploadModalLabel">Upload Gallery Image</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="uploadForm">
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="modal-body">
+                    <input type="hidden" name="uploadImage" value="1">
                     <div class="mb-3">
                         <label for="imageTitle" class="form-label">Image Title *</label>
-                        <input type="text" class="form-control" id="imageTitle" name="imageTitle" required>
+                        <input type="text" class="form-control" id="imageTitle" name="title" required>
                     </div>
                     <div class="mb-3">
                         <label for="imageDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="imageDescription" name="imageDescription" rows="3"></textarea>
+                        <textarea class="form-control" id="imageDescription" name="description" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="imageCategory" class="form-label">Category *</label>
-                        <select class="form-select" id="imageCategory" name="imageCategory" required>
+                        <select class="form-select" id="imageCategory" name="category" required>
                             <option value="">Select Category</option>
                             <option value="events">Events</option>
                             <option value="ministries">Ministries</option>
@@ -366,18 +398,23 @@ if (empty($years)) {
                     <div class="mb-3">
                         <label for="imageFile" class="form-label">Image File *</label>
                         <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
-                        <div class="form-text">Maximum file size: 5MB. Supported formats: JPG, PNG, GIF</div>
+                        <div class="form-text">Maximum file size: 5MB. Supported formats: JPG, PNG, GIF, WEBP</div>
+                        <div id="filePreview" class="mt-3" style="display: none;">
+                            <img id="previewImage" src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                        </div>
                     </div>
                     <div class="alert alert-info small">
                         <i class="fas fa-info-circle me-2"></i>
-                        Uploaded images will be reviewed before being published to the gallery.
+                        Uploaded images will <?php echo ($_SESSION['role'] === 'admin') ? 'be published immediately.' : 'be reviewed before being published to the gallery.'; ?>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitUpload()">Upload Image</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="uploadButton">
+                        <i class="fas fa-cloud-upload-alt me-2"></i> Upload Image
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -393,10 +430,12 @@ if (empty($years)) {
     border-radius: 10px;
     overflow: hidden;
     transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .gallery-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 .gallery-image {
@@ -437,6 +476,7 @@ if (empty($years)) {
 .overlay-content h5 {
     font-size: 1rem;
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .image-meta {
@@ -450,12 +490,14 @@ if (empty($years)) {
     padding: 15px;
     background: #f8f9fa;
     border-radius: 8px;
+    height: 100%;
 }
 
 .info-item h6 {
     font-size: 0.9rem;
     color: #1a5276;
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
 #imageModal .modal-dialog {
@@ -471,6 +513,11 @@ if (empty($years)) {
 
 .upload-cta {
     background: linear-gradient(135deg, rgba(26, 82, 118, 0.05) 0%, rgba(230, 126, 34, 0.05) 100%);
+    border: 2px dashed #1a5276;
+}
+
+.gallery-filters {
+    border: 1px solid #dee2e6;
 }
 
 @media (max-width: 768px) {
@@ -485,6 +532,7 @@ if (empty($years)) {
     .gallery-overlay {
         opacity: 1;
         padding: 10px;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
     }
     
     .overlay-content h5 {
@@ -501,6 +549,10 @@ if (empty($years)) {
     
     #imageModal .modal-body .row {
         flex-direction: column;
+    }
+    
+    .upload-cta {
+        padding: 20px !important;
     }
 }
 </style>
@@ -525,12 +577,14 @@ if (imageModal) {
         const date = button.getAttribute('data-date');
         const category = button.getAttribute('data-category');
         const image = button.getAttribute('data-image');
+        const uploader = button.getAttribute('data-uploader');
         
         const modalTitle = imageModal.querySelector('.modal-title');
         const modalImage = imageModal.querySelector('#modalImage');
         const modalDescription = imageModal.querySelector('#modalDescription');
         const modalDate = imageModal.querySelector('#modalDate');
         const modalCategory = imageModal.querySelector('#modalCategory');
+        const modalUploader = imageModal.querySelector('#modalUploader');
         
         modalTitle.textContent = title;
         modalImage.src = image;
@@ -538,6 +592,7 @@ if (imageModal) {
         modalDescription.textContent = description || 'No description available.';
         modalDate.textContent = date;
         modalCategory.textContent = category;
+        modalUploader.textContent = uploader;
     });
 }
 
@@ -559,51 +614,102 @@ function downloadImage() {
 
 function shareImage() {
     if (navigator.share) {
+        const title = document.querySelector('#imageModalLabel').textContent;
+        const description = document.querySelector('#modalDescription').textContent;
+        const imageUrl = document.querySelector('#modalImage').src;
+        
         navigator.share({
-            title: document.querySelector('#imageModalLabel').textContent,
-            text: document.querySelector('#modalDescription').textContent,
+            title: title,
+            text: description.substring(0, 100) + '...',
             url: window.location.href,
-        });
+        }).then(() => {
+            console.log('Thanks for sharing!');
+        }).catch(console.error);
     } else {
+        // Fallback for browsers that don't support Web Share API
         navigator.clipboard.writeText(window.location.href).then(() => {
             alert('Link copied to clipboard!');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
         });
     }
 }
 
-// Upload functionality (admin/pastor only)
-function submitUpload() {
-    const form = document.getElementById('uploadForm');
-    const formData = new FormData(form);
+// File preview for upload
+document.getElementById('imageFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
     
-    // Validate file size (simulated)
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.style.display = 'block';
+            previewImage.src = e.target.result;
+        }
+        
+        reader.readAsDataURL(file);
+        
+        // Validate file size
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            alert('File size exceeds 5MB limit. Please choose a smaller file.');
+            e.target.value = '';
+            preview.style.display = 'none';
+        }
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+// Upload form validation
+document.getElementById('uploadForm')?.addEventListener('submit', function(e) {
     const fileInput = document.getElementById('imageFile');
-    if (fileInput.files[0] && fileInput.files[0].size > 5 * 1024 * 1024) {
-        alert('File size exceeds 5MB limit.');
-        return;
+    const titleInput = document.getElementById('imageTitle');
+    const categoryInput = document.getElementById('imageCategory');
+    
+    // Reset previous errors
+    [fileInput, titleInput, categoryInput].forEach(input => {
+        input.classList.remove('is-invalid');
+    });
+    
+    let isValid = true;
+    
+    // Validate file
+    if (!fileInput.files[0]) {
+        fileInput.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(fileInput.files[0].type)) {
+            fileInput.classList.add('is-invalid');
+            fileInput.nextElementSibling.textContent = 'Please select a valid image file (JPG, PNG, GIF, WEBP).';
+            isValid = false;
+        }
     }
     
-    // Simulate upload
-    const button = document.querySelector('#uploadModal .btn-primary');
-    const originalText = button.innerHTML;
+    // Validate title
+    if (!titleInput.value.trim()) {
+        titleInput.classList.add('is-invalid');
+        isValid = false;
+    }
     
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-    button.disabled = true;
+    // Validate category
+    if (!categoryInput.value) {
+        categoryInput.classList.add('is-invalid');
+        isValid = false;
+    }
     
-    setTimeout(() => {
-        alert('Image uploaded successfully! It will be reviewed before publication.');
-        form.reset();
-        button.innerHTML = originalText;
-        button.disabled = false;
-        
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-        modal.hide();
-        
-        // Refresh page to show new image (simulated)
-        setTimeout(() => location.reload(), 1000);
-    }, 2000);
-}
+    if (!isValid) {
+        e.preventDefault();
+    } else {
+        // Show loading state
+        const uploadButton = document.getElementById('uploadButton');
+        uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Uploading...';
+        uploadButton.disabled = true;
+    }
+});
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -618,6 +724,29 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 top: targetElement.offsetTop - 100,
                 behavior: 'smooth'
             });
+        }
+    });
+});
+
+// Image lazy loading
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('.gallery-image img');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => {
+        const dataSrc = img.getAttribute('data-src');
+        if (dataSrc) {
+            img.src = 'assets/images/placeholder.jpg';
+            imageObserver.observe(img);
         }
     });
 });

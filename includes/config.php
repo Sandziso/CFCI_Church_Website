@@ -1,120 +1,126 @@
 <?php
-// ===================================================
-// CONFIGURATION FILE - Christian Family Centre International
-// ===================================================
+/**
+ * config.php – Application Configuration
+ * Christian Family Centre International
+ */
 
-// Define root path if not defined yet
+// -------------------------------------------------------------
+// 1. Base path (real path of project root)
+// -------------------------------------------------------------
 if (!defined('ROOT_PATH')) {
-    define('ROOT_PATH', dirname(__DIR__));
+    define('ROOT_PATH', realpath(__DIR__ . '/..') . '/');
 }
 
-// Prevent direct access
-defined('ROOT_PATH') or die('Direct access not allowed');
+// -------------------------------------------------------------
+// 2. Site URL (dynamic)
+// -------------------------------------------------------------
+if (!defined('SITE_URL')) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'];
 
-// ====================================================================
-// SITE CONFIGURATION
-// ====================================================================
+    // Extract subfolder after document root
+    $projectRoot = str_replace('\\', '/', ROOT_PATH);
+    $docRoot     = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+    $subDir = '/' . ltrim(substr($projectRoot, strlen($docRoot)), '/');
+    if (substr($subDir, -1) !== '/') {
+        $subDir .= '/';
+    }
 
-// Site Information
+    define('SITE_URL', $protocol . $host . $subDir);
+}
+
+// -------------------------------------------------------------
+// 3. Application info
+// -------------------------------------------------------------
 define('SITE_NAME', 'Christian Family Centre International');
-define('SITE_URL', 'http://localhost/cfci'); // Update for production
 define('ADMIN_EMAIL', 'admin@cfci.org.sz');
 define('SUPPORT_EMAIL', 'support@cfci.org.sz');
 
-// Database Configuration
+// -------------------------------------------------------------
+// 4. Database
+// -------------------------------------------------------------
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'cfci_church_db');
-define('DB_USER', 'root'); // Change to your database user
-define('DB_PASS', ''); // Change to your database password
-define('DB_PORT', 3306); // Add port definition
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_PORT', 3306);
 
-// Security Configuration
+// -------------------------------------------------------------
+// 5. Security
+// -------------------------------------------------------------
 define('SESSION_NAME', 'CFCI_SESS');
-define('SESSION_TIMEOUT', 3600); // 1 hour in seconds
-define('CSRF_TOKEN_EXPIRY', 1800); // 30 minutes
+define('SESSION_TIMEOUT', 3600);    // 1 hour
+define('CSRF_TOKEN_EXPIRY', 1800);  // 30 minutes
 define('MAX_LOGIN_ATTEMPTS', 5);
-define('LOGIN_LOCKOUT_TIME', 900); // 15 minutes
-define('PASSWORD_RESET_EXPIRY', 3600); // 1 hour
+define('LOGIN_LOCKOUT_TIME', 900);   // 15 minutes
+define('PASSWORD_RESET_EXPIRY', 3600);
+define('REMEMBER_ME_EXPIRY', 30 * 86400); // 30 days
 
-// File Upload Configuration
-define('MAX_FILE_SIZE', 5242880); // 5MB
-define('UPLOAD_PATH', ROOT_PATH . '/uploads/');
+// -------------------------------------------------------------
+// 6. File uploads
+// -------------------------------------------------------------
+define('MAX_FILE_SIZE', 5242880);    // 5 MB
+define('UPLOAD_PATH', ROOT_PATH . 'uploads/');
 
-// Development Settings
-define('DEV_MODE', true); // Set to false in production
-define('LOG_PATH', ROOT_PATH . '/logs/');
-define('CACHE_PATH', ROOT_PATH . '/cache/');
+// -------------------------------------------------------------
+// 7. Development & logging
+// -------------------------------------------------------------
+define('DEV_MODE', true);           // false in production
+define('LOG_PATH', ROOT_PATH . 'logs/');
+define('CACHE_PATH', ROOT_PATH . 'cache/');
 
-// Timezone
+// -------------------------------------------------------------
+// 8. Timezone
+// -------------------------------------------------------------
 date_default_timezone_set('Africa/Mbabane');
 
-// ====================================================================
-// APPLICATION CONSTANTS
-// ====================================================================
+// -------------------------------------------------------------
+// 9. Roles / statuses (constants)
+// -------------------------------------------------------------
+define('ROLE_SUPER_ADMIN',  'super_admin');
+define('ROLE_ADMIN',       'admin');
+define('ROLE_PASTOR',      'pastor');
+define('ROLE_MEMBER',      'member');
+define('ROLE_GUEST',       'guest');
+define('ROLE_SUPER',       'super');   // ← ADD THIS LINE
 
-// User Roles
-define('ROLE_SUPER_ADMIN', 'super_admin');
-define('ROLE_ADMIN', 'admin');
-define('ROLE_PASTOR', 'pastor');
-define('ROLE_MEMBER', 'member');
-define('ROLE_GUEST', 'guest');
-
-// Status Constants
 define('STATUS_ACTIVE', 'active');
 define('STATUS_INACTIVE', 'inactive');
 define('STATUS_PENDING', 'pending');
-define('STATUS_APPROVED', 'approved');
-define('STATUS_REJECTED', 'rejected');
 define('STATUS_COMPLETED', 'completed');
+define('STATUS_REJECTED', 'rejected');
 
-// Prayer Request Categories
-define('PRAYER_HEALTH', 'health');
-define('PRAYER_FINANCIAL', 'financial');
-define('PRAYER_FAMILY', 'family');
-define('PRAYER_SPIRITUAL', 'spiritual');
-define('PRAYER_WORK', 'work');
-define('PRAYER_OTHER', 'other');
-
-// Event Status
-define('EVENT_UPCOMING', 'upcoming');
-define('EVENT_ONGOING', 'ongoing');
-define('EVENT_COMPLETED', 'completed');
-define('EVENT_CANCELLED', 'cancelled');
-
-// Donation Status
-define('DONATION_PENDING', 'pending');
 define('DONATION_COMPLETED', 'completed');
 define('DONATION_FAILED', 'failed');
+define('DONATION_PENDING', 'pending');
 define('DONATION_REFUNDED', 'refunded');
 
-// ====================================================================
-// ERROR REPORTING
-// ====================================================================
+// -------------------------------------------------------------
+// 10. Create directories
+// -------------------------------------------------------------
+foreach ([UPLOAD_PATH, LOG_PATH, CACHE_PATH] as $dir) {
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+}
 
+// -------------------------------------------------------------
+// 11. Error reporting
+// -------------------------------------------------------------
 if (DEV_MODE) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     ini_set('log_errors', 1);
-    if (defined('LOG_PATH')) {
-        ini_set('error_log', LOG_PATH . 'php_errors.log');
-    }
+    ini_set('error_log', LOG_PATH . 'php_errors.log');
 } else {
     error_reporting(0);
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
-    if (defined('LOG_PATH')) {
-        ini_set('error_log', LOG_PATH . 'php_errors.log');
-    }
+    ini_set('error_log', LOG_PATH . 'php_errors.log');
 }
 
-// ====================================================================
-// AUTO-LOAD CLASSES (Optional)
-// ====================================================================
-
-spl_autoload_register(function ($class_name) {
-    $class_file = __DIR__ . '/classes/' . $class_name . '.php';
-    if (file_exists($class_file)) {
-        require_once $class_file;
-    }
+// -------------------------------------------------------------
+// 12. Autoloader (optional)
+// -------------------------------------------------------------
+spl_autoload_register(function ($class) {
+    $file = __DIR__ . '/classes/' . $class . '.php';
+    if (file_exists($file)) require_once $file;
 });
-?>

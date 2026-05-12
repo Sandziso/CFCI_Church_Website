@@ -1,194 +1,188 @@
 <?php
-session_start();
-require_once '../../includes/config.php';
-require_once '../../includes/database.php';
-require_once '../../includes/functions.php';
+// admin/user-management/users.php
+require_once __DIR__ . '/../includes/admin_functions.php';
 
-// Check authentication
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'pastor') {
-    header('Location: ../../login.php?redirect=admin');
-    exit();
+$search = $_GET['search'] ?? '';
+$role_filter = $_GET['role'] ?? '';
+$status_filter = $_GET['status'] ?? '';
+$page = max(1, (int)($_GET['page'] ?? 1));
+$perPage = 20;
+$offset = ($page - 1) * $perPage;
+
+// Build query conditions
+$where = ['1=1'];
+$params = [];
+if ($search) {
+    $where[] = "(u.full_name LIKE :search OR u.email LIKE :search2)";
+    $params[':search'] = "%$search%";
+    $params[':search2'] = "%$search%";
 }
+if ($role_filter) {
+    $where[] = "u.role = :role";
+    $params[':role'] = $role_filter;
+}
+if ($status_filter !== '') {
+    $where[] = "u.is_active = :active";
+    $params[':active'] = (int)$status_filter;
+}
+$whereSQL = implode(' AND ', $where);
 
-$db = new ChurchDB($conn);
-$users = $db->getAllUsers();
+// Total count
+$countStmt = $conn->prepare("SELECT COUNT(*) FROM users u WHERE $whereSQL");
+$countStmt->execute($params);
+$total = $countStmt->fetchColumn();
+$totalPages = ceil($total / $perPage);
+
+// Fetch users – FIXED: use `join_date` instead of `created_at`
+$query = "SELECT u.*, a.role as admin_role, a.permissions
+          FROM users u
+          LEFT JOIN admins a ON u.id = a.user_id
+          WHERE $whereSQL
+          ORDER BY u.join_date DESC
+          LIMIT $perPage OFFSET $offset";
+$stmt = $conn->prepare($query);
+$stmt->execute($params);
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Handle quick actions (toggle, delete)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        $userId = (int)($_POST['user_id'] ?? 0);
+        if ($_POST['action'] === 'toggle_status') {
+            $stmt = $conn->prepare("UPDATE users SET is_active = NOT is_active WHERE id = ?");
+            $stmt->execute([$userId]);
+        } elseif ($_POST['action'] === 'delete') {
+            $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+        }
+        header("Location: users.php?msg=success");
+        exit;
+    }
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - CFCI Admin</title>
-    <!-- Include CSS from dashboard -->
+    <title>Manage Users | CFCI Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #1a5276; --accent: #e67e22; }
+        body { font-family: 'Inter', sans-serif; background: #f4f6f9; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .admin-main { flex: 1; margin-left: 260px; padding: 1.5rem 2rem; transition: margin 0.3s; }
+        .sidebar.collapsed + .admin-main { margin-left: 70px; }
+        @media (max-width: 991.98px) { .admin-main { margin-left: 0 !important; } }
+        .card { background: #fff; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: none; }
+        .table th { font-weight: 600; color: #64748b; border-top: none; }
+        .btn-sm { border-radius: 30px; padding: 0.25rem 1rem; font-size: 0.8rem; }
+        .badge-role { background: #e2e8f0; color: #1a5276; padding: 0.2em 0.7em; border-radius: 30px; font-weight: 500; font-size: 0.75rem; }
+        .pagination .page-link { border-radius: 8px; margin: 0 3px; }
+    </style>
 </head>
 <body>
-    <?php include '../includes/admin_sidebar.php'; ?>
-    
-    <div class="main-content">
-        <?php include '../includes/admin_topbar.php'; ?>
-        
-        <!-- Page Title -->
-        <div class="row mb-4">
-            <div class="col">
-                <h2 class="h4">User Management</h2>
-                <p class="text-muted mb-0">Manage church members, pastors, and administrators</p>
-            </div>
-            <div class="col-auto">
-                <a href="add-user.php" class="btn btn-primary">
-                    <i class="fas fa-user-plus"></i> Add New User
-                </a>
-            </div>
+<div class="admin-layout">
+    <?php include __DIR__ . '/../includes/admin_sidebar.php'; ?>
+    <main class="admin-main">
+        <?php include __DIR__ . '/../includes/admin_topbar.php'; ?>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold text-dark">Manage Users</h4>
+            <a href="add-user.php" class="btn btn-primary btn-sm"><i class="fas fa-user-plus me-1"></i> Add User</a>
         </div>
-        
-        <!-- User Management Card -->
-        <div class="dashboard-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title mb-0">All Users</h5>
-                <div class="d-flex gap-2">
-                    <input type="text" class="form-control form-control-sm" placeholder="Search users..." id="searchUsers">
-                    <select class="form-select form-select-sm" style="width: 150px;" id="filterRole">
+
+        <!-- Filters -->
+        <form class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search name or email..." class="form-control form-control-sm">
+                </div>
+                <div class="col-md-3">
+                    <select name="role" class="form-select form-select-sm">
                         <option value="">All Roles</option>
-                        <option value="pastor">Pastors</option>
-                        <option value="member">Members</option>
-                        <option value="admin">Admins</option>
+                        <option value="admin" <?= $role_filter==='admin'?'selected':'' ?>>Admin</option>
+                        <option value="pastor" <?= $role_filter==='pastor'?'selected':'' ?>>Pastor</option>
+                        <option value="member" <?= $role_filter==='member'?'selected':'' ?>>Member</option>
+                        <option value="guest" <?= $role_filter==='guest'?'selected':'' ?>>Guest</option>
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="">All Status</option>
+                        <option value="1" <?= $status_filter==='1'?'selected':'' ?>>Active</option>
+                        <option value="0" <?= $status_filter==='0'?'selected':'' ?>>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm w-100">Filter</button>
+                </div>
             </div>
-            
+        </form>
+
+        <div class="card p-3">
             <div class="table-responsive">
-                <table class="table table-hover" id="usersTable">
+                <table class="table align-middle">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>User</th>
+                            <th>Email</th>
                             <th>Role</th>
                             <th>Status</th>
-                            <th>Join Date</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
+                            <th>Joined</th>
+                            <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($users as $user): ?>
+                        <?php foreach ($users as $u): ?>
                         <tr>
+                            <td><?= $u['id'] ?></td>
+                            <td class="fw-semibold"><?= htmlspecialchars($u['full_name']) ?></td>
+                            <td><?= htmlspecialchars($u['email']) ?></td>
+                            <td><span class="badge-role"><?= $u['admin_role'] ?? $u['role'] ?></span></td>
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <img src="<?php echo $user['avatar_url'] ?? 'https://via.placeholder.com/40'; ?>" 
-                                         class="user-avatar me-3" alt="User">
-                                    <div>
-                                        <h6 class="mb-0"><?php echo htmlspecialchars($user['full_name']); ?></h6>
-                                        <small class="text-muted"><?php echo htmlspecialchars($user['email']); ?></small>
-                                    </div>
-                                </div>
+                                <?= $u['is_active'] 
+                                    ? '<span class="text-success fw-semibold">Active</span>' 
+                                    : '<span class="text-danger fw-semibold">Inactive</span>' ?>
                             </td>
-                            <td>
-                                <span class="badge bg-<?php echo $user['role'] == 'pastor' ? 'primary' : ($user['role'] == 'admin' ? 'danger' : 'info'); ?>">
-                                    <?php echo ucfirst($user['role']); ?>
-                                </span>
-                            </td>
-                            <td>
-                                <?php if($user['is_active']): ?>
-                                <span class="badge bg-success">Active</span>
-                                <?php else: ?>
-                                <span class="badge bg-danger">Inactive</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><?php echo date('M d, Y', strtotime($user['join_date'])); ?></td>
-                            <td>
-                                <?php if($user['last_login']): ?>
-                                <small><?php echo time_elapsed_string($user['last_login']); ?> ago</small>
-                                <?php else: ?>
-                                <small class="text-muted">Never</small>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-primary" onclick="viewUser(<?php echo $user['id']; ?>)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-outline-warning" onclick="editUser(<?php echo $user['id']; ?>)">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <?php if($user['id'] != $_SESSION['user_id']): ?>
-                                    <button class="btn btn-outline-danger" onclick="deleteUser(<?php echo $user['id']; ?>)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                    <?php endif; ?>
-                                </div>
+                            <td><?= date('M d, Y', strtotime($u['join_date'])) ?></td>
+                            <td class="text-end">
+                                <a href="edit-user.php?id=<?= $u['id'] ?>" class="btn btn-outline-secondary btn-sm"><i class="fas fa-edit"></i></a>
+                                <form method="post" style="display:inline" onsubmit="return confirm('Toggle status?')">
+                                    <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                                    <input type="hidden" name="action" value="toggle_status">
+                                    <button type="submit" class="btn btn-outline-warning btn-sm"><i class="fas fa-power-off"></i></button>
+                                </form>
+                                <form method="post" style="display:inline" onsubmit="return confirm('Delete user permanently?')">
+                                    <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                </form>
                             </td>
                         </tr>
                         <?php endforeach; ?>
+                        <?php if (empty($users)): ?>
+                        <tr><td colspan="7" class="text-center text-muted py-4">No users found</td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-            
             <!-- Pagination -->
+            <?php if ($totalPages > 1): ?>
             <nav>
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Previous</a>
+                <ul class="pagination justify-content-center mt-3">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>&role=<?= $role_filter ?>&status=<?= $status_filter ?>"><?= $i ?></a>
                     </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
+                    <?php endfor; ?>
                 </ul>
             </nav>
+            <?php endif; ?>
         </div>
-    </div>
-    
-    <script>
-        // Search and filter functionality
-        document.getElementById('searchUsers').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#usersTable tbody tr');
-            
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-        
-        document.getElementById('filterRole').addEventListener('change', function(e) {
-            const filter = e.target.value;
-            const rows = document.querySelectorAll('#usersTable tbody tr');
-            
-            rows.forEach(row => {
-                const role = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                if (!filter || role.includes(filter)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-        
-        // User actions
-        function viewUser(id) {
-            window.location.href = `view-user.php?id=${id}`;
-        }
-        
-        function editUser(id) {
-            window.location.href = `edit-user.php?id=${id}`;
-        }
-        
-        function deleteUser(id) {
-            if(confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                fetch(`../../api/users.php?action=delete&id=${id}`, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                });
-            }
-        }
-    </script>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

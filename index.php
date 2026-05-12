@@ -1,535 +1,335 @@
-<?php
-// Set the page variable for header/footer includes
-$page = basename($_SERVER['PHP_SELF']);
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFCI Church - Christian Family Centre International</title>
-    
-    <!-- Meta Description for SEO -->
-    <meta name="description" content="Christian Family Centre International (CFCI) in Manzini, Swaziland - A vibrant Christian community dedicated to worship, fellowship, and spreading God's love.">
-    <meta name="keywords" content="CFCI, church, Manzini, Eswatini, Christian, family, worship, prayer">
-    <meta name="author" content="Christian Family Centre International">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://cfci-eswatini.org/">
-    <meta property="og:title" content="CFCI Church - Christian Family Centre International">
-    <meta property="og:description" content="Building strong families and empowering communities in Manzini, Eswatini">
-    <meta property="og:image" content="https://cfci-eswatini.org/assets/images/og-image.jpg">
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Animate CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <!-- Header CSS -->
-    <link rel="stylesheet" href="assets/css/header.css">
-    <!-- Home Page CSS -->
-    <link rel="stylesheet" href="assets/css/home.css">
-</head>
-<body>
-    <!-- Include Header -->
-    <?php include('includes/header.php'); ?>
-    
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-overlay">
-            <div class="container">
-                <div class="hero-content fade-in">
-                    <h1 class="hero-title">Welcome to Christian Family Centre International</h1>
-                    <p class="hero-subtitle">A vibrant Christian community in Manzini, Swaziland dedicated to worship, fellowship, and spreading God's love</p>
-                    
-                    <!-- Service Times -->
-                    <div class="service-times slide-in-left">
-                        <div class="service-time-item">
-                            <i class="fas fa-clock"></i>
-                            <div>
-                                <h3>Sunday Service</h3>
-                                <p>9:00 AM - 11:30 AM</p>
-                            </div>
-                        </div>
-                        <div class="service-time-item">
-                            <i class="fas fa-clock"></i>
-                            <div>
-                                <h3>Bible Study</h3>
-                                <p>Wednesday 6:00 PM</p>
-                            </div>
-                        </div>
-                        <div class="service-time-item">
-                            <i class="fas fa-clock"></i>
-                            <div>
-                                <h3>Prayer Meeting</h3>
-                                <p>Friday 6:00 PM</p>
-                            </div>
-                        </div>
+<?php include 'includes/header.php'; ?>
+
+<!-- ========== HERO SECTION ========== -->
+<div class="hero-section wow fadeIn" data-wow-duration="1.2s" style="background-image: url('assets/images/hero/main-hero.jpg');">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <h1 class="hero-title">Experience Faith, Family &amp; Purpose</h1>
+        <p class="hero-subtitle">Join a Spirit‑filled community in Manzini, Eswatini – growing together through worship, the Word, and service.</p>
+        <div class="hero-buttons">
+            <a href="about.php" class="btn btn-warning btn-lg">Discover Our Church</a>
+            <a href="sermons.php" class="btn btn-outline-light btn-lg">Watch Live</a>
+            <a href="contact.php" class="btn btn-outline-light btn-lg">Plan Your Visit</a>
+        </div>
+    </div>
+</div>
+
+<!-- ========== WELCOME & ABOUT ========== -->
+<section class="container-xxl py-5 mission-section">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.2s">
+                <h1 class="section-title">Welcome to CFCI Church</h1>
+                <p class="mission-text">Christian Family Centre International is a vibrant, multi‑generational church in the heart of Manzini. For over two decades, we have been dedicated to building strong families, empowering believers, and reaching our nation with the love of Christ.</p>
+                <p class="mission-text">Whether you are searching for faith, seeking a place to belong, or ready to serve, CFCI is your home. Come experience life‑changing worship and practical teaching that transforms everyday life.</p>
+                <a href="about.php" class="btn btn-primary btn-lg">Read Our Story</a>
+            </div>
+            <div class="col-lg-6 wow fadeInRight" data-wow-delay="0.4s">
+                <div class="mission-image rounded overflow-hidden shadow">
+                    <img class="img-fluid" src="assets/images/about.jpg" alt="CFCI Church congregation" loading="lazy" width="600" height="400">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CHURCH STATS ========== -->
+<section class="container-fluid bg-primary text-white py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <div class="display-4 fw-bold counter" data-target="2500">0</div>
+                <h5 class="mt-2">Members &amp; Regulars</h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <div class="display-4 fw-bold counter" data-target="18">0</div>
+                <h5 class="mt-2">Active Ministries</h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <div class="display-4 fw-bold counter" data-target="42">0</div>
+                <h5 class="mt-2">Annual Outreach Events</h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <div class="display-4 fw-bold counter" data-target="24">0</div>
+                <h5 class="mt-2">Years of Ministry</h5>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== GET CONNECTED ========== -->
+<section class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 700px;">
+            <h1 class="section-title">Get Connected</h1>
+            <p>No matter your age or season of life, there’s a place for you at CFCI. Explore our ministries and find your family.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-card text-center">
+                    <div class="service-icon"><i class="fas fa-microphone-alt"></i></div>
+                    <h3>Anointed Worship</h3>
+                    <p>Spirit‑led worship every Sunday at 9 AM. Come as you are and encounter God’s presence.</p>
+                    <a href="sermons.php" class="btn-link">Listen now <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-card text-center">
+                    <div class="service-icon"><i class="fas fa-users"></i></div>
+                    <h3>Vibrant Ministries</h3>
+                    <p>From youth to seniors, discover groups that nurture your faith and build lasting friendships.</p>
+                    <a href="ministries.php" class="btn-link">Explore ministries <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-card text-center">
+                    <div class="service-icon"><i class="fas fa-heart"></i></div>
+                    <h3>Community Outreach</h3>
+                    <p>We serve the most vulnerable in Manzini through food programmes, health drives, and more.</p>
+                    <a href="ministry.php?id=outreach" class="btn-link">Get involved <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="service-card text-center">
+                    <div class="service-icon"><i class="fas fa-child"></i></div>
+                    <h3>Children’s Church</h3>
+                    <p>A safe, fun environment where kids ages 3–12 learn about Jesus through stories, games, and music.</p>
+                    <a href="ministry.php?id=children" class="btn-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== UPCOMING EVENTS (Owl Carousel) ========== -->
+<section class="container-xxl py-5 bg-light">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 700px;">
+            <h1 class="section-title">Upcoming Events</h1>
+            <p>Mark your calendar and be part of what God is doing in our community.</p>
+        </div>
+        <div class="owl-carousel owl-theme">
+            <div class="item" aria-label="Event: Easter Sunday Celebration">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/events/easter.jpg" alt="Easter" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-calendar-alt me-2"></i>20 April 2026 | 9:00 – 12:00</div>
+                        <h3 class="blog-title">Easter Sunday Celebration</h3>
+                        <p class="blog-excerpt">Powerful worship, special drama, and anointed preaching.</p>
+                        <a href="events.php" class="blog-read-more">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    
-                    <!-- Countdown to Next Service -->
-                    <div class="countdown-container slide-in-right">
-                        <h3>Next Sunday Service In:</h3>
-                        <div id="service-countdown" class="countdown">
-                            <!-- Countdown will be populated by JavaScript -->
-                        </div>
-                        <a href="#services" class="btn btn-secondary mt-3">
-                            <i class="fas fa-calendar-alt"></i> View All Services
-                        </a>
+                </div>
+            </div>
+            <div class="item" aria-label="Event: Youth Revival Night">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/events/youth-night.jpg" alt="Youth Revival" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-calendar-alt me-2"></i>25 April 2026 | 18:00 – 21:00</div>
+                        <h3 class="blog-title">Youth Revival Night</h3>
+                        <p class="blog-excerpt">A night of passionate worship for ages 13–35.</p>
+                        <a href="events.php" class="blog-read-more">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
-                    
-                    <!-- CTA Buttons -->
-                    <div class="hero-cta">
-                        <a href="#about" class="btn btn-primary btn-lg">
-                            <i class="fas fa-info-circle"></i> Learn More About Us
-                        </a>
-                        <a href="#contact" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-map-marker-alt"></i> Visit Us This Sunday
-                        </a>
+                </div>
+            </div>
+            <div class="item" aria-label="Event: Family Fun Day">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/events/picnic.jpg" alt="Picnic" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-calendar-alt me-2"></i>1 May 2026</div>
+                        <h3 class="blog-title">Family Fun Day</h3>
+                        <p class="blog-excerpt">Games, food, and fellowship at Mbuluzi River Park.</p>
+                        <a href="events.php" class="blog-read-more">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item" aria-label="Event: Marriage Enrichment Seminar">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/events/marriage.jpg" alt="Marriage Seminar" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-calendar-alt me-2"></i>14 June 2026</div>
+                        <h3 class="blog-title">Marriage Enrichment Seminar</h3>
+                        <p class="blog-excerpt">Biblical principles for a thriving marriage.</p>
+                        <a href="events.php" class="blog-read-more">Learn more <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="text-center mt-5">
+            <a href="events.php" class="btn btn-outline-primary btn-lg">View All Events</a>
+        </div>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="section-padding bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="section-title">About CFCI</h2>
-                <p class="section-subtitle">Our Mission, Vision, and Beliefs</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card p-4 h-100">
-                        <div class="card-icon">
-                            <i class="fas fa-cross"></i>
-                        </div>
-                        <h3 class="card-title">Our Mission</h3>
-                        <p class="card-text">To build a Christ-centered community that transforms lives through the power of the Gospel, nurturing spiritual growth, and extending God's love to our city and nation.</p>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="card p-4 h-100">
-                        <div class="card-icon">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <h3 class="card-title">Our Vision</h3>
-                        <p class="card-text">To be a beacon of hope and transformation in Swaziland, raising disciples who impact their families, communities, and nation for Christ.</p>
+<!-- ========== LATEST SERMONS (Owl Carousel) ========== -->
+<section class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 700px;">
+            <h1 class="section-title">Recent Messages</h1>
+            <p>Be inspired by our latest sermons and Bible teachings.</p>
+        </div>
+        <div class="owl-carousel owl-theme">
+            <div class="item" aria-label="Sermon: Walking by Faith">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/sermons/faith.jpg" alt="Walking by Faith" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="fas fa-bible me-2"></i>Bishop Zakes Nxumalo</div>
+                        <h3 class="blog-title">Walking by Faith</h3>
+                        <p class="blog-excerpt">2 Corinthians 5:7 – Living by faith, not by sight.</p>
+                        <a href="sermons.php" class="blog-read-more">Watch sermon <i class="fas fa-play-circle ms-1"></i></a>
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-5">
-                <div class="card p-5">
-                    <h3 class="text-center mb-4">Our Core Beliefs</h3>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="belief-item">
-                                <i class="fas fa-book-bible"></i>
-                                <h4>The Bible</h4>
-                                <p>We believe the Bible is the inspired, infallible Word of God and our final authority in all matters of faith and conduct.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="belief-item">
-                                <i class="fas fa-dove"></i>
-                                <h4>The Trinity</h4>
-                                <p>We believe in one God eternally existing in three persons: Father, Son, and Holy Spirit.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="belief-item">
-                                <i class="fas fa-church"></i>
-                                <h4>The Church</h4>
-                                <p>We believe the Church is the body of Christ, called to worship, fellowship, and spread the Gospel to all nations.</p>
-                            </div>
-                        </div>
+            <div class="item" aria-label="Sermon: The Joy of Generosity">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/sermons/generosity.jpg" alt="Generosity" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="fas fa-bible me-2"></i>Pastor Michael Ndlovu</div>
+                        <h3 class="blog-title">The Joy of Generosity</h3>
+                        <p class="blog-excerpt">2 Corinthians 9:6‑8 – Abundant blessings.</p>
+                        <a href="sermons.php" class="blog-read-more">Watch sermon <i class="fas fa-play-circle ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item" aria-label="Sermon: Overcoming Fear">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/sermons/overcoming-fear.jpg" alt="Overcoming Fear" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="fas fa-bible me-2"></i>Bishop Zakes Nxumalo</div>
+                        <h3 class="blog-title">Overcoming Fear</h3>
+                        <p class="blog-excerpt">2 Timothy 1:7 – God’s power over fear.</p>
+                        <a href="sermons.php" class="blog-read-more">Watch sermon <i class="fas fa-play-circle ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="item" aria-label="Sermon: The Power of Prayer">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/sermons/prayer.jpg" alt="Power of Prayer" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="fas fa-bible me-2"></i>Pastor Joseph Mkhonta</div>
+                        <h3 class="blog-title">The Power of Prayer</h3>
+                        <p class="blog-excerpt">Matthew 6:5‑15 – Unlocking heaven’s resources.</p>
+                        <a href="sermons.php" class="blog-read-more">Watch sermon <i class="fas fa-play-circle ms-1"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="text-center mt-5">
+            <a href="sermons.php" class="btn btn-outline-primary btn-lg">All Sermons</a>
+        </div>
+    </div>
+</section>
 
-    <!-- Services Section -->
-    <section id="services" class="section-padding">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="section-title">Our Services</h2>
-                <p class="section-subtitle">Join us for worship and fellowship</p>
+<!-- ========== TESTIMONIALS ========== -->
+<section class="container-fluid bg-dark text-white py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="section-title text-white">What People Are Saying</h1>
+        </div>
+        <div class="owl-carousel owl-theme testimonial-carousel">
+            <div class="item text-center px-4" aria-label="Testimonial from John & Sarah Dlamini">
+                <i class="fas fa-quote-left fa-3x text-warning mb-4"></i>
+                <p class="lead">“CFCI became our second family. The community here helped us grow spiritually and personally.”</p>
+                <h5 class="mt-4">John &amp; Sarah Dlamini</h5>
+                <small class="text-white-50">Members since 2018</small>
             </div>
-            
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="service-card card h-100">
-                        <div class="service-icon">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Sunday Worship</h3>
-                            <p class="service-time"><i class="fas fa-clock"></i> 9:00 AM - 11:30 AM</p>
-                            <p class="card-text">Our main worship service featuring inspiring worship, biblical teaching, and fellowship. Children's church and nursery available.</p>
-                            <a href="#contact" class="btn btn-outline-primary mt-3">Get Directions</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="service-card card h-100">
-                        <div class="service-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Bible Study</h3>
-                            <p class="service-time"><i class="fas fa-clock"></i> Wednesday, 6:00 PM</p>
-                            <p class="card-text">Mid-week study delving deeper into God's Word. Interactive discussions and prayer for spiritual growth.</p>
-                            <a href="#contact" class="btn btn-outline-primary mt-3">Join Us</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="service-card card h-100">
-                        <div class="service-icon">
-                            <i class="fas fa-pray"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Prayer Meeting</h3>
-                            <p class="service-time"><i class="fas fa-clock"></i> Friday, 6:00 PM</p>
-                            <p class="card-text">Corporate prayer for our church, community, nation, and personal needs. Experience the power of prayer together.</p>
-                            <a href="#contact" class="btn btn-outline-primary mt-3">Pray With Us</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="item text-center px-4" aria-label="Testimonial from Thandi Maseko">
+                <i class="fas fa-quote-left fa-3x text-warning mb-4"></i>
+                <p class="lead">“The youth ministry completely transformed my life. I went from lost to leading worship.”</p>
+                <h5 class="mt-4">Thandi Maseko</h5>
+                <small class="text-white-50">Youth Leader</small>
             </div>
-            
-            <div class="text-center mt-5">
-                <a href="#events" class="btn btn-primary btn-lg">
-                    <i class="fas fa-calendar-check"></i> View Upcoming Events
-                </a>
+            <div class="item text-center px-4" aria-label="Testimonial from David & Grace Mabuza">
+                <i class="fas fa-quote-left fa-3x text-warning mb-4"></i>
+                <p class="lead">“Through the marriage seminar, God restored our relationship.”</p>
+                <h5 class="mt-4">David &amp; Grace Mabuza</h5>
+                <small class="text-white-50">Married 15 years</small>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Ministries Section -->
-    <section id="ministries" class="section-padding bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="section-title">Our Ministries</h2>
-                <p class="section-subtitle">Get involved in our various ministry groups</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-child"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Children's Ministry</h3>
-                            <p class="card-text">Age-appropriate Bible teaching and activities for children from nursery to pre-teen. Safe and nurturing environment.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> Ages 0-12</span>
-                                <span><i class="fas fa-clock"></i> Sundays, 9:00 AM</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-music"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Worship Team</h3>
-                            <p class="card-text">Leading the congregation in worship through music. Open to vocalists and instrumentalists with a heart for worship.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> All Ages</span>
-                                <span><i class="fas fa-clock"></i> Rehearsals: Saturdays</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-hands-helping"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Outreach Ministry</h3>
-                            <p class="card-text">Serving our community through practical assistance, evangelism, and demonstrating God's love in tangible ways.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> All Ages</span>
-                                <span><i class="fas fa-clock"></i> Monthly Activities</span>
-                            </div>
-                        </div>
+<!-- ========== LATEST BLOG / NEWS ========== -->
+<section class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5" style="max-width: 700px;">
+            <h1 class="section-title">From Our Blog</h1>
+            <p>Stories, devotionals, and practical insights to encourage your walk with God.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/blog/family-prayer.jpg" alt="Family Prayer" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-clock me-2"></i>2 days ago</div>
+                        <h3 class="blog-title">The Power of Family Prayer</h3>
+                        <p class="blog-excerpt">Transform your home through regular prayer.</p>
+                        <a href="blog.php" class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
-            
-            <div class="row mt-4">
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Youth Ministry</h3>
-                            <p class="card-text">Engaging teenagers with relevant Bible teaching, fellowship, and activities to grow in their faith.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> Ages 13-18</span>
-                                <span><i class="fas fa-clock"></i> Fridays, 5:00 PM</span>
-                            </div>
-                        </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/blog/faith-over-fear.jpg" alt="Overcoming Fear" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-clock me-2"></i>1 week ago</div>
+                        <h3 class="blog-title">Overcoming Fear with Faith</h3>
+                        <p class="blog-excerpt">Confront fear through Scripture.</p>
+                        <a href="blog.php" class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Men's Fellowship</h3>
-                            <p class="card-text">Building godly men through Bible study, accountability, and fellowship. Monthly meetings and events.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> Men 18+</span>
-                                <span><i class="fas fa-clock"></i> First Saturday Monthly</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4 mb-4">
-                    <div class="ministry-card card h-100">
-                        <div class="ministry-image">
-                            <i class="fas fa-female"></i>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Women's Ministry</h3>
-                            <p class="card-text">Encouraging women in their faith journey through Bible studies, prayer, and fellowship events.</p>
-                            <div class="ministry-info">
-                                <span><i class="fas fa-users"></i> Women 18+</span>
-                                <span><i class="fas fa-clock"></i> Second Saturday Monthly</span>
-                            </div>
-                        </div>
+            </div>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="blog-card">
+                    <div class="blog-image"><img src="assets/images/blog/generosity.jpg" alt="Living Generously" loading="lazy" width="400" height="250"></div>
+                    <div class="blog-content">
+                        <div class="blog-date"><i class="far fa-clock me-2"></i>2 weeks ago</div>
+                        <h3 class="blog-title">Living Generously</h3>
+                        <p class="blog-excerpt">Discover ways to bless others beyond money.</p>
+                        <a href="blog.php" class="blog-read-more">Read more <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="text-center mt-5">
+            <a href="blog.php" class="btn btn-outline-primary btn-lg">View All Posts</a>
+        </div>
+    </div>
+</section>
 
-    <!-- Events Section -->
-    <section id="events" class="section-padding">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="section-title">Upcoming Events</h2>
-                <p class="section-subtitle">Join us for these special gatherings</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="event-card card h-100">
-                        <div class="event-date">
-                            <div class="event-day">15</div>
-                            <div class="event-month">DEC</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Christmas Celebration Service</h3>
-                            <p class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</p>
-                            <p class="card-text">Special Christmas service with carols, message of hope, and children's nativity play. Bring the whole family!</p>
-                            <div class="event-tags">
-                                <span class="event-tag">Family</span>
-                                <span class="event-tag">Holiday</span>
-                                <span class="event-tag">Special Service</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="event-card card h-100">
-                        <div class="event-date">
-                            <div class="event-day">24</div>
-                            <div class="event-month">DEC</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Christmas Eve Candlelight Service</h3>
-                            <p class="event-time"><i class="fas fa-clock"></i> 7:00 PM - 8:30 PM</p>
-                            <p class="card-text">A beautiful candlelight service celebrating the birth of our Savior. Communion will be served.</p>
-                            <div class="event-tags">
-                                <span class="event-tag">Candlelight</span>
-                                <span class="event-tag">Communion</span>
-                                <span class="event-tag">Holiday</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row mt-4">
-                <div class="col-md-6 mb-4">
-                    <div class="event-card card h-100">
-                        <div class="event-date">
-                            <div class="event-day">31</div>
-                            <div class="event-month">DEC</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">New Year's Eve Prayer Service</h3>
-                            <p class="event-time"><i class="fas fa-clock"></i> 9:00 PM - 12:30 AM</p>
-                            <p class="card-text">Welcome the new year with prayer, worship, and thanksgiving. Let's dedicate the coming year to God together.</p>
-                            <div class="event-tags">
-                                <span class="event-tag">Prayer</span>
-                                <span class="event-tag">New Year</span>
-                                <span class="event-tag">Overnight</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="event-card card h-100">
-                        <div class="event-date">
-                            <div class="event-day">10</div>
-                            <div class="event-month">JAN</div>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Church Family Picnic</h3>
-                            <p class="event-time"><i class="fas fa-clock"></i> 1:00 PM - 5:00 PM</p>
-                            <p class="card-text">Annual church picnic at Manzini Park. Food, games, and fellowship for all ages. Bring a dish to share!</p>
-                            <div class="event-tags">
-                                <span class="event-tag">Outdoor</span>
-                                <span class="event-tag">Family</span>
-                                <span class="event-tag">Fellowship</span>
-                            </div>
-                        </div>
-                    </div>
+<!-- ========== PRAYER REQUEST & GIVING CTA ========== -->
+<section class="container-fluid cta-section my-5 py-5 wow fadeIn" data-wow-delay="0.1s" style="background-image: url('assets/images/hero/cta-bg.jpg');">
+    <div class="cta-overlay"></div>
+    <div class="container py-5 text-center text-white">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="cta-title">We Are Here for You</h1>
+                <p class="cta-text mb-4">Need prayer? Want to give? Ready to take your next step? We would love to connect with you.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="prayer-request.php" class="btn btn-warning btn-lg">Submit a Prayer Request</a>
+                    <a href="give.php" class="btn btn-outline-light btn-lg">Give Online</a>
+                    <a href="contact.php" class="btn btn-outline-light btn-lg">Contact Us</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="section-padding bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5">
-                <h2 class="section-title">Contact Us</h2>
-                <p class="section-subtitle">We'd love to hear from you</p>
-            </div>
-            
-            <div class="row">
-                <!-- Contact Information -->
-                <div class="col-md-4 mb-4">
-                    <div class="contact-info card h-100 p-4">
-                        <h3 class="mb-4">Get In Touch</h3>
-                        
-                        <div class="contact-item mb-4">
-                            <div class="contact-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <h4>Our Location</h4>
-                                <p>Mhlakuvane Street<br>Manzini, Swaziland</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item mb-4">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <div>
-                                <h4>Phone Number</h4>
-                                <p>+268 7800 1234</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item mb-4">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div>
-                                <h4>Email Address</h4>
-                                <p>info@cfci-sz.org</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4>Office Hours</h4>
-                                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
-                            </div>
-                        </div>
+<!-- ========== NEWSLETTER SIGNUP ========== -->
+<section class="container-xxl py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h2 class="section-title">Stay Inspired</h2>
+                <p class="mb-4">Subscribe to our weekly newsletter for sermon updates, event reminders, and devotionals.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Thank you for subscribing!', 'success');">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter your email" required>
+                        <button class="btn btn-warning" type="submit">Subscribe</button>
                     </div>
-                </div>
-                
-                <!-- Contact Form -->
-                <div class="col-md-8 mb-4">
-                    <div class="card p-4 h-100">
-                        <h3 class="mb-4">Send Us a Message</h3>
-                        <form class="contact-form">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="name" class="form-label">Full Name *</label>
-                                    <input type="text" class="form-control" id="name" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">Email Address *</label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="subject" class="form-label">Subject</label>
-                                <input type="text" class="form-control" id="subject">
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Message *</label>
-                                <textarea class="form-control" id="message" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-paper-plane"></i> Send Message
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Map -->
-            <div class="mt-5">
-                <div class="card">
-                    <div class="card-body p-0">
-                        <div id="map" style="height: 400px; border-radius: 8px;"></div>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Include Footer -->
-    <?php include('includes/footer.php'); ?>
-    
-    <!-- Main JavaScript -->
-    <script src="assets/js/main.js"></script>
-    <!-- Home Page JavaScript -->
-    <script src="assets/js/home.js"></script>
-</body>
-</html>
+<?php include 'includes/footer.php'; ?>

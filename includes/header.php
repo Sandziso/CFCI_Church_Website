@@ -1,185 +1,289 @@
+<?php
+/**
+ * header.php – Enhanced Header with Security & Bootstrap
+ * Uses absolute URLs so it works from any page location.
+ * Loads main-functions.php to initialise DB, Auth, CSRF, etc.
+ */
+require_once __DIR__ . '/main-functions.php';   // defines SITE_URL, auth, session, helpers
+
+// Make navigation active‑state work even if the page didn’t set $current_page
+if (!isset($current_page)) {
+    $current_page = basename($_SERVER['PHP_SELF']);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CFCI Church - Christian Family Centre International</title>
-    <meta name="description" content="Christian Family Centre International - Building strong families and empowering communities in Manzini, Eswatini through the word of God.">
-    <meta name="keywords" content="CFCI, church, Manzini, Eswatini, Christian, family, worship, prayer">
-    <meta name="author" content="Christian Family Centre International">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://cfci-eswatini.org/">
-    <meta property="og:title" content="CFCI Church - Christian Family Centre International">
-    <meta property="og:description" content="Building strong families and empowering communities in Manzini, Eswatini">
-    <meta property="og:image" content="https://cfci-eswatini.org/assets/images/og-image.jpg">
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Animate CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/main.css">
-    <!-- Header CSS -->
-    <link rel="stylesheet" href="assets/css/header.css">
-    
-    <!-- Page-specific CSS -->
-    <?php 
-    $page = basename($_SERVER['PHP_SELF']);
-    if ($page == 'index.php') {
-        echo '<link rel="stylesheet" href="assets/css/home.css">';
-    } elseif ($page == 'about.php') {
-        echo '<link rel="stylesheet" href="assets/css/about.css">';
-    } elseif ($page == 'contact.php') {
-        echo '<link rel="stylesheet" href="assets/css/contact.css">';
-    }
-    ?>
-</head>
-<body>
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="sr-only skip-link">Skip to main content</a>
-    
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay"></div>
-    
-    <header>
-        <div class="header-top">
-            <div class="container header-top-content">
-                <div class="church-info">
-                    <span><i class="far fa-clock"></i> Sunday 9:00 AM - 12:00 PM</span>
-                    <span><i class="fas fa-map-marker-alt"></i> Ntunja Township behind William Pitcher College</span>
-                    <span><i class="fas fa-phone"></i> +268 7600 0000</span>
-                </div>
-                <div class="social-links">
-                    <a href="https://facebook.com/cfci-eswatini" title="Facebook" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://twitter.com/cfci-eswatini" title="Twitter" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
-                    <a href="https://youtube.com/c/cfci-eswatini" title="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
-                    <a href="https://instagram.com/cfci-eswatini" title="Instagram" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="header-main">
-            <div class="container header-content">
-                <div class="logo-section">
-                    <a href="../index.php" class="logo">
-                        <img src="assets/images/logo.png" alt="CFCI Church Logo" loading="lazy">
-                    </a>
-                    <div class="church-name">
-                        <h1>CFCI Church</h1>
-                        <p>Christian Family Centre International</p>
-                    </div>
-                </div>
-                
-                <!-- Navigation Menu -->
-                <nav class="nav-menu" id="navMenu" aria-label="Main Navigation">
-                    <li class="nav-item">
-                        <a href="index.php" class="nav-link active">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-dropdown">
-                        <a href="about.php" class="nav-link">
-                            <i class="fas fa-church"></i>
-                            <span>About Us</span>
-                            <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="about.php" class="dropdown-item"><i class="fas fa-info-circle"></i> Our Story</a>
-                            <a href="beliefs.php" class="dropdown-item"><i class="fas fa-scroll"></i> Our Beliefs</a>
-                            <a href="leadership.php" class="dropdown-item"><i class="fas fa-user-tie"></i> Leadership</a>
-                            <a href="vision.php" class="dropdown-item"><i class="fas fa-eye"></i> Vision & Mission</a>
-                        </div>
-                    </li>
-                    <li class="nav-item nav-dropdown">
-                        <a href="ministries.php" class="nav-link">
-                            <i class="fas fa-hands-helping"></i>
-                            <span>Ministries</span>
-                            <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="ministries.php" class="dropdown-item"><i class="fas fa-list"></i> All Ministries</a>
-                            <a href="ministry.php?id=youth" class="dropdown-item"><i class="fas fa-users"></i> Youth Ministry</a>
-                            <a href="ministry.php?id=children" class="dropdown-item"><i class="fas fa-child"></i> Children's Church</a>
-                            <a href="ministry.php?id=women" class="dropdown-item"><i class="fas fa-female"></i> Women's Ministry</a>
-                            <a href="ministry.php?id=men" class="dropdown-item"><i class="fas fa-male"></i> Men's Ministry</a>
-                            <a href="ministry.php?id=outreach" class="dropdown-item"><i class="fas fa-hand-holding-heart"></i> Outreach</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a href="events.php" class="nav-link">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Events</span>
-                        </a>
-                    </li>
-                    <li class="nav-item nav-dropdown">
-                        <a href="sermons.php" class="nav-link">
-                            <i class="fas fa-podcast"></i>
-                            <span>Media</span>
-                            <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="sermons.php" class="dropdown-item"><i class="fas fa-podcast"></i> Sermons</a>
-                            <a href="gallery.php" class="dropdown-item"><i class="fas fa-images"></i> Gallery</a>
-                            <a href="blog.php" class="dropdown-item"><i class="fas fa-newspaper"></i> Blog</a>
-                            <a href="livestream.php" class="dropdown-item"><i class="fas fa-video"></i> Live Stream</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a href="contact.php" class="nav-link">
-                            <i class="fas fa-envelope"></i>
-                            <span>Contact</span>
-                        </a>
-                    </li>
-                </nav>
-                
-                <div class="auth-buttons">
-                    <a href="give.php" class="btn give-btn auth-btn">
-                        <i class="fas fa-heart"></i>
-                        Give
-                    </a>
-                    <a href="auth/login.php" class="login-btn auth-btn">
-                        <i class="fas fa-sign-in-alt"></i>
-                        Login
-                    </a>
-                </div>
-                
-                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle mobile menu" aria-expanded="false">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-    
-    <main id="main-content">
-        <!-- Main content goes here -->
+    <meta charset="utf-8" />
+    <title>CFCI Church – Christian Family Centre International</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="CFCI, church, Manzini, Eswatini, Christian, family, worship, prayer" name="keywords" />
+    <meta content="Christian Family Centre International – Building strong families and empowering communities in Manzini, Eswatini through the word of God." name="description" />
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Header JavaScript -->
-    <script src="assets/js/header.js"></script>
-    <!-- Page-specific JavaScript -->
-    <?php 
-    if ($page == 'index.php') {
-        echo '<script src="assets/js/home.js"></script>';
-    } elseif ($page == 'about.php') {
-        echo '<script src="assets/js/about.js"></script>';
-    } elseif ($page == 'contact.php') {
-        echo '<script src="assets/js/contact.js"></script>';
-    }
-    ?>
-</body>
-</html>
+    <!-- Favicon -->
+    <link href="<?= SITE_URL ?>assets/images/favicon.ico" rel="icon" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Icon Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Libraries (local copies) -->
+    <link href="<?= SITE_URL ?>lib/animate/animate.min.css" rel="stylesheet" />
+    <link href="<?= SITE_URL ?>lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS (local) -->
+    <link href="<?= SITE_URL ?>assets/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link href="<?= SITE_URL ?>assets/css/style.css" rel="stylesheet" />
+
+    <!-- Enhanced Header Styles (all variables are defined in style.css) -->
+    <style>
+        :root {
+            /* Fallback in case style.css not loaded */
+            --primary-blue: #1a5276;
+            --primary-yellow: #e67e22;
+            --text-light: #777777;
+        }
+
+        /* ============ ENHANCED HEADER ============ */
+        .cfci-header {
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(26, 82, 118, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.35s ease;
+        }
+        .cfci-header.scrolled {
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+        }
+        .cfci-header .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .cfci-header .navbar-brand img {
+            height: 46px;
+            transition: height 0.35s;
+        }
+        .cfci-header.scrolled .navbar-brand img {
+            height: 40px;
+        }
+        .cfci-header .navbar-brand h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.55rem;
+            color: var(--primary-blue);
+            margin: 0;
+            line-height: 1.2;
+        }
+        .cfci-header .navbar-brand h1 .cfci-accent {
+            color: var(--primary-yellow);
+            position: relative;
+        }
+        .cfci-header .navbar-brand .cfci-accent::after {
+            content: '';
+            position: absolute;
+            bottom: 2px; left: 0;
+            width: 100%; height: 3px;
+            background: var(--primary-yellow);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .cfci-header .navbar-brand .logo-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 0.62rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            display: block;
+        }
+
+        /* Navigation pills */
+        .cfci-header .navbar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            padding: 10px 16px !important;
+            border-radius: 28px;
+            transition: all 0.35s;
+        }
+        .cfci-header .navbar-nav .nav-link:hover {
+            color: var(--primary-blue) !important;
+            background: rgba(26, 82, 118, 0.06);
+        }
+        .cfci-header .navbar-nav .nav-link.active {
+            color: var(--primary-blue) !important;
+            background: rgba(26, 82, 118, 0.09);
+            font-weight: 600;
+        }
+        .cfci-header .dropdown-menu {
+            border: none;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+            border-radius: 20px;
+            padding: 10px 6px;
+            margin-top: 10px;
+        }
+        .cfci-header .dropdown-item {
+            border-radius: 14px;
+            padding: 10px 16px;
+            transition: all 0.2s;
+        }
+        .cfci-header .dropdown-item:hover {
+            background: rgba(26, 82, 118, 0.05);
+            color: var(--primary-blue);
+            padding-left: 24px;
+        }
+
+        /* Login/Register buttons */
+        .cfci-btn-login {
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+            background: transparent;
+            padding: 9px 20px;
+            border-radius: 28px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.35s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cfci-btn-login:hover {
+            background: var(--primary-blue);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(26,82,118,0.28);
+        }
+        .cfci-btn-register {
+            background: linear-gradient(135deg, var(--primary-yellow), #d35400);
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: 28px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            border: none;
+            transition: all 0.35s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 16px rgba(230,126,34,0.30);
+        }
+        .cfci-btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(230,126,34,0.44);
+            color: #fff;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 992px) {
+            .cfci-header .navbar-nav {
+                background: rgba(255,255,255,0.98);
+                backdrop-filter: blur(20px);
+                border-radius: 20px;
+                padding: 10px;
+                margin-top: 10px;
+            }
+            .cfci-header .navbar-nav .nav-link {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Spinner -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+
+    <!-- ========== ENHANCED NAVBAR ========== -->
+    <nav class="navbar navbar-expand-lg cfci-header" id="cfciHeader">
+        <div class="container">
+            <a href="<?= SITE_URL ?>" class="navbar-brand">
+                <img src="<?= SITE_URL ?>assets/images/logo.png" alt="CFCI Church Logo">
+                <div>
+                    <h1 class="m-0"><span class="cfci-accent">CFCI</span> Church</h1>
+                    <span class="logo-subtitle">Christian Family Centre International</span>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="<?= SITE_URL ?>" class="nav-item nav-link <?= ($current_page == 'index.php') ? 'active' : '' ?>">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+
+                    <!-- About dropdown -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle <?= in_array($current_page, ['about.php','beliefs.php','leadership.php','vision.php']) ? 'active' : '' ?>" data-bs-toggle="dropdown">
+                            <i class="fas fa-info-circle"></i> About
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="<?= SITE_URL ?>about.php" class="dropdown-item <?= ($current_page == 'about.php') ? 'active' : '' ?>">📖 Our Story</a>
+                            <a href="<?= SITE_URL ?>beliefs.php" class="dropdown-item <?= ($current_page == 'beliefs.php') ? 'active' : '' ?>">✝️ Our Beliefs</a>
+                            <a href="<?= SITE_URL ?>leadership.php" class="dropdown-item <?= ($current_page == 'leadership.php') ? 'active' : '' ?>">👥 Leadership</a>
+                            <a href="<?= SITE_URL ?>vision.php" class="dropdown-item <?= ($current_page == 'vision.php') ? 'active' : '' ?>">🎯 Vision & Mission</a>
+                        </div>
+                    </div>
+
+                    <!-- Ministries dropdown -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle <?= in_array($current_page, ['ministries.php','ministry.php']) ? 'active' : '' ?>" data-bs-toggle="dropdown">
+                            <i class="fas fa-hands-helping"></i> Ministries
+                        </a>
+                        <div class="dropdown-menu">
+<a href="<?= SITE_URL ?>ministry-details.php?id=youth" class="dropdown-item">🔥 Youth</a>
+<a href="<?= SITE_URL ?>ministry-details.php?id=children" class="dropdown-item">👶 Children</a>
+<a href="<?= SITE_URL ?>ministry-details.php?id=women" class="dropdown-item">🌸 Women</a>
+<a href="<?= SITE_URL ?>ministry-details.php?id=men" class="dropdown-item">🛡️ Men</a>
+<a href="<?= SITE_URL ?>ministry-details.php?id=outreach" class="dropdown-item">🌍 Outreach</a>
+                        </div>
+                    </div>
+
+                    <a href="<?= SITE_URL ?>events.php" class="nav-item nav-link <?= ($current_page == 'events.php') ? 'active' : '' ?>">
+                        <i class="fas fa-calendar-alt"></i> Events
+                    </a>
+
+                    <!-- Media dropdown -->
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle <?= in_array($current_page, ['sermons.php','gallery.php','blog.php','livestream.php']) ? 'active' : '' ?>" data-bs-toggle="dropdown">
+                            <i class="fas fa-play-circle"></i> Media
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="<?= SITE_URL ?>sermons.php" class="dropdown-item <?= ($current_page == 'sermons.php') ? 'active' : '' ?>">🎙️ Sermons</a>
+                            <a href="<?= SITE_URL ?>gallery.php" class="dropdown-item <?= ($current_page == 'gallery.php') ? 'active' : '' ?>">🖼️ Gallery</a>
+                            <a href="<?= SITE_URL ?>blog.php" class="dropdown-item <?= ($current_page == 'blog.php') ? 'active' : '' ?>">📝 Blog</a>
+                            <a href="<?= SITE_URL ?>livestream.php" class="dropdown-item <?= ($current_page == 'livestream.php') ? 'active' : '' ?>">🔴 Live Stream</a>
+                        </div>
+                    </div>
+
+                    <a href="<?= SITE_URL ?>contact.php" class="nav-item nav-link <?= ($current_page == 'contact.php') ? 'active' : '' ?>">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 ms-lg-3">
+                    <a href="<?= SITE_URL ?>login.php" class="cfci-btn-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="<?= SITE_URL ?>register.php" class="cfci-btn-register"><i class="fas fa-user-plus"></i> Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- END NAVBAR -->

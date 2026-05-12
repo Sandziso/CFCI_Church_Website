@@ -1,608 +1,430 @@
 <?php
 // admin/dashboard.php
+require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/main-functions.php';
+require_once __DIR__ . '/includes/admin_functions.php';
 
-// Start session and include required files
-require_once '../includes/config.php';
-require_once '../includes/db_connect.php';
-require_once '../includes/main-functions.php';
-
-// Check authentication - Use the renamed requireAdminAccess() function
 requireAdminAccess();
 
-// Initialize ChurchDB
-$db = new ChurchDB($conn);
+$totalMembers = getTotalUsersCount();
+$monthlyNew = getMonthlyNewMembers();
+$monthlyDonations = getMonthlyDonationsTotal();
+$pendingPrayers = getPendingPrayersCount();
+$donationChartData = getDonationChartData();
+$eventAttendance = getEventAttendanceStats();
 
-// Get dashboard statistics - Use ChurchDB methods for these
-$stats = $db->getChurchStats();
-$recentDonations = $db->getDonationsByUser(null, 5); // Get recent donations
-$pendingPrayers = $db->getPrayerRequests('pending', 5);
-
-// Get recent activities from functions.php
-$recentActivities = getRecentActivitiesList(10);
-
-// Log dashboard access using function from functions.php
-logUserActivity($_SESSION['user_id'], 'Admin Dashboard Access', 'Accessed admin dashboard');
+// Recent donations (using the global connection)
+global $conn;
+$recentDonations = [];
+try {
+    if ($conn) {
+        $stmt = $conn->query("
+            SELECT d.*, u.full_name 
+            FROM donations d 
+            LEFT JOIN users u ON d.user_id = u.id 
+            ORDER BY d.donation_date DESC 
+            LIMIT 8
+        ");
+        $recentDonations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (PDOException $e) {
+    // handle silently
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - <?php echo htmlspecialchars(SITE_NAME); ?></title>
+    <title>Dashboard | CFCI Admin</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #1a5276;
-            --secondary: #e67e22;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --info: #17a2b8;
-            --light: #f8f9fa;
-            --dark: #343a40;
+            --primary-light: #2e86c1;
+            --primary-dark: #0f2e45;
+            --accent: #e67e22;
+            --accent-light: #f39c12;
+            --bg-light: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+            --radius: 14px;
+            --transition: 0.2s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            background-color: #f5f7fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .sidebar {
-            background: linear-gradient(180deg, var(--primary) 0%, #154360 100%);
-            color: white;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            margin: 0;
             min-height: 100vh;
-            box-shadow: 3px 0 10px rgba(0,0,0,0.1);
-            position: fixed;
-            width: 250px;
-            z-index: 1000;
         }
         
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
         }
         
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-                margin-left: -200px;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .sidebar.active {
-                margin-left: 0;
+        .admin-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 260px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.collapsed + .admin-main {
+            margin-left: 70px;
+        }
+        
+        @media (max-width: 991.98px) {
+            .admin-main {
+                margin-left: 0 !important;
             }
         }
         
-        .sidebar .logo {
-            padding: 20px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
+        .page-content {
+            flex: 1;
+            padding: 1.75rem 2rem;
         }
         
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
-            border-left: 3px solid transparent;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: block;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
         
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255,255,255,0.1);
+        .page-header h1 {
+            font-weight: 600;
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+        }
+        
+        .btn-refresh {
+            background: var(--primary);
+            border: none;
             color: white;
-            border-left: 3px solid var(--secondary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 30px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
         }
         
-        .sidebar .nav-link i {
-            width: 25px;
+        .btn-refresh:hover {
+            background: var(--primary-dark);
         }
         
-        .topbar {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
         }
         
         .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-            height: 100%;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
         }
         
-        .stat-card .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            margin-bottom: 15px;
+            background: rgba(26,82,118,0.07);
+            color: var(--primary);
         }
         
-        .stat-card .stat-number {
-            font-size: 2rem;
+        .stat-info h3 {
+            font-size: 1.8rem;
             font-weight: 700;
-            color: var(--dark);
+            margin-bottom: 0.2rem;
+            color: var(--primary-dark);
         }
         
-        .stat-card .stat-title {
-            color: #6c757d;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .stat-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
         
-        .dashboard-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
         }
         
-        .dashboard-card .card-title {
-            color: var(--primary);
-            font-weight: 600;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .quick-actions .btn-action {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 10px;
-            border: 2px dashed #dee2e6;
-            border-radius: 10px;
-            background: #f8f9fa;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: var(--dark);
-        }
-        
-        .quick-actions .btn-action:hover {
-            background: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-        
-        .quick-actions .btn-action i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        .progress-bar-custom {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1001;
+        @media (max-width: 992px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
             }
+        }
+        
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+        
+        .table-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+        
+        .table-card h5 {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            border-top: none;
+        }
+        
+        .status-badge {
+            padding: 0.2em 0.8em;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .btn-outline-sm {
+            border-radius: 30px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <h4 class="mb-1">
-                <i class="fas fa-church"></i>
-            </h4>
-            <small><?php echo htmlspecialchars(SITE_NAME); ?></small>
-        </div>
+<div class="admin-layout">
+    <?php include 'includes/admin_sidebar.php'; ?>
+    
+    <main class="admin-main">
+        <?php include 'includes/admin_topbar.php'; ?>
         
-        <nav class="mt-3">
-            <a href="dashboard.php" class="nav-link active">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
-            </a>
+        <div class="page-content">
+            <div class="page-header">
+                <h1>Dashboard Overview</h1>
+                <button class="btn-refresh" onclick="location.reload()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
             
-            <a href="users.php" class="nav-link">
-                <i class="fas fa-users"></i> Users
-            </a>
-            
-            <a href="events.php" class="nav-link">
-                <i class="fas fa-calendar-alt"></i> Events
-            </a>
-            
-            <a href="ministries.php" class="nav-link">
-                <i class="fas fa-hands-helping"></i> Ministries
-            </a>
-            
-            <a href="sermons.php" class="nav-link">
-                <i class="fas fa-bible"></i> Sermons
-            </a>
-            
-            <a href="donations.php" class="nav-link">
-                <i class="fas fa-donate"></i> Donations
-            </a>
-            
-            <a href="prayers.php" class="nav-link">
-                <i class="fas fa-pray"></i> Prayer Requests
-            </a>
-            
-            <a href="announcements.php" class="nav-link">
-                <i class="fas fa-bullhorn"></i> Announcements
-            </a>
-            
-            <div class="mt-4"></div>
-            
-            <a href="../index.php" class="nav-link text-warning">
-                <i class="fas fa-eye"></i> View Site
-            </a>
-            
-            <a href="../logout.php" class="nav-link text-danger">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </nav>
-    </div>
-    
-    <!-- Mobile Menu Button -->
-    <button class="btn btn-primary mobile-menu-btn d-lg-none" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Topbar -->
-        <div class="topbar">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="mb-0">Admin Dashboard</h4>
-                    <p class="text-muted mb-0">Welcome, <?php echo htmlspecialchars($_SESSION['full_name'] ?? 'Admin'); ?>!</p>
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3><?= number_format($totalMembers) ?></h3>
+                        <p>Total Members</p>
+                        <small class="text-success">+<?= $monthlyNew ?> this month</small>
+                    </div>
                 </div>
                 
-                <div class="d-flex align-items-center">
-                    <div class="dropdown">
-                        <button class="btn btn-light d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
-                                <?php echo getUserInitials($_SESSION['full_name'] ?? 'Admin'); ?>
-                            </div>
-                            <span><?php echo htmlspecialchars($_SESSION['full_name'] ?? 'Admin'); ?></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="profile.php">
-                                <i class="fas fa-user me-2"></i> Profile
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="../logout.php">
-                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                            </a>
-                        </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(39,174,96,0.1); color: #27ae60;">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>SZL <?= $monthlyDonations ?></h3>
+                        <p>Monthly Donations</p>
+                        <small><?= date('F Y') ?></small>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">
+                
                 <div class="stat-card">
-                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-number"><?php echo $stats['total_members'] ?? 0; ?></div>
-                    <div class="stat-title">Total Members</div>
-                    <small class="text-muted">Active church members</small>
-                </div>
-            </div>
-            
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-success bg-opacity-10 text-success">
-                        <i class="fas fa-donate"></i>
-                    </div>
-                    <div class="stat-number"><?php echo formatCurrencyAmount($stats['recent_donations'] ?? 0); ?></div>
-                    <div class="stat-title">Monthly Donations</div>
-                    <small class="text-muted">Last 30 days</small>
-                </div>
-            </div>
-            
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                    <div class="stat-icon" style="background: rgba(243,156,18,0.1); color: #f39c12;">
                         <i class="fas fa-pray"></i>
                     </div>
-                    <div class="stat-number"><?php echo $stats['pending_prayers'] ?? 0; ?></div>
-                    <div class="stat-title">Prayer Requests</div>
-                    <small class="text-muted">Awaiting response</small>
+                    <div class="stat-info">
+                        <h3><?= $pendingPrayers ?></h3>
+                        <p>Pending Prayers</p>
+                        <a href="#" class="small">View requests →</a>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="col-xl-3 col-md-6 mb-4">
+                
                 <div class="stat-card">
-                    <div class="stat-icon bg-info bg-opacity-10 text-info">
-                        <i class="fas fa-calendar-alt"></i>
+                    <div class="stat-icon" style="background: rgba(52,152,219,0.1); color: #3498db;">
+                        <i class="fas fa-calendar-check"></i>
                     </div>
-                    <div class="stat-number"><?php echo $stats['upcoming_events'] ?? 0; ?></div>
-                    <div class="stat-title">Upcoming Events</div>
-                    <small class="text-muted">Scheduled activities</small>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Main Content -->
-        <div class="row">
-            <!-- Left Column -->
-            <div class="col-lg-8">
-                <!-- Chart -->
-                <div class="dashboard-card mb-4">
-                    <h5 class="card-title">Donation Trends</h5>
-                    <canvas id="donationChart" height="250"></canvas>
-                </div>
-                
-                <!-- Recent Activities -->
-                <div class="dashboard-card">
-                    <h5 class="card-title">Recent Activities</h5>
-                    <div class="list-group">
-                        <?php if (!empty($recentActivities)): ?>
-                            <?php foreach($recentActivities as $activity): ?>
-                            <div class="list-group-item">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1"><?php echo htmlspecialchars($activity['activity']); ?></h6>
-                                    <small><?php echo formatDateString($activity['created_at'], 'H:i'); ?></small>
-                                </div>
-                                <p class="mb-1"><?php echo htmlspecialchars($activity['details']); ?></p>
-                                <small><i class="fas fa-user"></i> <?php echo htmlspecialchars($activity['user_name'] ?? 'System'); ?></small>
-                            </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="list-group-item">
-                                <p class="mb-0 text-muted">No recent activities</p>
-                            </div>
-                        <?php endif; ?>
+                    <div class="stat-info">
+                        <h3><?= getUpcomingEventsCount() ?></h3>
+                        <p>Upcoming Events</p>
+                        <a href="#" class="small">Manage events →</a>
                     </div>
                 </div>
             </div>
             
-            <!-- Right Column -->
-            <div class="col-lg-4">
-                <!-- Quick Actions -->
-                <div class="dashboard-card mb-4">
-                    <h5 class="card-title">Quick Actions</h5>
-                    <div class="row g-3 quick-actions">
-                        <div class="col-6">
-                            <a href="users.php?action=create" class="btn-action">
-                                <i class="fas fa-user-plus"></i>
-                                <span>Add User</span>
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="events.php?action=create" class="btn-action">
-                                <i class="fas fa-calendar-plus"></i>
-                                <span>Create Event</span>
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="announcements.php?action=create" class="btn-action">
-                                <i class="fas fa-bullhorn"></i>
-                                <span>Announcement</span>
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="sermons.php?action=create" class="btn-action">
-                                <i class="fas fa-bible"></i>
-                                <span>Add Sermon</span>
-                            </a>
-                        </div>
+            <!-- Charts -->
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h5 class="mb-3">Donations Trend (6 months)</h5>
+                    <div class="chart-container">
+                        <canvas id="donationChart"></canvas>
                     </div>
                 </div>
-                
-                <!-- Recent Donations -->
-                <div class="dashboard-card mb-4">
-                    <h5 class="card-title">Recent Donations</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <tbody>
-                                <?php if (!empty($recentDonations)): ?>
-                                    <?php foreach($recentDonations as $donation): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-user-circle fa-lg text-muted me-2"></i>
-                                                <div>
-                                                    <div class="fw-semibold"><?php echo htmlspecialchars($donation['donor_name'] ?? 'Anonymous'); ?></div>
-                                                    <small class="text-muted"><?php echo formatDateString($donation['donation_date'], 'M d'); ?></small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-end fw-bold text-success">
-                                            <?php echo formatCurrencyAmount($donation['amount']); ?>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="2" class="text-muted text-center">No recent donations</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!-- System Status -->
-                <div class="dashboard-card">
-                    <h5 class="card-title">System Status</h5>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Database</span>
-                            <span class="text-success">
-                                <i class="fas fa-check-circle"></i> Connected
-                            </span>
-                        </div>
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar bg-success" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Storage</span>
-                            <span>65% Used</span>
-                        </div>
-                        <div class="progress" style="height: 5px;">
-                            <div class="progress-bar progress-bar-custom" style="width: 65%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Security</span>
-                            <span class="text-success">
-                                <i class="fas fa-shield-alt"></i> Active
-                            </span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Last Backup</span>
-                            <span class="text-success">Today</span>
-                        </div>
+                <div class="chart-card">
+                    <h5 class="mb-3">Upcoming Event Registrations</h5>
+                    <div class="chart-container">
+                        <canvas id="eventChart"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Recent Prayer Requests -->
-        <div class="dashboard-card mt-4">
-            <h5 class="card-title">Recent Prayer Requests</h5>
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Request</th>
-                            <th>Submitted</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($pendingPrayers)): ?>
-                            <?php foreach($pendingPrayers as $prayer): ?>
+            
+            <!-- Recent Donations Table -->
+            <div class="table-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Recent Donations</h5>
+                    <a href="#" class="btn-outline-sm" style="border:1px solid var(--border); color: var(--text-primary);">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <?php if(isset($prayer['is_anonymous']) && $prayer['is_anonymous']): ?>
-                                            <i class="fas fa-user-secret fa-lg text-muted"></i>
-                                            <?php else: ?>
-                                            <i class="fas fa-user-circle fa-lg text-muted"></i>
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-0"><?php echo (isset($prayer['is_anonymous']) && $prayer['is_anonymous']) ? 'Anonymous' : htmlspecialchars($prayer['full_name'] ?? 'User'); ?></h6>
-                                            <p class="mb-0 text-muted small"><?php echo truncateTextContent($prayer['request_text'] ?? '', 60); ?></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><?php echo formatDateString($prayer['submitted_at'] ?? ''); ?></td>
-                                <td><?php echo getStatusBadgeHtml($prayer['status'] ?? 'pending'); ?></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="viewPrayer(<?php echo $prayer['id'] ?? 0; ?>)">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
+                                <th>Donor</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
                             </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="4" class="text-muted text-center">No pending prayer requests</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($recentDonations)): ?>
+                                <?php foreach ($recentDonations as $d): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($d['full_name'] ?? 'Anonymous') ?></td>
+                                    <td class="fw-bold text-success">SZL <?= number_format($d['amount'], 2) ?></td>
+                                    <td><?= date('M d, Y', strtotime($d['donation_date'])) ?></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success status-badge">Completed</span></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr><td colspan="4" class="text-center text-muted">No recent donations</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Chart.js
-        const ctx = document.getElementById('donationChart').getContext('2d');
-        const donationChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-                datasets: [{
-                    label: 'Donations (ETB)',
-                    data: [12500, 14200, 13100, 18500, 16200, 21000, 19500],
-                    borderColor: '#1a5276',
-                    backgroundColor: 'rgba(26, 82, 118, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }]
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Donation Chart
+const donationCtx = document.getElementById('donationChart').getContext('2d');
+const donationData = <?= json_encode($donationChartData) ?>;
+new Chart(donationCtx, {
+    type: 'line',
+    data: {
+        labels: Object.keys(donationData),
+        datasets: [{
+            label: 'Donations (SZL)',
+            data: Object.values(donationData),
+            borderColor: '#1a5276',
+            backgroundColor: 'rgba(26,82,118,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#1a5276',
+            pointRadius: 3,
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { 
+                beginAtZero: true,
+                grid: { color: '#e2e8f0' }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'ETB ' + value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Mobile menu toggle
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
+            x: { grid: { display: false } }
         }
+    }
+});
 
-        // View prayer request
-        function viewPrayer(id) {
-            window.location.href = 'prayers.php?action=view&id=' + id;
+// Event Chart
+const eventCtx = document.getElementById('eventChart').getContext('2d');
+const eventData = <?= json_encode($eventAttendance) ?>;
+new Chart(eventCtx, {
+    type: 'bar',
+    data: {
+        labels: Object.keys(eventData),
+        datasets: [{
+            label: 'Registrations',
+            data: Object.values(eventData),
+            backgroundColor: '#e67e22',
+            borderRadius: 8,
+            barPercentage: 0.6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { 
+                beginAtZero: true,
+                grid: { color: '#e2e8f0' }
+            },
+            x: { grid: { display: false } }
         }
-
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    </script>
+    }
+});
+</script>
 </body>
 </html>

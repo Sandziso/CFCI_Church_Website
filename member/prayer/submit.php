@@ -1,41 +1,72 @@
 <?php
-// member/submit-prayer.php
+// ===================================================
+// MEMBER - Submit Prayer Request
+// ===================================================
 
-require_once '../includes/config.php';
-require_once '../includes/database.php';
-require_once '../includes/session.php';
-require_once '../includes/functions.php';
+require_once '../../includes/config.php';
+require_once '../../includes/main-functions.php';
 
-// Check if user is logged in and is a member
-$session->requireLogin();
-if ($session->getUserRole() !== 'member') {
-    header('Location: ../auth/login.php');
-    exit;
+if (!is_logged_in()) {
+    header('Location: ../../auth/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit();
 }
 
-$user_id = $session->getUserId();
-$db = new ChurchDB($conn);
+$user_id   = $_SESSION['user_id'];
+$user_name = $_SESSION['full_name'];
+$user_role = $_SESSION['user_role'];
 
-// Handle form submission
+// Redirect admins/pastors if needed
+if (is_admin()) {
+    header('Location: ../../admin/dashboard.php');
+    exit();
+} elseif (is_pastor()) {
+    header('Location: ../../pastor/dashboard.php');
+    exit();
+}
+
+require_once '../../includes/database.php';
+$database = Database::getInstance();
+$db = $database->getConnection();
+
+$error = '';
+$success = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $prayer_text = trim($_POST['prayer_text'] ?? '');
-    $category = $_POST['category'] ?? 'other';
+    $request_text = trim($_POST['request_text'] ?? '');
+    $category     = $_POST['category'] ?? 'other';
+    $urgency      = $_POST['urgency'] ?? 'normal';
     $is_anonymous = isset($_POST['is_anonymous']) ? 1 : 0;
-    $urgency = $_POST['urgency'] ?? 'normal';
-    
-    if (!empty($prayer_text)) {
-        $result = $db->submitDetailedPrayerRequest($user_id, $prayer_text, $category, $is_anonymous, $urgency);
-        if ($result) {
-            $session->setFlash('success', 'Prayer request submitted successfully');
-            header('Location: prayer-requests.php');
-            exit;
-        } else {
-            $session->setFlash('error', 'Failed to submit prayer request');
-        }
+    $allow_comments = isset($_POST['allow_comments']) ? 1 : 0;
+    $allow_prayer_team = isset($_POST['allow_prayer_team']) ? 1 : 0;
+
+    if (empty($request_text)) {
+        $error = 'Please enter your prayer request.';
     } else {
-        $session->setFlash('error', 'Please enter your prayer request');
+        try {
+            $stmt = $db->prepare("INSERT INTO prayer_requests (user_id, request_text, category, urgency, is_anonymous, allow_comments, allow_prayer_team, status, submitted_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NOW())");
+            $stmt->execute([$user_id, $request_text, $category, $urgency, $is_anonymous, $allow_comments, $allow_prayer_team]);
+
+            $_SESSION['flash_message'] = 'Your prayer request has been submitted. Our prayer team will be praying for you.';
+            $_SESSION['flash_type'] = 'success';
+            header('Location: index.php');
+            exit();
+        } catch (Exception $e) {
+            error_log("Prayer submit error: " . $e->getMessage());
+            $error = 'An error occurred. Please try again.';
+        }
     }
 }
+
+// Quick stats for sidebar
+$quick_stats = [
+    'upcoming_events'    => 0,
+    'sermons_available'  => 0,
+    'prayer_requests'    => 0,
+    'ministries_involved' => 0,
+];
+$profile_completion = 0;
+
+require_once '../includes/member_topbar.php';
 ?>
 
 <!DOCTYPE html>
@@ -44,346 +75,105 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Prayer Request - <?php echo SITE_NAME; ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #2c7be5;
-            --accent-blue: #1c65c9;
-            --light-blue: #e6f0ff;
-            --accent-green: #00d97e;
-            --light-green: #e6fff2;
-            --accent-purple: #9b59b6;
-            --light-purple: #f5eef8;
-            --dark-text: #2d3748;
-            --light-text: #718096;
-            --light-gray: #f8f9fa;
-            --border-color: #e2e8f0;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --primary-color: #1a5276;
+            --secondary-color: #e67e22;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: var(--dark-text);
-            min-height: 100vh;
-            display: flex;
+            background-color: #f8f9fa;
+            padding-top: 56px;
         }
-
         .main-content {
-            flex: 1;
-            padding: 30px;
-            margin-left: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-left: 240px;
+            padding: 20px;
         }
-
-        @media (max-width: 1024px) {
+        @media (max-width: 767.98px) {
             .main-content {
                 margin-left: 0;
-                padding: 20px;
             }
         }
-
-        .prayer-container {
+        .submit-card {
             background: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 600px;
-            overflow: hidden;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 700px;
+            margin: 0 auto;
         }
-
-        .prayer-header {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-purple) 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .prayer-header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .prayer-header p {
-            opacity: 0.9;
-        }
-
-        .prayer-body {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--dark-text);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-            font-family: inherit;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.1);
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--primary-blue);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-blue);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--light-gray);
-            color: var(--dark-text);
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-
-        .btn-block {
-            display: block;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .character-counter {
-            text-align: right;
-            font-size: 0.8rem;
-            color: var(--light-text);
-            margin-top: 5px;
-        }
-
-        .character-counter.warning {
-            color: #f6c343;
-        }
-
-        .character-counter.error {
-            color: #cc0000;
-        }
-
-        .flash-messages {
-            margin-bottom: 20px;
-        }
-
-        .flash-message {
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .flash-success {
-            background: var(--light-green);
-            color: #2d5016;
-            border-left: 4px solid var(--accent-green);
-        }
-
-        .flash-error {
-            background: #ffe6e6;
-            color: #cc0000;
-            border-left: 4px solid #ff4444;
+        .form-section {
+            margin-bottom: 1.5rem;
         }
     </style>
 </head>
 <body>
-    <!-- Include Sidebar -->
-    <?php include '../includes/member_sidebar.php'; ?>
+    <?php require_once '../includes/member_topbar.php'; ?>
+    <div class="container-fluid">
+        <div class="row">
+            <?php require_once '../includes/member_sidebar.php'; ?>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="submit-card">
+                    <h2 class="mb-4"><i class="fas fa-pray me-2"></i>Submit a Prayer Request</h2>
+                    
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+                    <?php endif; ?>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="prayer-container">
-            <div class="prayer-header">
-                <h1><i class="fas fa-praying-hands"></i> Submit Prayer Request</h1>
-                <p>Share your prayer needs with our church community</p>
-            </div>
-            
-            <div class="prayer-body">
-                <!-- Flash Messages -->
-                <div class="flash-messages">
-                    <?php 
-                    $flash_messages = isset($_SESSION['flash_messages']) ? $_SESSION['flash_messages'] : [];
-                    foreach ($flash_messages as $key => $flash): 
-                    ?>
-                        <div class="flash-message flash-<?php echo $flash['type']; ?>">
-                            <i class="fas fa-<?php echo $flash['type'] === 'success' ? 'check-circle' : 'exclamation-circle'; ?>"></i>
-                            <?php echo htmlspecialchars($flash['message']); ?>
+                    <form method="POST" action="">
+                        <div class="mb-3">
+                            <label for="request_text" class="form-label">Your Prayer Request <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="request_text" name="request_text" rows="5" placeholder="Share your prayer need..." required><?php echo htmlspecialchars($_POST['request_text'] ?? ''); ?></textarea>
                         </div>
-                    <?php 
-                    endforeach; 
-                    unset($_SESSION['flash_messages']);
-                    ?>
+
+                        <div class="row form-section">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="health" <?php echo (isset($_POST['category']) && $_POST['category'] == 'health') ? 'selected' : ''; ?>>Health</option>
+                                    <option value="financial" <?php echo (isset($_POST['category']) && $_POST['category'] == 'financial') ? 'selected' : ''; ?>>Financial</option>
+                                    <option value="family" <?php echo (isset($_POST['category']) && $_POST['category'] == 'family') ? 'selected' : ''; ?>>Family</option>
+                                    <option value="spiritual" <?php echo (isset($_POST['category']) && $_POST['category'] == 'spiritual') ? 'selected' : ''; ?>>Spiritual</option>
+                                    <option value="work" <?php echo (isset($_POST['category']) && $_POST['category'] == 'work') ? 'selected' : ''; ?>>Work</option>
+                                    <option value="other" <?php echo (!isset($_POST['category']) || $_POST['category'] == 'other') ? 'selected' : ''; ?>>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="urgency" class="form-label">Urgency</label>
+                                <select class="form-select" id="urgency" name="urgency">
+                                    <option value="low" <?php echo (isset($_POST['urgency']) && $_POST['urgency'] == 'low') ? 'selected' : ''; ?>>Low</option>
+                                    <option value="normal" <?php echo (!isset($_POST['urgency']) || $_POST['urgency'] == 'normal') ? 'selected' : ''; ?>>Normal</option>
+                                    <option value="high" <?php echo (isset($_POST['urgency']) && $_POST['urgency'] == 'high') ? 'selected' : ''; ?>>High</option>
+                                    <option value="urgent" <?php echo (isset($_POST['urgency']) && $_POST['urgency'] == 'urgent') ? 'selected' : ''; ?>>Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="is_anonymous" id="is_anonymous" <?php echo isset($_POST['is_anonymous']) ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="is_anonymous">Submit anonymously (your name will not be shown)</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="allow_comments" id="allow_comments" checked>
+                                <label class="form-check-label" for="allow_comments">Allow others to comment and pray</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allow_prayer_team" id="allow_prayer_team" checked>
+                                <label class="form-check-label" for="allow_prayer_team">Share with the prayer team</label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-paper-plane me-1"></i> Submit Request</button>
+                            <a href="index.php" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
                 </div>
-
-                <form method="POST">
-                    <div class="form-group">
-                        <label for="prayer_text">Your Prayer Request *</label>
-                        <textarea 
-                            name="prayer_text" 
-                            id="prayer_text" 
-                            class="form-control" 
-                            placeholder="Please share your prayer request in detail. Our prayer team will lift this up to God and someone may follow up with you if needed." 
-                            required
-                            rows="6"
-                        ><?php echo isset($_POST['prayer_text']) ? htmlspecialchars($_POST['prayer_text']) : ''; ?></textarea>
-                        <div class="character-counter" id="charCounter">0 characters</div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select name="category" id="category" class="form-control">
-                                <option value="health">Health & Healing</option>
-                                <option value="financial">Financial Needs</option>
-                                <option value="family">Family & Relationships</option>
-                                <option value="spiritual">Spiritual Growth</option>
-                                <option value="work">Work & Career</option>
-                                <option value="other" selected>Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="urgency">Urgency Level</label>
-                            <select name="urgency" id="urgency" class="form-control">
-                                <option value="low">Low - General prayer</option>
-                                <option value="normal" selected>Normal - Ongoing situation</option>
-                                <option value="high">High - Immediate need</option>
-                                <option value="urgent">Urgent - Critical situation</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="checkbox-group">
-                            <input type="checkbox" name="is_anonymous" id="is_anonymous" value="1"
-                                <?php echo isset($_POST['is_anonymous']) ? 'checked' : ''; ?>>
-                            <label for="is_anonymous">Submit this prayer request anonymously</label>
-                        </div>
-                        <small style="color: var(--light-text); display: block; margin-top: 5px;">
-                            Your name will not be shown to other members. Only pastors and prayer team leaders will see your identity.
-                        </small>
-                    </div>
-                    
-                    <div class="button-group">
-                        <a href="prayer-requests.php" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back to Prayers
-                        </a>
-                        <button type="submit" class="btn btn-primary" style="flex: 1;">
-                            <i class="fas fa-paper-plane"></i> Submit Prayer Request
-                        </button>
-                    </div>
-                </form>
-            </div>
+            </main>
         </div>
     </div>
-
-    <script>
-        // Character counter with warning levels
-        const prayerText = document.getElementById('prayer_text');
-        const charCounter = document.getElementById('charCounter');
-        
-        function updateCharacterCounter() {
-            const length = prayerText.value.length;
-            charCounter.textContent = `${length} characters`;
-            
-            // Remove all classes first
-            charCounter.className = 'character-counter';
-            
-            // Add appropriate class based on length
-            if (length > 1000) {
-                charCounter.classList.add('error');
-            } else if (length > 500) {
-                charCounter.classList.add('warning');
-            }
-        }
-        
-        prayerText.addEventListener('input', updateCharacterCounter);
-        updateCharacterCounter(); // Initialize counter
-        
-        // Auto-hide flash messages after 5 seconds
-        setTimeout(() => {
-            const flashMessages = document.querySelectorAll('.flash-message');
-            flashMessages.forEach(msg => {
-                msg.style.opacity = '0';
-                msg.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => msg.remove(), 500);
-            });
-        }, 5000);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

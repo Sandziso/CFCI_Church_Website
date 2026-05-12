@@ -233,3 +233,1173 @@ Stack trace:
 [25-Jan-2026 21:37:36 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
 [25-Jan-2026 23:02:53 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
 [25-Jan-2026 23:03:08 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
+[26-Jan-2026 09:31:59 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 09:32:24 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 09:44:51 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 09:47:39 Africa/Mbabane] Error fetching events: SQLSTATE[HY093]: Invalid parameter number
+[26-Jan-2026 09:47:39 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 09:47:55 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 09:48:37 Africa/Mbabane] Prayer requests fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_public' in 'where clause'
+[26-Jan-2026 10:17:05 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 10:17:44 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 10:41:59 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[26-Jan-2026 10:41:59 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 10:42:34 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[26-Jan-2026 10:42:34 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 10:42:34 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 10:42:34 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 10:42:34 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 10:42:34 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 10:42:34 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 12:30:10 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 12:30:10 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[26-Jan-2026 12:30:14 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[26-Jan-2026 12:30:14 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:30:14 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:30:14 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:30:14 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:30:14 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:31:04 Africa/Mbabane] Leadership fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.is_active' in 'where clause'
+[26-Jan-2026 12:42:41 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 12:43:51 Africa/Mbabane] Leadership fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.is_active' in 'where clause'
+[26-Jan-2026 12:44:16 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[26-Jan-2026 12:44:16 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:44:16 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:44:16 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:44:16 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:44:16 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[26-Jan-2026 12:44:17 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 12:44:31 Africa/Mbabane] PHP Warning:  Undefined array key "series" in C:\xampp\htdocs\CFCI_Church_Website\sermon-details.php on line 378
+[26-Jan-2026 15:42:15 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 15:42:53 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 17:36:36 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 17:36:36 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[26-Jan-2026 17:37:06 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 17:37:06 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[26-Jan-2026 17:37:07 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[26-Jan-2026 17:37:07 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[26-Jan-2026 17:37:07 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 17:37:07 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[26-Jan-2026 17:37:07 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[26-Jan-2026 17:37:07 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[26-Jan-2026 17:38:32 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[26-Jan-2026 17:38:32 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[26-Jan-2026 21:37:50 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[26-Jan-2026 21:37:50 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 21:38:05 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 21:38:20 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[26-Jan-2026 21:38:20 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[26-Jan-2026 21:38:20 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 21:38:20 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[26-Jan-2026 21:38:20 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[26-Jan-2026 21:38:20 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[26-Jan-2026 22:42:36 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[26-Jan-2026 22:42:40 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[26-Jan-2026 22:42:41 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 22:42:41 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "ChurchDB" not found in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 13
+[26-Jan-2026 22:59:37 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 22:59:37 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getChurchStats() in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php:15
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 15
+[26-Jan-2026 22:59:44 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 22:59:44 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Call to undefined method Database::getChurchStats() in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php:15
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 15
+[26-Jan-2026 22:59:54 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 22:59:54 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Class "ChurchDB" not found in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php:13
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 13
+[26-Jan-2026 23:05:55 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:05:55 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:209
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(209): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(80): getTotalUsersCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 209
+[26-Jan-2026 23:09:07 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:09:07 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.messages' doesn't exist in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:242
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(242): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 242
+[26-Jan-2026 23:09:21 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:09:21 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cfci_church_db.messages' doesn't exist in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:242
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(242): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 242
+[26-Jan-2026 23:11:03 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:11:03 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[26-Jan-2026 23:11:09 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:11:09 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[26-Jan-2026 23:11:12 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:11:12 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(130): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[26-Jan-2026 23:12:21 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:12:22 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[26-Jan-2026 23:13:46 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:13:47 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[26-Jan-2026 23:13:51 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[26-Jan-2026 23:13:51 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[27-Jan-2026 06:46:42 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[27-Jan-2026 06:46:42 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 11:55:12 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[03-Mar-2026 11:55:12 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[03-Mar-2026 11:55:12 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[03-Mar-2026 11:55:12 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[03-Mar-2026 11:55:12 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[03-Mar-2026 11:55:12 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 12:08:13 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[03-Mar-2026 12:08:13 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[03-Mar-2026 12:08:13 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[03-Mar-2026 12:15:53 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[03-Mar-2026 12:15:54 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[03-Mar-2026 12:15:54 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 12:15:54 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[03-Mar-2026 12:16:04 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 12:16:04 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[03-Mar-2026 12:28:24 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 12:28:24 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'is_read' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php:244
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(244): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php(162): getUnreadMessagesCount()
+#2 C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php(53): include('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_sidebar.php on line 244
+[03-Mar-2026 12:31:06 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[03-Mar-2026 12:31:07 Africa/Mbabane] PHP Fatal error:  Cannot redeclare getUserInitials() (previously declared in C:\xampp\htdocs\CFCI_Church_Website\includes\helpers.php:413) in C:\xampp\htdocs\CFCI_Church_Website\admin\includes\admin_topbar.php on line 32
+[03-Mar-2026 12:39:32 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[16-Mar-2026 19:58:57 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[16-Mar-2026 19:58:57 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[16-Mar-2026 19:58:57 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[16-Mar-2026 19:58:57 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[16-Mar-2026 19:58:57 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[01-May-2026 12:57:40 Africa/Mbabane] Error fetching events: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[01-May-2026 12:57:40 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[01-May-2026 12:57:40 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 194
+[01-May-2026 12:57:41 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[01-May-2026 13:08:15 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[01-May-2026 13:08:15 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[01-May-2026 13:08:15 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[01-May-2026 14:16:12 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[06-May-2026 11:49:27 Africa/Mbabane] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in C:\xampp\htdocs\CFCI_Church_Website\includes\session.php on line 8
+[06-May-2026 11:49:27 Africa/Mbabane] PHP Fatal error:  Maximum execution time of 120 seconds exceeded in C:\xampp\htdocs\CFCI_Church_Website\includes\SecurityManager.php on line 229
+[06-May-2026 12:14:02 Africa/Mbabane] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in C:\xampp\htdocs\CFCI_Church_Website\includes\footer.php on line 3
+[08-May-2026 19:34:43 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:41:16 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[08-May-2026 20:41:17 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[08-May-2026 20:41:17 Africa/Mbabane] PHP Warning:  Undefined array key "success" in C:\xampp\htdocs\CFCI_Church_Website\login.php on line 45
+[08-May-2026 20:41:39 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[08-May-2026 20:41:39 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[08-May-2026 20:41:39 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:41:39 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[08-May-2026 20:41:39 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[08-May-2026 20:41:39 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:41:50 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[08-May-2026 20:41:50 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[08-May-2026 20:41:50 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:41:50 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[08-May-2026 20:41:50 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[08-May-2026 20:41:50 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:42:14 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[08-May-2026 20:42:14 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[08-May-2026 20:42:14 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[08-May-2026 20:42:14 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[08-May-2026 20:42:14 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[08-May-2026 20:42:14 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[10-May-2026 14:58:14 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[10-May-2026 14:58:15 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[10-May-2026 14:58:15 Africa/Mbabane] PHP Warning:  Undefined array key "success" in C:\xampp\htdocs\CFCI_Church_Website\login.php on line 45
+[10-May-2026 15:12:46 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:13:17 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:28:59 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:28:59 Africa/Mbabane] PHP Warning:  include(includes/admin_header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 106
+[10-May-2026 15:28:59 Africa/Mbabane] PHP Warning:  include(): Failed opening 'includes/admin_header.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 106
+[10-May-2026 15:28:59 Africa/Mbabane] PHP Warning:  include(includes/admin_styles.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:28:59 Africa/Mbabane] PHP Warning:  include(): Failed opening 'includes/admin_styles.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:35:38 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:35:38 Africa/Mbabane] PHP Warning:  include(includes/admin_header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 106
+[10-May-2026 15:35:38 Africa/Mbabane] PHP Warning:  include(): Failed opening 'includes/admin_header.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 106
+[10-May-2026 15:35:38 Africa/Mbabane] PHP Warning:  include(includes/admin_styles.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:35:38 Africa/Mbabane] PHP Warning:  include(): Failed opening 'includes/admin_styles.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:36:01 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:36:01 Africa/Mbabane] PHP Warning:  include(includes/admin_styles.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:36:01 Africa/Mbabane] PHP Warning:  include(): Failed opening 'includes/admin_styles.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\dashboard.php on line 120
+[10-May-2026 15:39:33 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:44:08 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:54:52 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 15:54:52 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[10-May-2026 16:20:27 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 16:20:27 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[10-May-2026 16:38:32 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 16:38:32 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[10-May-2026 16:40:28 Africa/Mbabane] PHP Warning:  require_once(../../includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php on line 5
+[10-May-2026 16:40:28 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../../includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php on line 5
+[10-May-2026 16:41:25 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 16:41:25 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[10-May-2026 16:56:01 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[10-May-2026 16:56:02 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:11:07 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:11:59 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[11-May-2026 09:12:00 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[11-May-2026 09:12:00 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:12:00 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:25:18 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:25:18 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:25:30 Africa/Mbabane] PHP Warning:  require_once(../../includes/functions.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php on line 5
+[11-May-2026 09:25:30 Africa/Mbabane] PHP Fatal error:  Uncaught Error: Failed opening required '../../includes/functions.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php:5
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php on line 5
+[11-May-2026 09:29:41 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:29:41 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:29:44 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:29:44 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.created_at' in 'order clause' in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php:43
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php(43): PDO->prepare('SELECT u.*, a.r...')
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\admin\user-management\users.php on line 43
+[11-May-2026 09:31:59 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:31:59 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:32:37 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:34:53 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:35:18 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:35:24 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:35:24 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:39:39 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 09:39:40 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 09:39:42 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 17:56:33 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[11-May-2026 17:56:34 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[11-May-2026 17:56:34 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 17:56:34 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 17:56:51 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 17:56:51 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 17:56:54 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 17:57:05 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 17:57:12 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 18:05:19 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 18:05:19 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[11-May-2026 18:05:26 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 18:46:31 Africa/Mbabane] Database connected: cfci_church_db @ localhost
+[11-May-2026 19:24:04 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[11-May-2026 19:24:04 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[11-May-2026 19:24:04 Africa/Mbabane] Auth::login returned unexpected value: array (
+  'error' => 'Invalid email or password.',
+)
+[11-May-2026 19:24:12 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[11-May-2026 19:24:12 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[11-May-2026 19:24:12 Africa/Mbabane] Auth::login returned unexpected value: array (
+  'error' => 'Invalid email or password.',
+)
+[11-May-2026 19:24:33 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[11-May-2026 19:24:33 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[11-May-2026 19:24:33 Africa/Mbabane] Auth::login returned unexpected value: array (
+  'id' => 102,
+  'full_name' => 'Lindiwe Nkosi',
+  'email' => 'lindiwe.nkosi@example.com',
+  'role' => 'member',
+)
+[11-May-2026 19:34:10 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[11-May-2026 19:34:10 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[11-May-2026 19:34:10 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[11-May-2026 19:34:10 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[11-May-2026 19:34:10 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[11-May-2026 19:34:10 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[11-May-2026 19:43:41 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[11-May-2026 19:43:41 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[11-May-2026 19:43:41 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[11-May-2026 19:43:41 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[11-May-2026 19:43:41 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[11-May-2026 19:43:41 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[11-May-2026 19:44:36 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[11-May-2026 19:44:36 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[11-May-2026 19:44:36 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[11-May-2026 19:44:36 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[11-May-2026 19:44:36 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[11-May-2026 19:44:36 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:15:32 Africa/Mbabane] Failed attempts check error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 12:15:33 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 12:15:33 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:15:33 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:15:33 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:15:33 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:15:33 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:15:33 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:15:45 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:15:45 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:15:45 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:15:45 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:15:45 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:15:45 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:24:58 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:24:58 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:24:58 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:24:58 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:24:58 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:24:58 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:37:01 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:37:01 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:37:01 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:37:01 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:37:01 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:37:01 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:38:09 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:38:09 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:38:09 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:38:09 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:38:09 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:38:09 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:38:14 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:38:14 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:38:14 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:38:14 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:38:14 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:38:14 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:43:38 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.status' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\member\events\index.php:61
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\events\index.php(61): PDO->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\events\index.php on line 61
+[12-May-2026 12:50:29 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:50:29 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:50:29 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:50:29 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:50:29 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:50:29 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:53:14 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:53:14 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:53:14 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:53:14 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:53:14 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:53:14 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:54:27 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 12:54:27 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 12:54:27 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:54:27 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 12:54:27 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 12:54:27 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 12:57:19 Africa/Mbabane] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause' in C:\xampp\htdocs\CFCI_Church_Website\member\sermon\index.php:57
+Stack trace:
+#0 C:\xampp\htdocs\CFCI_Church_Website\member\sermon\index.php(57): PDO->prepare('SELECT COUNT(*)...')
+#1 {main}
+  thrown in C:\xampp\htdocs\CFCI_Church_Website\member\sermon\index.php on line 57
+[12-May-2026 13:04:08 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 13:04:08 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 13:04:08 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:04:08 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 13:04:08 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 13:04:08 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:10:25 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 13:10:25 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 13:10:25 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:10:25 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 13:10:25 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 13:10:25 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:23:19 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 13:23:19 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 13:23:19 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:23:19 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 13:23:19 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 13:23:19 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:30:49 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 13:30:49 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 13:30:49 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:30:49 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 13:30:49 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 13:30:49 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:40:46 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 13:40:46 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 13:40:46 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 13:40:46 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 13:40:46 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 13:40:46 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 16:22:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 225
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 227
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 229
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 230
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 231
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 232
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 236
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 238
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 246
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 248
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 250
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 251
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 252
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 253
+[12-May-2026 16:22:57 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 256
+[12-May-2026 16:22:57 Africa/Mbabane] Leadership data fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'm.is_active' in 'where clause'
+[12-May-2026 16:23:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 225
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 227
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 229
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 230
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 231
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 232
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 236
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 238
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 246
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 248
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 250
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 251
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 252
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 253
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Warning:  Undefined variable $current_page in C:\xampp\htdocs\CFCI_Church_Website\includes\header.php on line 256
+[12-May-2026 16:23:56 Africa/Mbabane] Events fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:23:56 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:37:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:37:49 Africa/Mbabane] Events fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[12-May-2026 16:37:49 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:37:49 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:38:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:38:41 Africa/Mbabane] Events fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[12-May-2026 16:38:41 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:38:41 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:38:50 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:38:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:39:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:42:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:43:25 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:48:28 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:48:33 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:48:33 Africa/Mbabane] Events fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[12-May-2026 16:48:33 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:48:33 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 16:49:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:49:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 16:50:16 Africa/Mbabane] Ministry details fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 16:50:16 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:02:07 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:02:23 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:02:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:04:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:04:04 Africa/Mbabane] Events fetch error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'e.is_featured' in 'where clause'
+[12-May-2026 17:04:04 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 17:04:04 Africa/Mbabane] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\CFCI_Church_Website\events.php on line 195
+[12-May-2026 17:18:20 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:19:16 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:19:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:19:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:20:10 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:20:27 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:31:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:34:02 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:34:16 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:47:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:47:46 Africa/Mbabane] Blog fetch error: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'id' in field list is ambiguous
+[12-May-2026 17:48:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:49:17 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:51:21 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 17:51:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:07:19 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:08:28 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:10:18 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:10:18 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 18:10:19 Africa/Mbabane] PHP Warning:  session_regenerate_id(): Session ID cannot be regenerated after headers have already been sent in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 63
+[12-May-2026 18:10:19 Africa/Mbabane] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\CFCI_Church_Website\includes\header.php:43) in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 171
+[12-May-2026 18:10:19 Africa/Mbabane] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\CFCI_Church_Website\includes\header.php:43) in C:\xampp\htdocs\CFCI_Church_Website\includes\main-functions.php on line 230
+[12-May-2026 18:10:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:10:40 Africa/Mbabane] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\CFCI_Church_Website\includes\header.php:43) in C:\xampp\htdocs\CFCI_Church_Website\includes\main-functions.php on line 230
+[12-May-2026 18:22:15 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:22:15 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:22:15 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 18:22:15 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 18:22:15 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:22:15 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 18:22:15 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 18:22:15 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:38:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:38:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:38:46 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 18:38:46 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 18:38:46 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:38:46 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 18:38:46 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 18:38:46 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:38:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:39:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:39:48 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:39:48 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 18:39:48 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 18:39:48 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:39:48 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 18:39:48 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 18:39:48 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:39:48 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 18:39:48 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 18:39:49 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 18:39:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:40:20 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:40:50 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:40:50 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:41:10 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:41:18 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 18:41:21 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:00:34 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:00:34 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 19:00:34 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 19:00:34 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:00:34 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 19:00:34 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 19:00:34 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 19:00:34 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 19:00:34 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 19:00:34 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 19:00:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:01:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:01:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:01:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:02:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:02:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:02:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:03:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:03:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:03:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:04:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:04:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:04:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:05:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:05:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:06:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:06:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:07:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:07:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:08:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:08:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:09:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:09:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:10:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:10:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:11:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:11:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:12:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:12:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:13:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:13:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:14:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:14:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:15:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:15:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:16:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:16:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:17:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:17:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:18:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:18:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:19:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:19:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:20:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:20:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:21:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:21:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:22:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:22:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:23:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:23:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:24:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:24:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:25:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:25:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:26:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:26:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:27:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:27:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:28:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:28:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:29:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:29:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:30:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:30:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:31:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:31:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:32:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:32:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:33:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:33:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:34:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:34:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:35:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:35:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:36:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:36:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:37:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:37:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:38:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:38:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:39:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:39:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:40:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:40:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:41:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:41:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:42:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:42:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:43:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:43:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:44:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:44:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:45:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:45:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:46:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:46:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:47:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 19:47:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:39:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:39:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:39:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:39:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:41:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:41:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:41:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:41:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:42:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:42:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:43:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:43:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:44:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:44:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:45:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:45:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:46:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:46:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:47:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:47:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:48:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:48:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:49:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:49:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:50:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:50:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:51:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:51:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:52:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:52:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:53:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:53:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:54:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:54:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:55:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:55:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:56:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:56:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:57:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:57:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:58:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:58:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:59:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 20:59:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:00:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:00:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:01:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:01:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:33 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:54 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:02:54 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:02:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:02:55 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:02:55 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:02:55 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:02:55 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:02:55 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:02:55 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:02:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:07 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:36 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:03:37 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:03:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:37 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:03:37 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:03:37 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:03:37 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:03:37 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:03:37 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:03:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:44 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:03:48 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:13 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:04:13 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:04:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:13 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:04:13 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:04:13 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:04:13 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:04:13 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:04:13 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:04:26 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:30 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:04:33 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:05:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:05:55 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:05:55 Africa/Mbabane] Failed login log error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user_agent' in 'field list'
+[12-May-2026 21:06:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:06:01 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:06:01 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:06:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:06:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:06:01 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:06:01 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:06:01 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:06:01 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:06:01 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:06:01 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:32:03 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:32:08 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:32:11 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:34:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:34:36 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:34:36 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:34:36 Africa/Mbabane] PHP Warning:  Undefined variable $role in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 85
+[12-May-2026 21:34:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:34:36 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:34:36 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:34:36 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:34:36 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:34:36 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:34:36 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:34:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:34:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:34:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:35:06 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:35:13 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:35:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:35:58 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 21:35:58 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 21:35:58 Africa/Mbabane] PHP Warning:  Undefined variable $role in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 85
+[12-May-2026 21:35:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:35:58 Africa/Mbabane] Calendar events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'event_time' in 'field list'
+[12-May-2026 21:35:58 Africa/Mbabane] Prayer wall widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pr.prayer_type' in 'where clause'
+[12-May-2026 21:35:58 Africa/Mbabane] Announcements widget error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:35:58 Africa/Mbabane] Get user profile error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'up.profile_image' in 'field list'
+[12-May-2026 21:35:58 Africa/Mbabane] Get donations error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'order clause'
+[12-May-2026 21:35:58 Africa/Mbabane] Get upcoming events error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'
+[12-May-2026 21:35:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:36:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:36:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:36:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:37:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:37:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:37:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:38:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:38:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:38:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:39:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:40:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:40:30 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:40:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:41:31 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:41:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:42:32 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:43:33 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:43:34 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:44:34 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:44:34 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:45:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:45:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:46:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:46:36 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:47:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:47:37 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:48:38 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:48:38 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:49:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:49:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:50:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:50:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:51:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:51:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:52:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:52:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:53:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:53:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:54:44 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:54:44 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:55:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:55:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:56:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:56:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:57:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:57:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:58:48 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:58:48 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:59:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 21:59:49 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:00:50 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:00:50 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:01:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:01:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:02:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:02:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:03:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:03:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:04:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:04:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:05:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:05:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:06:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:06:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:07:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:08:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:08:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:09:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:10:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:10:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:11:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:12:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:12:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:13:58 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:14:25 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:14:28 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:14:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:14:59 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:06 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:09 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:24 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:24 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 22:15:25 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 22:15:25 Africa/Mbabane] PHP Warning:  Undefined variable $role in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 85
+[12-May-2026 22:15:25 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:26 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:26 Africa/Mbabane] getMonthlyNewMembers: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'where clause'
+[12-May-2026 22:15:35 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:39 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:40 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:47 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:53 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:54 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:15:55 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:00 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:01 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:11 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:14 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:18 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:41 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 22:16:41 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 22:16:41 Africa/Mbabane] PHP Warning:  Undefined variable $role in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 85
+[12-May-2026 22:16:41 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:42 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:43 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:44 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:44 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:45 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:46 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:51 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:56 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:16:57 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:04 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:17:05 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:48:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:48:29 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:48:52 Africa/Mbabane] DB connected: cfci_church_db
+[12-May-2026 22:48:52 Africa/Mbabane] getFailedAttempts error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'attempt_time' in 'where clause'
+[12-May-2026 22:48:52 Africa/Mbabane] Last login update error: SQLSTATE[HY000]: General error: 1442 Can't update table 'users' in stored function/trigger because it is already used by statement which invoked this stored function/trigger
+[12-May-2026 22:48:52 Africa/Mbabane] PHP Warning:  Undefined variable $role in C:\xampp\htdocs\CFCI_Church_Website\includes\auth.php on line 85
+[12-May-2026 22:48:52 Africa/Mbabane] DB connected: cfci_church_db
